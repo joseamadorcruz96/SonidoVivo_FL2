@@ -95,6 +95,72 @@ function inicializarLogin() {
   });
 }
 
+// --------------------------------------------------------------------------
+// Lógica Exclusiva para la vista Nosotros (Mapa Leaflet y Contadores)
+// --------------------------------------------------------------------------
 
+// 1. Inicialización del Mapa Interactivo (Leaflet.js)
+function inicializarMapaTienda() {
+  const contenedorMapa = document.getElementById("mapa-tienda");
+  if (!contenedorMapa) return;
 
+  // Coordenadas aproximadas de Av. Libertad #1024, Viña del Mar
+  const lat = -33.0153;
+  const lng = -71.5505;
 
+  // Instanciar mapa centrado en Viña del Mar
+  const mapa = L.map("mapa-tienda").setView([lat, lng], 15);
+
+  // Capa de mapa (OpenStreetMap)
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+  }).addTo(mapa);
+
+  // Marcador oficial de Sonido Vivo
+  const marcador = L.marker([lat, lng]).addTo(mapa);
+  marcador.bindPopup("<b>Sonido Vivo</b><br>Av. Libertad #1024, Viña del Mar<br><i>Tienda & Luthería</i>").openPopup();
+}
+
+// 2. Animación Incremental de Estadísticas en Cifras
+function inicializarContadoresNosotros() {
+  const elAnios = document.getElementById("stat-anios");
+  if (!elAnios) return; // Si no está en esta página, interrumpe la ejecución
+
+  const objetivos = [
+    { id: "stat-anios", valor: 11, sufijo: "+" },
+    { id: "stat-productos", valor: 340, sufijo: "+" },
+    { id: "stat-calibraciones", valor: 1500, sufijo: "+" },
+    { id: "stat-envios", valor: 100, sufijo: "%" }
+  ];
+
+  objetivos.forEach(function (item) {
+    const el = document.getElementById(item.id);
+    if (!el) return;
+
+    let contadorActual = 0;
+    const incremento = Math.ceil(item.valor / 40);
+    const intervalo = setInterval(function () {
+      contadorActual += incremento;
+      if (contadorActual >= item.valor) {
+        el.textContent = item.valor + item.sufijo;
+        clearInterval(intervalo);
+      } else {
+        el.textContent = contadorActual + item.sufijo;
+      }
+    }, 30);
+  });
+}
+
+// --------------------------------------------------------------------------
+// Asegurar que DOMContentLoaded ejecute las nuevas funciones de Nosotros
+// --------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  sincronizarContadorCarrito();
+  inicializarBienvenidaHero();
+  inicializarLogin();
+  
+  // Módulos de la página Nosotros
+  inicializarMapaTienda();
+  inicializarContadoresNosotros();
+});
