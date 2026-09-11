@@ -138,6 +138,105 @@ main {
   flex: 1 0 auto;
 }
 
+/* --- Sección Hero y Bienvenida Interactiva (RF-04) --- */
+.hero-section {
+  background: radial-gradient(circle at 50% 20%, rgba(229, 169, 60, 0.08) 0%, rgba(17, 24, 39, 0) 70%), var(--bg-body);
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.badge-hero-pill {
+  display: inline-block;
+  background-color: var(--color-gold-soft);
+  color: var(--color-gold);
+  border: 1px solid rgba(229, 169, 60, 0.35);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+}
+
+.hero-titulo {
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.btn-hero-gold {
+  background-color: var(--color-gold);
+  color: #111827;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: var(--shadow-gold);
+  transition: all var(--transition-normal);
+}
+
+.btn-hero-gold:hover {
+  background-color: var(--color-gold-hover);
+  color: #111827;
+  transform: translateY(-2px);
+}
+
+.btn-bienvenida-mostrada {
+  background-color: var(--bg-surface-hover) !important;
+  color: var(--color-gold) !important;
+  border: 1px solid var(--color-gold) !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+
+.btn-hero-outline {
+  background-color: transparent;
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+}
+
+.btn-hero-outline:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background-color: rgba(229, 169, 60, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Caja de Mensaje de Bienvenida Dinámico (RF-04) */
+.alert-bienvenida {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--color-gold);
+  color: var(--text-main);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.98rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), var(--shadow-gold);
+  animation: fadeInDown 0.35s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* --- Pie de Página Institucional (RF-03) --- */
 .footer-sonido-vivo {
   background-color: var(--bg-surface-alt);

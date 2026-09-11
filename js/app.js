@@ -27,7 +27,32 @@ function sincronizarContadorCarrito() {
   contadorCarrito.textContent = totalArticulos;
 }
 
-// Inicializar contador al cargar la página
+// --------------------------------------------------------------------------
+// RF-04: Bienvenida Interactiva en la Sección Hero (Semana 4)
+// --------------------------------------------------------------------------
+function inicializarBienvenidaHero() {
+  const botonBienvenida = document.getElementById("boton-bienvenida");
+  const mensajeBienvenida = document.getElementById("mensaje-bienvenida");
+
+  if (!botonBienvenida || !mensajeBienvenida) return;
+
+  botonBienvenida.addEventListener("click", function () {
+    // 1. Asignar el texto del mensaje destacando la historia de la tienda
+    mensajeBienvenida.textContent =
+      "¡Bienvenidos a Sonido Vivo! Más de 11 años siendo el punto de encuentro de músicos en Viña del Mar. Ofrecemos instrumentos de alta calidad, amplificación profesional y servicio integral de luthería y calibración. ¡Esperamos que disfrutes tu visita!";
+
+    // 2. Aplicar clases de estilo y visibilidad (remover d-none y agregar alert-bienvenida)
+    mensajeBienvenida.className = "alert alert-bienvenida text-start";
+
+    // 3. Modificar texto y estilo del botón (patrón pedagógico Semana 4)
+    botonBienvenida.textContent = "Bienvenida mostrada";
+    botonBienvenida.classList.add("btn-bienvenida-mostrada");
+  });
+}
+
+// Inicializar funciones al cargar el DOM
 document.addEventListener("DOMContentLoaded", function () {
   sincronizarContadorCarrito();
+  inicializarBienvenidaHero();
 });
+

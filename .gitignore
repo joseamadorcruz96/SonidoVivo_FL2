@@ -1,14 +1,9 @@
 Contexto_Negocio/
+planes_implementacion/
 Pauta_Evaluacion_Instrucciones/
 __pycache__/
 *.pyc
-
-# Repositorio de ejemplo de clases
 ejemplo/
-
-# Documentación interna (solo conservar la planilla oficial entregable)
 documentacion/*
 !documentacion/Requerimientos_Funcionales_simplificado_1.xlsx
 
-# Planes de implementación internos
-planes_implementacion/

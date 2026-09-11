@@ -69,17 +69,40 @@
   </header>
 
   <!-- ====================================================================
-       CONTENIDO PRINCIPAL (Estructura Base para Home)
+       RF-04: SECCIÓN HERO Y BIENVENIDA INTERACTIVA
        ==================================================================== -->
   <main id="inicio">
-    <div class="container py-5 text-center">
-      <div class="py-5">
-        <h1 class="display-5 fw-bold mb-3">La Música Cobra Vida en Viña del Mar</h1>
-        <p class="lead text-secondary mx-auto" style="max-width: 680px;">
-          Especialistas en guitarras, bajos, sonido profesional y servicio de luthería con más de 11 años de trayectoria asesorando a músicos y bandas de todo Chile.
+    <section class="hero-section text-center py-5">
+      <div class="container py-4">
+        <!-- Píldora de Identidad Local -->
+        <span class="badge-hero-pill mb-3">Boutique Musical &amp; Luthería en Viña del Mar</span>
+
+        <!-- Título Principal con Acento Oro -->
+        <h1 class="display-4 fw-bold mb-3 hero-titulo">
+          La Música Cobra Vida en <span class="text-gold">Sonido Vivo</span>
+        </h1>
+
+        <!-- Reseña Introductoria -->
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 720px;">
+          Más de 11 años equipando a músicos, bandas y estudios con instrumentos seleccionados, accesorios profesionales y servicio técnico de calibración y luthería.
         </p>
+
+        <!-- Botones de Acción: Bienvenida Interactiva (RF-04) y Enlace al Catálogo -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <button id="boton-bienvenida" class="btn btn-hero-gold">
+            Conocer Sonido Vivo
+          </button>
+          <a href="productos.html" class="btn btn-hero-outline">
+            Ver Catálogo de Instrumentos
+          </a>
+        </div>
+
+        <!-- RF-04: Contenedor para el Mensaje Dinámico de Bienvenida -->
+        <div class="mt-4 mx-auto" style="max-width: 680px;">
+          <div id="mensaje-bienvenida" class="d-none" role="alert"></div>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
 
   <!-- ====================================================================
