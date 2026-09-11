@@ -12,6 +12,8 @@
 
     <!-- Estilos Personalizados y Variables Corporativas -->
     <link rel="stylesheet" href="css/estilos.css">
+
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
@@ -66,7 +68,59 @@
         </nav>
     </header>
 
-    <main></main>
+    <main>
+        <main class="d-flex align-items-center justify-content-center flex-grow-1 py-5">
+        <!-- Tarjeta de Login -->
+        <div class="card shadow-lg" style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); width: 100%; max-width: 420px; border-radius: var(--radius-lg);">
+            <div class="card-body p-4 p-md-5">
+                
+                <!-- Encabezado del Formulario -->
+                <div class="text-center mb-4">
+                    <img src="assets/img/logo.svg" alt="Sonido Vivo Logo" style="height: 45px;" class="mb-3">
+                    <h2 class="fw-bold" style="color: var(--text-main); font-family: var(--font-heading);">Iniciar Sesión</h2>
+                    <p class="text-secondary small">Ingresa a tu cuenta para gestionar pedidos o comprar equipos.</p>
+                </div>
+
+                <!-- Formulario -->
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold" style="color: var(--text-main);">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" placeholder="ejemplo@correo.com" required 
+                               style="background-color: var(--bg-body); border: 1px solid var(--border-subtle); color: var(--text-main);">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold" style="color: var(--text-main);">Contraseña</label>
+                        <input type="password" class="form-control" id="password" placeholder="********" required 
+                               style="background-color: var(--bg-body); border: 1px solid var(--border-subtle); color: var(--text-main);">
+                    </div>
+
+                    <!-- Mensaje de Error Oculto -->
+                    <div id="login-error" class="alert alert-danger d-none small py-2 text-center" role="alert">
+                        Credenciales incorrectas. Intenta nuevamente.
+                    </div>
+                    
+                    <!-- Botón de Ingreso (Reutiliza tu clase dorada) -->
+                    <button type="submit" class="btn btn-hero-gold w-100 mb-3">
+                        Ingresar a Sonido Vivo
+                    </button>
+                    
+                    <!-- Enlaces adicionales -->
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none small" style="color: var(--text-muted); transition: color 0.3s;" onmouseover="this.style.color='var(--color-gold)'" onmouseout="this.style.color='var(--text-muted)'">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                        <hr style="border-color: var(--border-subtle);">
+                        <p class="small text-secondary mb-0">
+                            ¿No tienes cuenta? <a href="#" class="fw-bold text-decoration-none" style="color: var(--color-gold);">Regístrate aquí</a>
+                        </p>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </main>
+    </main>
 
     <footer></footer>
 
