@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | Sonido Vivo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <main class="container py-5">
+        <h2 class="text-center mb-4">Mi Panel de Cliente</h2>
+        
+        <!-- Sección de Carrito -->
+        <div class="mb-5">
+            <h4>Mi Carrito de Compras</h4>
+            <ul class="list-group mb-3" id="lista-carrito">
+                <!-- JS inyectará los productos del carrito aquí -->
+            </ul>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Total: $<span id="total-carrito">0</span></h5>
+                <button class="btn btn-success" onclick="realizarPedido()">Confirmar Compra</button>
+            </div>
+        </div>
+
+        <!-- Sección de Historial de Pedidos -->
+        <div>
+            <h4>Mis Pedidos Anteriores</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-historial">
+                    <!-- JS inyectará el historial aquí -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="js/cliente.js"></script>
+</body>
+</html>
