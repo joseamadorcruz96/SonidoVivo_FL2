@@ -1,0 +1,88 @@
+/* ==========================================================================
+   VARIABLES Y SISTEMA DE DISEÑO - SONIDO VIVO
+   Tienda de Instrumentos Musicales (Viña del Mar) - Forma B DSY1104
+   Estilo visual: Boutique musical, luthería y escenario elegante.
+   ========================================================================== */
+
+/* --- Tipografía Elegante de Alta Definición --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. COLORES PRINCIPALES (Preservados estrictamente de colors.css)
+     ------------------------------------------------------------------------ */
+  --color-1: #EDEDED; /* Blanco marfil / Texto principal de alto contraste */
+  --color-2: #9CA3AF; /* Gris plateado / Subtítulos y texto atenuado */
+  --color-3: #4B5563; /* Gris pizarra / Bordes y líneas divisorias sutiles */
+  --color-4: #1F2937; /* Carbón oscuro / Fondo de tarjetas, navbar y modales */
+  --color-5: #111827; /* Grafito profundo / Fondo general de la página */
+
+  /* ------------------------------------------------------------------------
+     2. COLORES COMPLEMENTARIOS MODERNOS (Identidad Musical & Luthería)
+     ------------------------------------------------------------------------ */
+  /* Oro Luthería (Cálido, vintage, herrajes de guitarra, platos y sonido analógico) */
+  --color-gold: #E5A93C;
+  --color-gold-hover: #CA8A24;
+  --color-gold-soft: rgba(229, 169, 60, 0.12);
+
+  /* Carmesí Escenario (Terciopelo de estuches, amplificadores clásicos y ofertas) */
+  --color-crimson: #BE123C;
+  --color-crimson-hover: #9F1239;
+  --color-crimson-soft: rgba(190, 18, 60, 0.15);
+
+  /* Teal Audio Estudio (Toque moderno y fresco para equipos digitales y cables) */
+  --color-teal: #0D9488;
+  --color-teal-hover: #0F766E;
+
+  /* ------------------------------------------------------------------------
+     3. ASIGNACIÓN SEMÁNTICA DE COLORES
+     ------------------------------------------------------------------------ */
+  --bg-body: var(--color-5);
+  --bg-surface: var(--color-4);
+  --bg-surface-hover: #263344;
+  --bg-surface-alt: #16202E;
+
+  --text-main: var(--color-1);
+  --text-muted: var(--color-2);
+
+  --border-subtle: rgba(156, 163, 175, 0.18);
+  --border-focus: var(--color-gold);
+
+  /* Botones y acciones destacadas */
+  --btn-primary-bg: var(--color-gold);
+  --btn-primary-text: #111827;
+  --btn-primary-hover: var(--color-gold-hover);
+
+  --btn-secondary-bg: var(--color-crimson);
+  --btn-secondary-text: #FFFFFF;
+  --btn-secondary-hover: var(--color-crimson-hover);
+
+  /* Estados funcionales (Stock y Alertas) */
+  --color-success: #15803D; /* Stock disponible / Operación exitosa */
+  --color-warning: #D97706; /* Stock moderado / Advertencia */
+  --color-danger: #DC2626;  /* Alerta stock crítico / Error */
+  --color-info: #0284C7;    /* Nota informativa */
+
+  /* ------------------------------------------------------------------------
+     4. TIPOGRAFÍA ELEGANTE
+     ------------------------------------------------------------------------ */
+  /* Montserrat: Personalidad musical sólida, inspirada en logos de amplificadores y vinilos */
+  --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Plus Jakarta Sans: Lectura limpia, moderna y estética para descripciones y precios */
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* ------------------------------------------------------------------------
+     5. DETALLES ESTÉTICOS Y ELEVACIÓN
+     ------------------------------------------------------------------------ */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 12px 28px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 0 16px rgba(229, 169, 60, 0.28);
+
+  --transition-normal: 0.2s ease-in-out;
+}
