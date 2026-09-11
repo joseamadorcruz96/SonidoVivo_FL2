@@ -14,16 +14,11 @@ const contadorCarrito = document.getElementById("contador-carrito");
 function sincronizarContadorCarrito() {
   if (!contadorCarrito) return;
 
-  // Rescatar datos de carrito en LocalStorage o arreglo vacío por defecto
   const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  // Calcular la suma de artículos
   let totalArticulos = 0;
   carrito.forEach(function (item) {
     totalArticulos = totalArticulos + (item.cantidad || 1);
   });
-
-  // Actualizar el contenido del badge en el DOM
   contadorCarrito.textContent = totalArticulos;
 }
 
@@ -45,8 +40,47 @@ function inicializarBienvenidaHero() {
   });
 }
 
-// Inicializar funciones al cargar el DOM
+// --------------------------------------------------------------------------
+// Gestión Dinámica del Menú de Sesión
+// --------------------------------------------------------------------------
+function actualizarMenuSesion() {
+    const menuSesion = document.getElementById('menu-sesion');
+    if (!menuSesion) return; // Si no encuentra el contenedor, no hace nada
+
+    const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+
+    if (usuarioActivo) {
+        // Si hay sesión iniciada, mostramos panel y salir
+        const rutaPanel = usuarioActivo.rol === 'vendedor' ? 'panel_vendedor.html' : 'panel_cliente.html';
+        
+        menuSesion.innerHTML = `
+            <a href="${rutaPanel}" class="btn btn-outline-light btn-sm d-flex align-items-center" style="border-color: var(--color-gold); color: var(--color-gold);">
+                Mi Panel (${usuarioActivo.nombre.split(' ')[0]})
+            </a>
+            <button onclick="cerrarSesion()" class="btn btn-danger btn-sm">Salir</button>
+        `;
+    } else {
+        // Si no hay sesión, mostramos el botón Ingresar
+        menuSesion.innerHTML = `
+            <a href="login.html" class="btn-nav-login" style="background-color: var(--color-gold); color: #000; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+                Ingresar
+            </a>
+        `;
+    }
+}
+
+// Función global para cerrar sesión (puede llamarse desde el HTML)
+window.cerrarSesion = function() {
+    localStorage.removeItem('usuarioActivo');
+    alert("Has cerrado sesión correctamente.");
+    window.location.href = "index.html";
+};
+
+// --------------------------------------------------------------------------
+// INICIALIZACIÓN GENERAL (Se llama a TODO aquí)
+// --------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
   sincronizarContadorCarrito();
   inicializarBienvenidaHero();
+  actualizarMenuSesion(); 
 });
