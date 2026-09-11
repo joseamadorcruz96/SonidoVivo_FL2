@@ -54,5 +54,47 @@ function inicializarBienvenidaHero() {
 document.addEventListener("DOMContentLoaded", function () {
   sincronizarContadorCarrito();
   inicializarBienvenidaHero();
+  inicializarLogin();
 });
+
+// --------------------------------------------------------------------------
+// Lógica de Inicio de Sesión (Simulación para Prototipo)
+// --------------------------------------------------------------------------
+function inicializarLogin() {
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault(); // Evita que la página se recargue
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    // Ocultar mensaje de error si estaba visible
+    loginError.classList.add("d-none");
+
+    // Simulación de Roles (Según documento de requerimientos)
+    if (email === "admin@sonidovivo.cl" && password === "admin123") {
+      alert("Autenticación exitosa. Bienvenido Administrador.");
+      window.location.href = "admin/index.html"; //SIN NADA DE MOMENTO
+
+    } else if (email === "vendedor@sonidovivo.cl" && password === "ventas123") {
+      alert("Autenticación exitosa. Bienvenido Vendedor.");
+      window.location.href = "index.html"; //CAMBIARLO A UN PROXIMO PANEL DE VENTAS
+
+    } else if (email === "cliente@gmail.com" && password === "cliente123") {
+      alert("Autenticación exitosa. Bienvenido Cliente.");
+      window.location.href = "index.html"; 
+
+    } else {
+      // Mostrar error si no coincide ninguna
+      loginError.classList.remove("d-none");
+    }
+  });
+}
+
+
+
 
