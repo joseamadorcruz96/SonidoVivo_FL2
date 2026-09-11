@@ -2,74 +2,332 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosotros | Sonido Vivo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros | Sonido Vivo</title>
 
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <!-- Estilos Personalizados y Variables Corporativas -->
-    <link rel="stylesheet" href="css/estilos.css">
+  <!-- Leaflet CSS (Mapa Interactivo) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Estilos Personalizados y Variables Corporativas -->
+  <link rel="stylesheet" href="css/estilos.css">
+
+  <!-- Script Principal con Defer -->
+  <script src="js/app.js" defer></script>
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-sonido-vivo" aria-label="Navegación principal">
-            <div class="container">
-                <!-- Logotipo Oficial Sonido Vivo -->
-                <a class="navbar-brand" href="index.html">
-                    <img src="assets/img/logo.svg" alt="Sonido Vivo - Instrumentos & Audio">
-                </a>
 
-                <!-- Botón Hamburguesa Responsivo para Móvil -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
-                    aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir navegación">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+  <!-- ENCABEZADO Y BARRA DE NAVEGACIÓN PRINCIPAL -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-sonido-vivo" aria-label="Navegación principal">
+      <div class="container">
+        <!-- Logotipo Oficial Sonido Vivo -->
+        <a class="navbar-brand" href="index.html">
+          <img src="assets/img/logo.svg" alt="Sonido Vivo - Instrumentos & Audio">
+        </a>
 
-                <!-- Enlaces de Navegación del Sitio -->
-                <div class="collapse navbar-collapse" id="menuNavegacion">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="productos.html">Catálogo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="nosotros.html">Nosotros</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="blogs.html">Blogs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contacto.html">Contacto</a>
-                        </li>
-                    </ul>
+        <!-- Botón Hamburguesa Responsivo para Móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
+          aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir navegación">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <!-- Acciones Rápidas: Carrito (RF-02) e Inicio de Sesión -->
-                    <div class="d-flex align-items-center gap-3">
-                        <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav"
-                            title="Ver carrito de compras">
-                            <span>🛒 Carrito</span>
-                            <!-- RF-02: Badge dinámico de productos -->
-                            <span id="contador-carrito" class="badge-carrito">0</span>
-                        </a>
-                        <a href="login.html" class="btn-nav-login">
-                            Ingresar
-                        </a>
-                    </div>
-                </div>
+        <!-- Enlaces de Navegación del Sitio -->
+        <div class="collapse navbar-collapse" id="menuNavegacion">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="productos.html">Catálogo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="nosotros.html">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="blogs.html">Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contacto.html">Contacto</a>
+            </li>
+          </ul>
+
+          <!-- Acciones Rápidas -->
+          <div class="d-flex align-items-center gap-3">
+            <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav" title="Ver carrito de compras">
+              <span>🛒 Carrito</span>
+              <span id="contador-carrito" class="badge-carrito">0</span>
+            </a>
+            <a href="login.html" class="btn-nav-login">
+              Ingresar
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="nosotros-main">
+
+    <!-- SECCIÓN 1: HERO NOSOTROS -->
+    <section class="hero-nosotros text-center py-5">
+      <div class="container py-3">
+        <span class="badge-hero-pill mb-3">11 Años de Pasión Musical</span>
+        <h1 class="display-4 fw-bold hero-titulo mb-3">
+          Nuestra Historia en <span class="text-gold">Viña del Mar</span>
+        </h1>
+        <p class="lead text-secondary mx-auto mb-0" style="max-width: 750px;">
+          Desde 2015, Sonido Vivo ha crecido como la tienda boutique y taller de luthería de confianza para músicos, bandas e instituciones de toda la Región de Valparaíso y Chile.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: HISTORIA Y PILARES (ARTÍCULOS SEMÁNTICOS) -->
+    <section class="py-5 border-bottom-subtle">
+      <div class="container">
+        <div class="row g-4 align-items-center mb-5">
+          <div class="col-12 col-lg-6">
+            <article class="nosotros-card p-4 rounded-3">
+              <h2 class="h3 fw-bold text-gold mb-3">De la Pasión al Escenario</h2>
+              <p class="text-secondary mb-3">
+                Fundada por músicos locales en la Región de Valparaíso, Sonido Vivo nació con la misión de brindar un asesoramiento técnico real. Entendemos que cada instrumento tiene un alma y una afinación única.
+              </p>
+              <p class="text-secondary mb-0">
+                A lo largo de más de una década, hemos mantenido nuestro compromiso: ofrecer equipos probados y calibrados personalmente por nuestro equipo antes de llegar a tus manos.
+              </p>
+            </article>
+          </div>
+          <div class="col-12 col-lg-6 text-center">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80" 
+                 alt="Taller de Luthería Sonido Vivo" 
+                 class="img-fluid rounded-3 shadow-lg border-gold-soft">
+          </div>
+        </div>
+
+        <!-- TARJETAS DE MISIÓN, VISIÓN Y LUTHERÍA -->
+        <div class="row g-4">
+          <div class="col-12 col-md-4">
+            <article class="nosotros-pillar-card p-4 h-100">
+              <div class="pillar-icon mb-3">🎸</div>
+              <h3 class="h5 fw-bold mb-2">Catálogo Calibrado</h3>
+              <p class="small text-secondary mb-0">
+                Más de 340 referencias seleccionadas cuidadosamente: guitarras, bajos, sintetizadores y audio profesional de marcas reconocidas.
+              </p>
+            </article>
+          </div>
+          <div class="col-12 col-md-4">
+            <article class="nosotros-pillar-card p-4 h-100">
+              <div class="pillar-icon mb-3">🛠️</div>
+              <h3 class="h5 fw-bold mb-2">Servicio de Luthería</h3>
+              <p class="small text-secondary mb-0">
+                Taller especializado en ajuste de octavación, calibración de acción, reparación de circuitos y restauración de instrumentos de cuerda.
+              </p>
+            </article>
+          </div>
+          <div class="col-12 col-md-4">
+            <article class="nosotros-pillar-card p-4 h-100">
+              <div class="pillar-icon mb-3">📦</div>
+              <h3 class="h5 fw-bold mb-2">Envíos a todo Chile</h3>
+              <p class="small text-secondary mb-0">
+                Embalaje reforzado y envíos garantizados vía Starken y Chilexpress para que tu instrumento llegue listo para sonar.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CONTADORES ANIMADOS EN VIVO -->
+    <section class="py-5 bg-surface-alt">
+      <div class="container text-center">
+        <h2 class="h3 fw-bold mb-4">Sonido Vivo en Cifras</h2>
+        <div class="row g-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-box p-3">
+              <span class="stat-number text-gold" id="stat-anios">0</span>
+              <p class="stat-label text-secondary mb-0">Años de Trayectoria</p>
             </div>
-        </nav>
-    </header>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-box p-3">
+              <span class="stat-number text-gold" id="stat-productos">0</span>
+              <p class="stat-label text-secondary mb-0">Productos en Catálogo</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-box p-3">
+              <span class="stat-number text-gold" id="stat-calibraciones">0</span>
+              <p class="stat-label text-secondary mb-0">Calibraciones Realizadas</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-box p-3">
+              <span class="stat-number text-gold" id="stat-envios">0</span>
+              <p class="stat-label text-secondary mb-0">Comunas Atendidas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <main></main>
+    <!-- SECCIÓN 4: NUESTRO EQUIPO (CONFORME A CONTEXTO DEL CASO) -->
+    <section class="py-5">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="h3 fw-bold hero-titulo">El Equipo Detrás del Sonido</h2>
+          <p class="text-secondary">Atención personalizada por músicos para músicos</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <!-- Dueño -->
+          <div class="col-12 col-md-4">
+            <article class="card-equipo p-4 text-center">
+              <div class="avatar-wrapper mb-3">
+                <span class="avatar-placeholder">👨‍💼</span>
+              </div>
+              <h3 class="h5 fw-bold mb-1">Fundador &amp; Director</h3>
+              <p class="text-gold small mb-2">Dueño de Tienda</p>
+              <p class="small text-secondary mb-0">
+                Encargado de la selección de proveedores globales, gestión del catálogo y control de calidad técnico.
+              </p>
+            </article>
+          </div>
+          <!-- Vendedor 1 -->
+          <div class="col-12 col-md-4">
+            <article class="card-equipo p-4 text-center">
+              <div class="avatar-wrapper mb-3">
+                <span class="avatar-placeholder">🎸</span>
+              </div>
+              <h3 class="h5 fw-bold mb-1">Especialista en Guitarras</h3>
+              <p class="text-gold small mb-2">Vendedor / Luthier</p>
+              <p class="small text-secondary mb-0">
+                Experto en amplificación analógica, pedales de efecto y calibración fina de guitarras eléctricas y bajos.
+              </p>
+            </article>
+          </div>
+          <!-- Vendedor 2 -->
+          <div class="col-12 col-md-4">
+            <article class="card-equipo p-4 text-center">
+              <div class="avatar-wrapper mb-3">
+                <span class="avatar-placeholder">🎹</span>
+              </div>
+              <h3 class="h5 fw-bold mb-1">Especialista en Audio &amp; Teclados</h3>
+              <p class="text-gold small mb-2">Vendedor / Asesor</p>
+              <p class="small text-secondary mb-0">
+                Encargado del área de sintetizadores, interfaces de grabación, micrófonos y atención a pedidos regionales.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <footer></footer>
+    <!-- SECCIÓN 5: VIDEO EMBEBIDO (REQUISITO EVALUACIÓN EP1) -->
+    <section class="py-5 bg-surface-alt">
+      <div class="container">
+        <div class="row align-items-center g-4">
+          <div class="col-12 col-lg-5">
+            <h2 class="h3 fw-bold text-gold mb-3">Conoce Nuestro Taller de Luthería</h2>
+            <p class="text-secondary mb-3">
+              Descubre el proceso artesanal de mantenimiento, ajuste de trastes y entonación que realizamos a cada instrumento antes de ser exhibido o despachado.
+            </p>
+            <a href="contacto.html" class="btn btn-hero-gold">Agendar Servicio Técnico</a>
+          </div>
+          <div class="col-12 col-lg-7">
+            <!-- Video Embebido Responsivo -->
+            <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-lg border-gold-soft">
+              <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" 
+                      title="Proceso de Luthería en Sonido Vivo" 
+                      allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- SECCIÓN 6: MAPA INTERACTIVO (REQUISITO OBLIGATORIO LEAFLET) -->
+    <section class="py-5">
+      <div class="container">
+        <div class="text-center mb-4">
+          <h2 class="h3 fw-bold">Visítanos en Viña del Mar</h2>
+          <p class="text-secondary mb-1">📍 Av. Libertad #1024, Viña del Mar, Región de Valparaíso</p>
+          <p class="small text-gold">Horario: Lunes a Sábado de 10:30 a 19:30 hrs</p>
+        </div>
+        <!-- Contenedor donde Leaflet renderiza el mapa -->
+        <div id="mapa-tienda" class="mapa-frame rounded-3 shadow-lg"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIE DE PÁGINA INSTITUCIONAL -->
+  <footer class="footer-sonido-vivo" id="contacto-footer">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Columna 1: Identidad -->
+        <div class="col-12 col-md-4">
+          <h5>Sonido Vivo</h5>
+          <p class="small text-secondary">
+            Tienda especializada en instrumentos musicales, amplificación y servicio técnico de luthería en Viña del Mar, Región de Valparaíso.
+          </p>
+          <span class="footer-badge-lutheria">11 Años de Trayectoria</span>
+        </div>
+
+        <!-- Columna 2: Navegación Rápida -->
+        <div class="col-6 col-md-2">
+          <h5>Navegación</h5>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="blogs.html">Noticias &amp; Blogs</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Categorías -->
+        <div class="col-6 col-md-3">
+          <h5>Instrumentos</h5>
+          <ul>
+            <li><a href="productos.html">Guitarras Eléctricas &amp; Acústicas</a></li>
+            <li><a href="productos.html">Bajos y Amplificadores</a></li>
+            <li><a href="productos.html">Teclados y Sintetizadores</a></li>
+            <li><a href="productos.html">Micrófonos y Audio en Vivo</a></li>
+            <li><a href="productos.html">Accesorios &amp; Cuerdas</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Ubicación -->
+        <div class="col-12 col-md-3">
+          <h5>Tienda Física</h5>
+          <p class="small text-secondary mb-1">📍 Av. Libertad #1024, Viña del Mar</p>
+          <p class="small text-secondary mb-1">🕒 Lunes a Sábado: 10:30 a 19:30 hrs</p>
+          <p class="small text-secondary">📦 Envíos a todo Chile vía Starken y Chilexpress</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="mb-0 text-secondary">
+          &copy; 2026 Sonido Vivo - Todos los derechos reservados. Proyecto Académico DSY1104 Full Stack II.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+  <!-- Leaflet JS (Mapa Interactivo) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </body>
 
 </html>

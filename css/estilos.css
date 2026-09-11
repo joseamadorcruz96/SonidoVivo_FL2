@@ -291,3 +291,100 @@ main {
   font-size: 0.85rem;
   text-align: center;
 }
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA NOSOTROS
+   ========================================================================== */
+
+.hero-nosotros {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.nosotros-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.nosotros-pillar-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.nosotros-pillar-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+}
+
+.pillar-icon {
+  font-size: 2rem;
+}
+
+.border-gold-soft {
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+.border-bottom-subtle {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Cifras y Estadísticas */
+.bg-surface-alt {
+  background-color: var(--bg-surface-alt);
+}
+
+.stat-box {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Equipo */
+.card-equipo {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.card-equipo:hover {
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.avatar-wrapper {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto;
+  background-color: var(--bg-surface-alt);
+  border: 2px solid var(--color-gold);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-placeholder {
+  font-size: 2rem;
+}
+
+/* Mapa Leaflet */
+.mapa-frame {
+  height: 380px;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  z-index: 1;
+}
