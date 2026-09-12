@@ -470,3 +470,73 @@ html {
 .border-top-subtle {
   border-top: 1px solid var(--border-subtle);
 }
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA CONTACTO
+   ========================================================================== */
+
+.hero-contacto {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.card-contacto {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.input-contacto-custom {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--border-subtle);
+  color: #ffffff;
+}
+
+.input-contacto-custom:focus {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--color-gold);
+  color: #ffffff;
+  box-shadow: 0 0 0 0.25rem rgba(229, 169, 60, 0.25);
+}
+
+.check-gold:checked {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+.info-card-contacto {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color var(--transition-normal);
+}
+
+.info-card-contacto:hover {
+  border-color: var(--color-gold);
+}
+
+.info-icon-wrapper {
+  font-size: 1.8rem;
+  background-color: rgba(229, 169, 60, 0.1);
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(229, 169, 60, 0.2);
+}
+
+.badge-lutheria-sm {
+  background-color: rgba(229, 169, 60, 0.15);
+  color: var(--color-gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25em 0.6em;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+/* Accordion FAQ */
+.accordion-custom .accordion-button:not(.collapsed) {
+  background-color: var(--bg-surface-alt);
+  color: var(--color-gold);
+  box-shadow: none;
+}
+
+.accordion-custom .accordion-button::after {
+  filter: invert(1);
+}

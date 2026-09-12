@@ -2,76 +2,336 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto | Sonido Vivo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto &amp; Luthería | Sonido Vivo</title>
 
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <!-- Estilos Personalizados y Variables Corporativas -->
-    <link rel="stylesheet" href="css/estilos.css">
-    <script src="js/app.js" defer></script>
+  <!-- Estilos Personalizados y Variables Corporativas -->
+  <link rel="stylesheet" href="css/estilos.css">
+  
+  <!-- Script Principal con Defer -->
+  <script src="js/app.js" defer></script>
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-sonido-vivo" aria-label="Navegación principal">
-            <div class="container">
-                <!-- Logotipo Oficial Sonido Vivo -->
-                <a class="navbar-brand" href="index.html">
-                    <img src="assets/img/logo.svg" alt="Sonido Vivo - Instrumentos & Audio">
-                </a>
 
-                <!-- Botón Hamburguesa Responsivo para Móvil -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
-                    aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir navegación">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+  <!-- ENCABEZADO Y BARRA DE NAVEGACIÓN PRINCIPAL -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-sonido-vivo" aria-label="Navegación principal">
+      <div class="container">
+        <!-- Logotipo Oficial Sonido Vivo -->
+        <a class="navbar-brand" href="index.html">
+          <img src="assets/img/logo.svg" alt="Sonido Vivo - Instrumentos & Audio">
+        </a>
 
-                <!-- Enlaces de Navegación del Sitio -->
-                <div class="collapse navbar-collapse" id="menuNavegacion">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="productos.html">Catálogo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="nosotros.html">Nosotros</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="blogs.html">Blogs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="contacto.html">Contacto</a>
-                        </li>
-                    </ul>
+        <!-- Botón Hamburguesa Responsivo para Móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
+          aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir navegación">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <!-- Acciones Rápidas: Carrito (RF-02) e Inicio de Sesión -->
-                    <div class="d-flex align-items-center gap-3">
-                        <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav"
-                            title="Ver carrito de compras">
-                            <span>🛒 Carrito</span>
-                            <!-- RF-02: Badge dinámico de productos -->
-                            <span id="contador-carrito" class="badge-carrito">0</span>
-                        </a>
-                        
-                        <!-- NUEVO: Contenedor dinámico para botones de sesión -->
-                        <div id="menu-sesion" class="d-flex gap-2">
-                            <!-- JS inyectará aquí los botones de 'Ingresar' o 'Cerrar Sesión' -->
-                        </div>
-                    </div>
-                </div>
+        <!-- Enlaces de Navegación del Sitio -->
+        <div class="collapse navbar-collapse" id="menuNavegacion">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="productos.html">Catálogo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="nosotros.html">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="blogs.html">Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="contacto.html">Contacto</a>
+            </li>
+          </ul>
+
+          <!-- Acciones Rápidas: Carrito (RF-02) e Inicio de Sesión -->
+          <div class="d-flex align-items-center gap-3">
+            <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav" title="Ver carrito de compras">
+              <span>🛒 Carrito</span>
+              <!-- RF-02: Badge dinámico de productos -->
+              <span id="contador-carrito" class="badge-carrito">0</span>
+            </a>
+
+            <!-- Contenedor dinámico para botones de sesión -->
+            <div id="menu-sesion" class="d-flex gap-2">
+              <a href="login.html" class="btn-nav-login">Ingresar</a>
             </div>
-        </nav>
-    </header>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-    <main></main>
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="contacto-main">
 
-    <footer></footer>
+    <!-- SECCIÓN HERO DE CONTACTO -->
+    <section class="hero-contacto text-center py-5">
+      <div class="container py-3">
+        <span class="badge-hero-pill mb-3">Atención al Cliente &amp; Servicio Técnico</span>
+        <h1 class="display-4 fw-bold hero-titulo mb-3">
+          ¿En qué podemos <span class="text-gold">ayudarte?</span>
+        </h1>
+        <p class="lead text-secondary mx-auto mb-0" style="max-width: 720px;">
+          Contáctanos para cotizaciones de productos, presupuestos de luthería, calibraciones de instrumentos o consultas sobre tus pedidos.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN FORMULARIO Y CANALES DIRECTOS -->
+    <section class="py-5">
+      <div class="container">
+        <div class="row g-5">
+
+          <!-- COLUMNA IZQUIERDA: FORMULARIO DE CONTACTO CON VALIDACIÓN JS -->
+          <div class="col-12 col-lg-7">
+            <div class="card-contacto p-4 p-md-5 rounded-3 shadow-lg">
+              <h2 class="h3 fw-bold text-gold mb-2">Envíanos un Mensaje</h2>
+              <p class="text-secondary small mb-4">Completa el siguiente formulario y nuestro equipo te responderá en un plazo máximo de 24 horas hábiles.</p>
+
+              <!-- Alerta Dinámica de Feedback JS -->
+              <div id="alerta-contacto" class="alert d-none" role="alert"></div>
+
+              <form id="formulario-contacto" novalidate>
+                <div class="row g-3">
+                  <!-- Nombre Completo -->
+                  <div class="col-12 col-md-6">
+                    <label for="contacto-nombre" class="form-label text-light fw-medium">Nombre Completo <span class="text-gold">*</span></label>
+                    <input type="text" class="form-control input-contacto-custom" id="contacto-nombre" placeholder="Ej: Matías Silva" required>
+                    <div class="invalid-feedback" id="error-nombre">Por favor ingresa tu nombre (mínimo 3 caracteres).</div>
+                  </div>
+
+                  <!-- Correo Electrónico -->
+                  <div class="col-12 col-md-6">
+                    <label for="contacto-email" class="form-label text-light fw-medium">Correo Electrónico <span class="text-gold">*</span></label>
+                    <input type="email" class="form-control input-contacto-custom" id="contacto-email" placeholder="nombre@correo.cl" required>
+                    <div class="invalid-feedback" id="error-email">Ingresa un correo electrónico válido.</div>
+                  </div>
+
+                  <!-- Teléfono de Contacto -->
+                  <div class="col-12 col-md-6">
+                    <label for="contacto-telefono" class="form-label text-light fw-medium">Teléfono / WhatsApp</label>
+                    <input type="tel" class="form-control input-contacto-custom" id="contacto-telefono" placeholder="+56 9 1234 5678">
+                    <div class="invalid-feedback" id="error-telefono">Formato inválido (Ej: +56912345678 o 912345678).</div>
+                  </div>
+
+                  <!-- Tipo de Consulta -->
+                  <div class="col-12 col-md-6">
+                    <label for="contacto-motivo" class="form-label text-light fw-medium">Tipo de Consulta <span class="text-gold">*</span></label>
+                    <select class="form-select input-contacto-custom" id="contacto-motivo" required>
+                      <option value="" selected disabled>Selecciona una opción...</option>
+                      <option value="lutheria">Servicio de Luthería / Calibración</option>
+                      <option value="cotizacion">Cotización de Instrumento o Equipo</option>
+                      <option value="despacho">Estado de Despacho / Pedido</option>
+                      <option value="general">Consulta General</option>
+                    </select>
+                    <div class="invalid-feedback" id="error-motivo">Por favor selecciona un motivo de contacto.</div>
+                  </div>
+
+                  <!-- Mensaje / Detalles -->
+                  <div class="col-12">
+                    <label for="contacto-mensaje" class="form-label text-light fw-medium">Mensaje / Detalle del Instrumento <span class="text-gold">*</span></label>
+                    <textarea class="form-control input-contacto-custom" id="contacto-mensaje" rows="5" placeholder="Cuéntanos más detalles de tu consulta o el modelo de tu instrumento..." required></textarea>
+                    <div class="invalid-feedback" id="error-mensaje">El mensaje debe contener al menos 10 caracteres.</div>
+                  </div>
+
+                  <!-- Términos y Condiciones -->
+                  <div class="col-12">
+                    <div class="form-check">
+                      <input class="form-check-input check-gold" type="checkbox" id="contacto-terminos" required>
+                      <label class="form-check-label text-secondary small" for="contacto-terminos">
+                        Acepto ser contactado por el equipo técnico de Sonido Vivo <span class="text-gold">*</span>
+                      </label>
+                      <div class="invalid-feedback" id="error-terminos">Debes aceptar ser contactado para enviar el mensaje.</div>
+                    </div>
+                  </div>
+
+                  <!-- Botón Enviar -->
+                  <div class="col-12 pt-2">
+                    <button type="submit" class="btn btn-hero-gold w-100 py-2 fw-bold">Enviar Consulta</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA: CANALES DIRECTOS Y HORARIOS DE ATENCIÓN -->
+          <div class="col-12 col-lg-5">
+            <div class="d-flex flex-column gap-4">
+
+              <!-- Tarjeta Canal 1: Dirección Física -->
+              <article class="info-card-contacto p-4 rounded-3">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="info-icon-wrapper">📍</div>
+                  <div>
+                    <h3 class="h5 fw-bold text-light mb-1">Tienda Física &amp; Taller</h3>
+                    <p class="text-secondary small mb-1">Av. Libertad #1024, Viña del Mar, Región de Valparaíso.</p>
+                    <span class="badge-lutheria-sm">Retiro en tienda disponible</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Tarjeta Canal 2: Horarios de Atención -->
+              <article class="info-card-contacto p-4 rounded-3">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="info-icon-wrapper">🕒</div>
+                  <div>
+                    <h3 class="h5 fw-bold text-light mb-1">Horario de Atención</h3>
+                    <p class="text-secondary small mb-1"><strong>Lunes a Viernes:</strong> 10:30 - 19:30 hrs</p>
+                    <p class="text-secondary small mb-0"><strong>Sábados:</strong> 11:00 - 18:00 hrs</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Tarjeta Canal 3: Correo y WhatsApp Directo -->
+              <article class="info-card-contacto p-4 rounded-3">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="info-icon-wrapper">💬</div>
+                  <div>
+                    <h3 class="h5 fw-bold text-light mb-1">Atención Directa</h3>
+                    <p class="text-secondary small mb-1"><strong>WhatsApp Luthería:</strong> +56 9 8765 4321</p>
+                    <p class="text-secondary small mb-0"><strong>Ventas &amp; Email:</strong> contacto@sonidovivo.cl</p>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN PREGUNTAS FRECUENTES (FAQ ACORDEN) -->
+    <section class="py-5 bg-surface-alt">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="h3 fw-bold text-gold">Preguntas Frecuentes</h2>
+          <p class="text-secondary">Resolvemos tus dudas sobre servicios, garantías y despachos</p>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-8">
+            <div class="accordion accordion-custom" id="faqAccordion">
+
+              <!-- Pregunta 1 -->
+              <div class="accordion-item bg-surface border-subtle mb-3 rounded overflow-hidden">
+                <h2 class="accordion-header" id="headingOne">
+                  <button class="accordion-button bg-surface text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    🛠️ ¿Cuánto tiempo tarda la calibración de una guitarra o bajo?
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary small border-top-subtle">
+                    El plazo estándar para calibración y mantención general es de **24 a 48 horas hábiles**. Si requiere trabajos más complejos de electrónica o cambio de trastes, el plazo se acuerda previa revisión técnica en taller.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pregunta 2 -->
+              <div class="accordion-item bg-surface border-subtle mb-3 rounded overflow-hidden">
+                <h2 class="accordion-header" id="headingTwo">
+                  <button class="accordion-button bg-surface text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    📦 ¿Hacen envíos a todo Chile y cómo protegen los instrumentos?
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary small border-top-subtle">
+                    Sí, enviamos a todas las regiones de Chile mediante Starken y Chilexpress. Todos los instrumentos son embalados en doble caja de alto impacto con relleno de protección y seguro contra imprevistos en ruta.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pregunta 3 -->
+              <div class="accordion-item bg-surface border-subtle rounded overflow-hidden">
+                <h2 class="accordion-header" id="headingThree">
+                  <button class="accordion-button bg-surface text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    💳 ¿Qué medios de pago aceptan en tienda y sitio web?
+                  </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary small border-top-subtle">
+                    Aceptamos tarjetas de débito y crédito (Webpay Plus), transferencias electrónicas directas y pago presencial en tienda. Ofrecemos hasta 6 cuotas sin interés con bancos seleccionados.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIE DE PÁGINA INSTITUCIONAL -->
+  <footer class="footer-sonido-vivo" id="contacto-footer">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Columna 1: Identidad -->
+        <div class="col-12 col-md-4">
+          <h5>Sonido Vivo</h5>
+          <p class="small text-secondary">
+            Tienda especializada en instrumentos musicales, amplificación y servicio técnico de luthería en Viña del Mar, Región de Valparaíso.
+          </p>
+          <span class="footer-badge-lutheria">11 Años de Trayectoria</span>
+        </div>
+
+        <!-- Columna 2: Navegación Rápida -->
+        <div class="col-6 col-md-2">
+          <h5>Navegación</h5>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="blogs.html">Noticias &amp; Blogs</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Categorías -->
+        <div class="col-6 col-md-3">
+          <h5>Instrumentos</h5>
+          <ul>
+            <li><a href="productos.html">Guitarras Eléctricas &amp; Acústicas</a></li>
+            <li><a href="productos.html">Bajos y Amplificadores</a></li>
+            <li><a href="productos.html">Teclados y Sintetizadores</a></li>
+            <li><a href="productos.html">Micrófonos y Audio en Vivo</a></li>
+            <li><a href="productos.html">Accesorios &amp; Cuerdas</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Ubicación -->
+        <div class="col-12 col-md-3">
+          <h5>Tienda Física</h5>
+          <p class="small text-secondary mb-1">📍 Av. Libertad #1024, Viña del Mar</p>
+          <p class="small text-secondary mb-1">🕒 Lunes a Sábado: 10:30 a 19:30 hrs</p>
+          <p class="small text-secondary">📦 Envíos a todo Chile vía Starken y Chilexpress</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="mb-0 text-secondary">
+          &copy; 2026 Sonido Vivo - Todos los derechos reservados. Proyecto Académico DSY1104 Full Stack II.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
 
 </body>
 
