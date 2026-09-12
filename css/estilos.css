@@ -388,3 +388,8 @@ main {
   border: 1px solid var(--border-subtle);
   z-index: 1;
 }
+
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
