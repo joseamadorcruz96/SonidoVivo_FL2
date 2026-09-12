@@ -12,6 +12,7 @@
 
     <!-- Estilos Personalizados y Variables Corporativas -->
     <link rel="stylesheet" href="css/estilos.css">
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
@@ -57,9 +58,11 @@
                             <!-- RF-02: Badge dinámico de productos -->
                             <span id="contador-carrito" class="badge-carrito">0</span>
                         </a>
-                        <a href="login.html" class="btn-nav-login">
-                            Ingresar
-                        </a>
+                        
+                        <!-- NUEVO: Contenedor dinámico para botones de sesión -->
+                        <div id="menu-sesion" class="d-flex gap-2">
+                            <!-- JS inyectará aquí los botones de 'Ingresar' o 'Cerrar Sesión' -->
+                        </div>
                     </div>
                 </div>
             </div>
