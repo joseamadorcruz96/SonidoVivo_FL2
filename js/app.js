@@ -259,3 +259,130 @@ document.addEventListener("DOMContentLoaded", function () {
   inicializarBlogs();
   actualizarMenuSesion(); 
 });
+
+// --------------------------------------------------------------------------
+// Lógica Exclusiva para la vista Contacto (Validación de Formulario)
+// --------------------------------------------------------------------------
+
+function inicializarFormularioContacto() {
+  const form = document.getElementById("formulario-contacto");
+  if (!form) return; // Cláusula de guardia si no estamos en contacto.html
+
+  const inputNombre = document.getElementById("contacto-nombre");
+  const inputEmail = document.getElementById("contacto-email");
+  const inputTelefono = document.getElementById("contacto-telefono");
+  const selectMotivo = document.getElementById("contacto-motivo");
+  const inputMensaje = document.getElementById("contacto-mensaje");
+  const checkTerminos = document.getElementById("contacto-terminos");
+  const alerta = document.getElementById("alerta-contacto");
+
+  // Regex para validación de Email
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Regex opcional para teléfono chileno (ej: +56912345678 o 912345678)
+  const regexTelefono = /^(\+?56)?(\s?)(9)(\s?)[0-9]{8}$/;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let esValido = true;
+
+    // 1. Validar Nombre
+    if (inputNombre.value.trim().length < 3) {
+      marcarInvalido(inputNombre);
+      esValido = false;
+    } else {
+      marcarValido(inputNombre);
+    }
+
+    // 2. Validar Email
+    if (!regexEmail.test(inputEmail.value.trim())) {
+      marcarInvalido(inputEmail);
+      esValido = false;
+    } else {
+      marcarValido(inputEmail);
+    }
+
+    // 3. Validar Teléfono (Opcional, pero si se escribe debe ser válido)
+    if (inputTelefono.value.trim() !== "" && !regexTelefono.test(inputTelefono.value.trim())) {
+      marcarInvalido(inputTelefono);
+      esValido = false;
+    } else if (inputTelefono.value.trim() !== "") {
+      marcarValido(inputTelefono);
+    } else {
+      limpiarEstado(inputTelefono);
+    }
+
+    // 4. Validar Motivo
+    if (selectMotivo.value === "") {
+      marcarInvalido(selectMotivo);
+      esValido = false;
+    } else {
+      marcarValido(selectMotivo);
+    }
+
+    // 5. Validar Mensaje
+    if (inputMensaje.value.trim().length < 10) {
+      marcarInvalido(inputMensaje);
+      esValido = false;
+    } else {
+      marcarValido(inputMensaje);
+    }
+
+    // 6. Validar Términos
+    if (!checkTerminos.checked) {
+      marcarInvalido(checkTerminos);
+      esValido = false;
+    } else {
+      marcarValido(checkTerminos);
+    }
+
+    // Procesar Resultado
+    if (esValido) {
+      alerta.className = "alert alert-success mt-3 d-block";
+      alerta.innerHTML = "<strong>¡Mensaje enviado con éxito!</strong> Tu consulta fue recibida por nuestro equipo técnico. Te responderemos a la brevedad.";
+      form.reset();
+      
+      // Limpiar clases visuales de validación
+      [inputNombre, inputEmail, inputTelefono, selectMotivo, inputMensaje, checkTerminos].forEach(limpiarEstado);
+
+      // Ocultar alerta después de 6 segundos
+      setTimeout(() => {
+        alerta.className = "alert d-none";
+      }, 6000);
+    } else {
+      alerta.className = "alert alert-danger mt-3 d-block";
+      alerta.innerHTML = "<strong>Por favor corrige los campos indicados en rojo</strong> antes de enviar el formulario.";
+    }
+  });
+
+  // Funciones auxiliares de marcado
+  function marcarInvalido(elemento) {
+    elemento.classList.add("is-invalid");
+    elemento.classList.remove("is-valid");
+  }
+
+  function marcarValido(elemento) {
+    elemento.classList.remove("is-invalid");
+    elemento.classList.add("is-valid");
+  }
+
+  function limpiarEstado(elemento) {
+    elemento.classList.remove("is-invalid", "is-valid");
+  }
+}
+
+// --------------------------------------------------------------------------
+// Asegurar inclusión en el escuchador DOMContentLoaded
+// --------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  sincronizarContadorCarrito();
+  inicializarBienvenidaHero();
+  if (typeof inicializarLogin === "function") inicializarLogin();
+
+  // Módulos específicos de vistas
+  if (typeof inicializarMapaTienda === "function") inicializarMapaTienda();
+  if (typeof inicializarContadoresNosotros === "function") inicializarContadoresNosotros();
+  if (typeof inicializarBlogs === "function") inicializarBlogs();
+  
+  // Módulo de Contacto
+  inicializarFormularioContacto();
+});
