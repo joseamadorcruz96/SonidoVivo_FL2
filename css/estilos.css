@@ -393,3 +393,80 @@ html {
   scrollbar-gutter: stable;
   overflow-y: scroll;
 }
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA BLOGS
+   ========================================================================== */
+
+.hero-blogs {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.input-blog-search {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.input-blog-search:focus {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--color-gold);
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(229, 169, 60, 0.25);
+}
+
+.btn-outline-gold {
+  color: var(--color-gold);
+  border-color: rgba(229, 169, 60, 0.4);
+}
+
+.btn-outline-gold:hover,
+.btn-outline-gold.active {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+  color: #111827;
+  font-weight: 600;
+}
+
+.card-blog-custom {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card-blog-custom:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+}
+
+.img-blog-cover {
+  height: 200px;
+  object-fit: cover;
+}
+
+.badge-blog-tag {
+  background-color: rgba(229, 169, 60, 0.15);
+  color: var(--color-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35em 0.7em;
+  border-radius: 50px;
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+.btn-link-gold {
+  color: var(--color-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-link-gold:hover {
+  color: var(--color-gold-hover);
+  text-decoration: underline !important;
+}
+
+.border-top-subtle {
+  border-top: 1px solid var(--border-subtle);
+}

@@ -164,3 +164,105 @@ document.addEventListener("DOMContentLoaded", function () {
   inicializarMapaTienda();
   inicializarContadoresNosotros();
 });
+
+// --------------------------------------------------------------------------
+// Lógica Exclusiva para la vista Blogs (Filtros, Búsqueda y Modal)
+// --------------------------------------------------------------------------
+
+function inicializarBlogs() {
+  const contenedor = document.getElementById("contenedor-articulos-blog");
+  if (!contenedor) return; // Cláusula de guardia si no estamos en blogs.html
+
+  const tarjetas = document.querySelectorAll(".tarjeta-blog-item");
+  const botonesFiltro = document.querySelectorAll(".btn-filtro-blog");
+  const inputBuscar = document.getElementById("input-buscar-blog");
+  const alertaSinResultados = document.getElementById("mensaje-sin-resultados");
+
+  let categoriaActual = "todos";
+  let textoBusqueda = "";
+
+  // Función principal para filtrar los artículos
+  function aplicarFiltros() {
+    let visibles = 0;
+
+    tarjetas.forEach(function (tarjeta) {
+      const categoriaTarjeta = tarjeta.getAttribute("data-categoria");
+      const titulo = tarjeta.querySelector(".card-title").textContent.toLowerCase();
+      const descripcion = tarjeta.querySelector(".card-text").textContent.toLowerCase();
+
+      const coincideCategoria = (categoriaActual === "todos" || categoriaTarjeta === categoriaActual);
+      const coincideTexto = titulo.includes(textoBusqueda) || descripcion.includes(textoBusqueda);
+
+      if (coincideCategoria && coincideTexto) {
+        tarjeta.classList.remove("d-none");
+        visibles++;
+      } else {
+        tarjeta.classList.add("d-none");
+      }
+    });
+
+    // Mostrar u ocultar mensaje de "Sin resultados"
+    if (visibles === 0) {
+      alertaSinResultados.classList.remove("d-none");
+    } else {
+      alertaSinResultados.classList.add("d-none");
+    }
+  }
+
+  // Evento para botones de categoría
+  botonesFiltro.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      botonesFiltro.forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+      categoriaActual = this.getAttribute("data-categoria");
+      aplicarFiltros();
+    });
+  });
+
+  // Evento para entrada de texto en tiempo real
+  if (inputBuscar) {
+    inputBuscar.addEventListener("input", function (e) {
+      textoBusqueda = e.target.value.toLowerCase().trim();
+      aplicarFiltros();
+    });
+  }
+
+  // Evento para abrir Modal de Lectura
+  const botonesLeer = document.querySelectorAll(".btn-leer-articulo");
+  const modalElem = document.getElementById("modalLecturaBlog");
+
+  if (botonesLeer.length > 0 && modalElem) {
+    const modalBootstrap = new bootstrap.Modal(modalElem);
+
+    botonesLeer.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const titulo = this.getAttribute("data-titulo");
+        const autor = this.getAttribute("data-autor");
+        const fecha = this.getAttribute("data-fecha");
+        const contenido = this.getAttribute("data-contenido");
+
+        document.getElementById("modalLecturaBlogLabel").textContent = titulo;
+        document.getElementById("modalBlogMeta").textContent = `Por ${autor} | ${fecha}`;
+        document.getElementById("modalBlogCuerpo").textContent = contenido;
+
+        modalBootstrap.show();
+      });
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
+// Sincronizar con el evento DOMContentLoaded
+// --------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  sincronizarContadorCarrito();
+  inicializarBienvenidaHero();
+  inicializarLogin();
+
+  // Módulos de Nosotros y Blogs
+  if (typeof inicializarMapaTienda === "function") inicializarMapaTienda();
+  if (typeof inicializarContadoresNosotros === "function") inicializarContadoresNosotros();
+  
+  // Módulo de Blogs
+  inicializarBlogs();
+});
