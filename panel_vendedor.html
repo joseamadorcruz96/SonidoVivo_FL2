@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Vendedor | Sonido Vivo</title>
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Estilos Personalizados y Variables Corporativas -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <!-- Puedes agregar aquí tu menú de navegación (Navbar) si tienes uno -->
+
+    <main class="container py-5">
+        <h2 class="text-center mb-4">Panel de Vendedor</h2>
+        
+        <!-- Sección de Pedidos -->
+        <div class="mb-5">
+            <h4>Gestión de Pedidos</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-pedidos">
+                    <!-- JS inyectará los pedidos aquí -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sección de Stock -->
+        <div>
+            <h4>Actualización de Stock</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Stock Actual</th>
+                        <th>Actualizar</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-stock">
+                    <!-- JS inyectará el stock aquí -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Script de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Tu script con la lógica del vendedor -->
+    <script src="js/vendedor.js"></script>
+</body>
+</html>

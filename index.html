@@ -58,14 +58,17 @@
 
           <!-- Acciones Rápidas: Carrito (RF-02) e Inicio de Sesión -->
           <div class="d-flex align-items-center gap-3">
-            <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav" title="Ver carrito de compras">
-              <span>🛒 Carrito</span>
-              <!-- RF-02: Badge dinámico de productos -->
-              <span id="contador-carrito" class="badge-carrito">0</span>
-            </a>
-            <a href="login.html" class="btn-nav-login">
-              Ingresar
-            </a>
+              <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav"
+                  title="Ver carrito de compras">
+                  <span>🛒 Carrito</span>
+                  <!-- RF-02: Badge dinámico de productos -->
+                  <span id="contador-carrito" class="badge-carrito">0</span>
+              </a>
+              
+              <!-- NUEVO: Contenedor dinámico para botones de sesión -->
+              <div id="menu-sesion" class="d-flex gap-2">
+                  <!-- JS inyectará aquí los botones de 'Ingresar' o 'Cerrar Sesión' -->
+              </div>
           </div>
         </div>
       </div>
