@@ -14,7 +14,10 @@
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/catalogo.css">
 
+    <!-- Capa de Datos, Carrito y Script Principal con Defer -->
+    <script src="js/db.js"></script>
     <script src="js/app.js" defer></script>
+    <script src="js/carrito.js" defer></script>
 </head>
 
 <body>
@@ -158,8 +161,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 
-    <!-- Persistencia (Base de Datos Local) y Catálogo -->
-    <script src="js/db.js"></script>
+    <!-- Renderizado del Catálogo -->
     <script src="js/catalogo.js"></script>
 
 </body>

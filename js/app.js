@@ -9,17 +9,26 @@ console.log("Sonido Vivo - Frontend iniciado correctamente");
 // --------------------------------------------------------------------------
 // RF-02: Contador Dinámico de Carrito en la Barra de Navegación
 // --------------------------------------------------------------------------
-const contadorCarrito = document.getElementById("contador-carrito");
-
 function sincronizarContadorCarrito() {
-  if (!contadorCarrito) return;
+  if (window.Carrito && typeof Carrito.sincronizarBadge === "function") {
+    Carrito.sincronizarBadge();
+    return;
+  }
 
-  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const contador = document.getElementById("contador-carrito");
+  if (!contador) return;
+
+  if (window.DB && DB.carrito && typeof DB.carrito.obtenerCantidadTotal === "function") {
+    contador.textContent = DB.carrito.obtenerCantidadTotal();
+    return;
+  }
+
+  const carrito = JSON.parse(localStorage.getItem("sv_carrito") || localStorage.getItem("carrito") || "[]");
   let totalArticulos = 0;
   carrito.forEach(function (item) {
     totalArticulos = totalArticulos + (item.cantidad || 1);
   });
-  contadorCarrito.textContent = totalArticulos;
+  contador.textContent = totalArticulos;
 }
 
 // --------------------------------------------------------------------------

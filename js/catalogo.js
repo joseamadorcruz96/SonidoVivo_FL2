@@ -191,8 +191,12 @@ function renderizarCatalogo() {
 // ============================================================================
 function sincronizarContadorBadge() {
   const contador = document.getElementById("contador-carrito");
-  if (contador && window.DB && DB.carrito) {
-    contador.textContent = DB.carrito.obtenerCantidadTotal();
+  if (contador) {
+    if (window.Carrito && typeof Carrito.obtenerCantidadTotal === "function") {
+      contador.textContent = Carrito.obtenerCantidadTotal();
+    } else if (window.DB && DB.carrito) {
+      contador.textContent = DB.carrito.obtenerCantidadTotal();
+    }
   }
 }
 
@@ -215,11 +219,13 @@ function inicializarEventosCatalogo() {
     // Buscar producto por código en la base de datos local
     const producto = DB.productos.obtenerPorCodigo(codigo);
     if (producto) {
-      // 1. Agregar producto al carrito en LocalStorage
-      DB.carrito.agregar(producto, 1);
-
-      // 2. Actualizar el contador visual del header
-      sincronizarContadorBadge();
+      // 1. Agregar producto al carrito mediante el servicio Carrito o DB
+      if (window.Carrito && typeof Carrito.agregar === "function") {
+        Carrito.agregar(producto, 1);
+      } else {
+        DB.carrito.agregar(producto, 1);
+        sincronizarContadorBadge();
+      }
 
       // 3. Feedback visual interactivo en el botón (Semana 4)
       const textoOriginal = boton.textContent;

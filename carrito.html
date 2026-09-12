@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras | Sonido Vivo</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <!-- Estilos Personalizados y Variables Corporativas -->
+  <link rel="stylesheet" href="css/estilos.css">
+
+  <!-- Persistencia y Servicios -->
+  <script src="js/db.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/carrito.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ENCABEZADO Y BARRA DE NAVEGACIÓN -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-sonido-vivo" aria-label="Navegación principal">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <img src="assets/img/logo.svg" alt="Sonido Vivo - Instrumentos & Audio">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
+          aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir navegación">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavegacion">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="productos.html">Catálogo</a></li>
+            <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="blogs.html">Blogs</a></li>
+            <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+          </ul>
+
+          <!-- Acciones Rápidas: Carrito y Sesión -->
+          <div class="d-flex align-items-center gap-3">
+            <a href="carrito.html" class="btn-carrito-nav" id="boton-carrito-nav" title="Ver carrito de compras">
+              <span>🛒 Carrito</span>
+              <span id="contador-carrito" class="badge-carrito">0</span>
+            </a>
+            <div id="menu-sesion" class="d-flex gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="py-5">
+    <div class="container">
+
+      <!-- Encabezado de la Sección -->
+      <div class="text-center mb-5">
+        <span class="badge-hero-pill mb-2">Revisión de Pedido</span>
+        <h1 class="display-5 fw-bold hero-titulo mb-2">
+          Tu Carrito de <span class="text-gold">Compras</span>
+        </h1>
+        <p class="text-secondary mx-auto" style="max-width: 600px;">
+          Gestiona los instrumentos y equipos musicales que deseas adquirir con retiro en tienda o despacho a todo Chile.
+        </p>
+      </div>
+
+      <!-- Contenedor Dinámico del Carrito -->
+      <div id="carrito-pagina-contenedor">
+        <!-- Renderizado por JS: Tabla y Resumen o Vista Vacía -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- PIE DE PÁGINA INSTITUCIONAL -->
+  <footer class="footer-sonido-vivo" id="contacto-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <h5>Sonido Vivo</h5>
+          <p class="small text-secondary">
+            Tienda especializada en instrumentos musicales, amplificación y servicio técnico de luthería en Viña del Mar.
+          </p>
+          <span class="footer-badge-lutheria">11 Años de Trayectoria</span>
+        </div>
+        <div class="col-6 col-md-2">
+          <h5>Navegación</h5>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="productos.html">Catálogo</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="blogs.html">Noticias & Blogs</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h5>Instrumentos</h5>
+          <ul>
+            <li><a href="productos.html">Guitarras Eléctricas & Acústicas</a></li>
+            <li><a href="productos.html">Bajos y Amplificadores</a></li>
+            <li><a href="productos.html">Teclados y Pianos</a></li>
+            <li><a href="productos.html">Baterías y Percusión</a></li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-3">
+          <h5>Tienda Física</h5>
+          <p class="small text-secondary mb-1">📍 Av. Libertad #1024, Viña del Mar</p>
+          <p class="small text-secondary mb-1">🕒 Lunes a Sábado: 10:30 a 19:30 hrs</p>
+          <p class="small text-secondary">📦 Envíos a todo Chile vía Starken y Chilexpress</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="mb-0 text-secondary">
+          &copy; 2026 Sonido Vivo - Todos los derechos reservados. Proyecto Académico DSY1104 Full Stack II.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+  <!-- Lógica de renderizado exclusivo de la vista completa del carrito -->
+  <script>
+    function renderizarPaginaCarrito() {
+      const contenedor = document.getElementById("carrito-pagina-contenedor");
+      if (!contenedor || !window.Carrito) return;
+
+      const items = Carrito.obtener();
+      const usuario = Carrito.obtenerUsuario();
+      const total = Carrito.obtenerTotal();
+      const formatear = window.DB && DB.utilidades ? DB.utilidades.formatearCLP : function(v) { return "$ " + v; };
+
+      if (items.length === 0) {
+        contenedor.innerHTML = `
+          <div class="text-center py-5">
+            <div style="font-size: 4rem;" class="mb-3">🛒</div>
+            <h3 class="fw-bold mb-2">Tu carrito está actualmente vacío</h3>
+            <p class="text-secondary mb-4">No has agregado ningún instrumento o equipo musical a tu compra todavía.</p>
+            <a href="productos.html" class="btn btn-hero-gold px-4 py-2">
+              Explorar Catálogo de Instrumentos
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      let filasHtml = "";
+      items.forEach(function (item) {
+        filasHtml += `
+          <tr>
+            <td style="width: 80px;">
+              <img src="${item.imagen || 'assets/img/logo.svg'}" alt="${item.nombre}" class="carrito-img-mini rounded">
+            </td>
+            <td>
+              <span class="badge bg-secondary mb-1">${item.codigo}</span>
+              <div class="fw-bold text-light">${item.nombre}</div>
+              <div class="text-gold small">${formatear(item.precio)} c/u</div>
+            </td>
+            <td class="text-center">
+              <div class="d-inline-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-cantidad" onclick="Carrito.cambiarCantidad('${item.codigo}', -1)">−</button>
+                <span class="fw-bold px-2">${item.cantidad}</span>
+                <button type="button" class="btn btn-sm btn-cantidad" onclick="Carrito.cambiarCantidad('${item.codigo}', 1)">+</button>
+              </div>
+            </td>
+            <td class="text-end fw-bold text-light">
+              ${formatear(item.subtotal || item.precio * item.cantidad)}
+            </td>
+            <td class="text-center" style="width: 50px;">
+              <button type="button" class="btn-eliminar-item text-danger" title="Eliminar del carrito" onclick="Carrito.eliminar('${item.codigo}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const infoUsuarioHtml = usuario
+        ? `<div class="alert alert-success border-success text-start small mb-3 py-2">
+             <strong>Cliente identificado:</strong> ${usuario.nombre} (${usuario.email || usuario.rol || 'Cliente'})
+           </div>`
+        : `<div class="alert alert-dark border-secondary text-start small mb-3 py-2">
+             <span>👤 Comprando como <strong>Invitado</strong>.</span>
+             <a href="login.html" class="text-gold fw-bold ms-1">Iniciar sesión</a>
+           </div>`;
+
+      contenedor.innerHTML = `
+        <div class="row g-4">
+          <!-- Columna Izquierda: Tabla de Productos -->
+          <div class="col-12 col-lg-8">
+            <div class="table-responsive bg-surface p-3 rounded border border-subtle">
+              <table class="table table-carrito mb-0 align-middle">
+                <thead>
+                  <tr>
+                    <th>Ítem</th>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filasHtml}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+              <a href="productos.html" class="btn btn-hero-outline btn-sm">
+                ← Seguir Explorando
+              </a>
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="Carrito.vaciar()">
+                Vaciar Carrito Completo
+              </button>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Resumen de Compra -->
+          <div class="col-12 col-lg-4">
+            <div class="card-resumen-compra p-4">
+              <h5 class="fw-bold mb-3 text-gold">Resumen de la Orden</h5>
+              ${infoUsuarioHtml}
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">Subtotal Productos</span>
+                <span class="fw-semibold text-light">${formatear(total)}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">Despacho</span>
+                <span class="text-success small fw-bold">A convenir en tienda</span>
+              </div>
+              <hr class="border-secondary my-3">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <span class="fs-5 fw-bold text-light">Total</span>
+                <span class="fs-4 fw-bold text-gold">${formatear(total)}</span>
+              </div>
+
+              <button type="button" class="btn btn-hero-gold w-100 fw-bold py-2 mb-3" onclick="Carrito.finalizarCompra()">
+                Confirmar y Realizar Compra
+              </button>
+
+              <p class="small text-secondary text-center mb-0">
+                🔒 Compra segura simulada para evaluación académica DSY1104.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderizarPaginaCarrito();
+    });
+  </script>
+
+</body>
+
+</html>

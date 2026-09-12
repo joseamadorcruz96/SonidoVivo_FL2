@@ -574,3 +574,130 @@ html {
 .accordion-custom .accordion-button::after {
   filter: invert(1);
 }
+
+/* ==========================================================================
+   ESTILOS DEL CARRITO DE COMPRAS (OFFCANVAS Y VISTA DEDICADA)
+   ========================================================================== */
+.drawer-carrito-sv {
+  background-color: var(--bg-surface) !important;
+  border-left: 1px solid var(--border-subtle);
+  width: 380px !important;
+  max-width: 90vw !important;
+}
+
+.card-carrito-drawer {
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+}
+
+.card-carrito-drawer:hover {
+  border-color: rgba(229, 169, 60, 0.4);
+}
+
+.carrito-img-mini {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  background-color: #0f172a;
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-cantidad {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+}
+
+.btn-cantidad:hover {
+  background-color: var(--color-gold);
+  color: #111827;
+  border-color: var(--color-gold);
+}
+
+.btn-eliminar-item {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--transition-normal);
+}
+
+.btn-eliminar-item:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Animación de pulso para el contador de carrito */
+.anim-badge-pulse {
+  animation: badgePulse 0.3s ease-in-out;
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); background-color: #fff; color: #111; }
+  100% { transform: scale(1); }
+}
+
+/* Toast flotante de adición al carrito */
+.sv-toast-carrito {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--bg-surface-alt);
+  color: var(--text-main);
+  border: 1px solid var(--color-gold);
+  box-shadow: var(--shadow-gold), var(--shadow-card);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  z-index: 1090;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.sv-toast-carrito.mostrar {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Tarjeta de Resumen en carrito.html */
+.card-resumen-compra {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.table-carrito {
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.table-carrito th {
+  background-color: var(--bg-surface-alt);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.table-carrito td {
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: transparent;
+}

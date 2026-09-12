@@ -515,10 +515,32 @@
     // ========================================================================
     carrito: {
       /**
+       * Retorna la clave de almacenamiento según la sesión del usuario o cliente activo.
+       * Permite que cada usuario mantenga su propio carrito de forma aislada y persistente.
+       * @returns {string}
+       */
+      obtenerClave: function () {
+        const sesion = (DB.usuarios && typeof DB.usuarios.obtenerSesion === "function" ? DB.usuarios.obtenerSesion() : null)
+          || JSON.parse(localStorage.getItem("usuarioActivo") || "null");
+        if (sesion && sesion.email) {
+          return "sv_carrito_" + sesion.email.toLowerCase();
+        } else if (sesion && sesion.run) {
+          return "sv_carrito_" + sesion.run.toUpperCase();
+        } else if (sesion && sesion.nombre) {
+          return "sv_carrito_" + sesion.nombre.toLowerCase().replace(/\s+/g, "_");
+        }
+        return CLAVES.CARRITO; // Clave por defecto para invitados
+      },
+
+      /**
        * Retorna la lista de ítems presentes en el carrito.
        * @returns {Array}
        */
       obtener: function () {
+        const clave = this.obtenerClave();
+        const items = leer(clave, null);
+        if (items !== null) return items;
+        // Compatibilidad: si el carrito de usuario aún no tiene ítems, verifica el general
         return leer(CLAVES.CARRITO, []);
       },
 
@@ -532,7 +554,8 @@
         if (!producto || !producto.codigo) return this.obtener();
 
         const unidades = Number(cantidad) > 0 ? Number(cantidad) : 1;
-        const carrito = leer(CLAVES.CARRITO, []);
+        const clave = this.obtenerClave();
+        const carrito = this.obtener();
         const indice = carrito.findIndex(function (item) {
           return item.codigo.toUpperCase() === producto.codigo.toUpperCase();
         });
@@ -553,6 +576,8 @@
           });
         }
 
+        escribir(clave, carrito);
+        // Sincronizar clave general para compatibilidad
         escribir(CLAVES.CARRITO, carrito);
         return carrito;
       },
@@ -569,7 +594,8 @@
           return this.eliminar(codigo);
         }
 
-        const carrito = leer(CLAVES.CARRITO, []);
+        const clave = this.obtenerClave();
+        const carrito = this.obtener();
         const item = carrito.find(function (it) {
           return it.codigo.toUpperCase() === String(codigo).toUpperCase();
         });
@@ -577,6 +603,7 @@
         if (item) {
           item.cantidad = unidades;
           item.subtotal = item.cantidad * item.precio;
+          escribir(clave, carrito);
           escribir(CLAVES.CARRITO, carrito);
         }
 
@@ -589,10 +616,12 @@
        * @returns {Array} Carrito actualizado
        */
       eliminar: function (codigo) {
-        const carrito = leer(CLAVES.CARRITO, []);
+        const clave = this.obtenerClave();
+        const carrito = this.obtener();
         const nuevos = carrito.filter(function (item) {
           return item.codigo.toUpperCase() !== String(codigo).toUpperCase();
         });
+        escribir(clave, nuevos);
         escribir(CLAVES.CARRITO, nuevos);
         return nuevos;
       },
@@ -601,6 +630,8 @@
        * Vacia por completo el carrito de compras.
        */
       vaciar: function () {
+        const clave = this.obtenerClave();
+        escribir(clave, []);
         escribir(CLAVES.CARRITO, []);
         return [];
       },
@@ -610,7 +641,7 @@
        * @returns {number}
        */
       obtenerTotal: function () {
-        const carrito = leer(CLAVES.CARRITO, []);
+        const carrito = this.obtener();
         let total = 0;
         carrito.forEach(function (item) {
           total = total + (item.subtotal || (item.precio * item.cantidad));
@@ -623,7 +654,7 @@
        * @returns {number}
        */
       obtenerCantidadTotal: function () {
-        const carrito = leer(CLAVES.CARRITO, []);
+        const carrito = this.obtener();
         let cantidadTotal = 0;
         carrito.forEach(function (item) {
           cantidadTotal = cantidadTotal + (item.cantidad || 1);
@@ -660,6 +691,7 @@
       /**
        * Genera una nueva orden a partir de los datos del pedido.
        * Descuenta automáticamente el stock de los productos comprados.
+       * Respeta el usuario o cliente activo en la sesión.
        * @param {Object} ordenData - { clienteEmail, clienteNombre, items, total }
        * @returns {Object} La orden creada con ID y fecha
        */
@@ -667,13 +699,24 @@
         const ordenes = leer(CLAVES.ORDENES, []);
         const nuevoId = "ORD-" + (1001 + ordenes.length);
 
+        const sesion = (DB.usuarios && typeof DB.usuarios.obtenerSesion === "function" ? DB.usuarios.obtenerSesion() : null)
+          || JSON.parse(localStorage.getItem("usuarioActivo") || "null");
+
+        const clienteEmail = (ordenData && ordenData.clienteEmail)
+          || (sesion && sesion.email)
+          || "invitado@sonidovivo.cl";
+
+        const clienteNombre = (ordenData && ordenData.clienteNombre)
+          || (sesion && sesion.nombre)
+          || "Cliente General";
+
         const nuevaOrden = {
           id: nuevoId,
           fecha: new Date().toLocaleString("es-CL"),
-          clienteEmail: ordenData.clienteEmail || "invitado@sonidovivo.cl",
-          clienteNombre: ordenData.clienteNombre || "Cliente General",
-          items: ordenData.items || [],
-          total: Number(ordenData.total) || 0,
+          clienteEmail: clienteEmail,
+          clienteNombre: clienteNombre,
+          items: (ordenData && ordenData.items && ordenData.items.length > 0) ? ordenData.items : DB.carrito.obtener(),
+          total: Number(ordenData && ordenData.total) || DB.carrito.obtenerTotal(),
           estado: "En preparación"
         };
 
@@ -693,7 +736,19 @@
         ordenes.push(nuevaOrden);
         escribir(CLAVES.ORDENES, ordenes);
 
-        // 3. Vaciar el carrito de compras
+        // Compatibilidad con panel_cliente.html si existe
+        try {
+          const pedidosSistema = leer("pedidosSistema", []);
+          pedidosSistema.push({
+            id: nuevaOrden.id,
+            cliente: nuevaOrden.clienteNombre,
+            total: nuevaOrden.total,
+            estado: nuevaOrden.estado
+          });
+          escribir("pedidosSistema", pedidosSistema);
+        } catch (e) {}
+
+        // 3. Vaciar el carrito del usuario actual
         DB.carrito.vaciar();
 
         return nuevaOrden;
