@@ -574,3 +574,167 @@ html {
 .accordion-custom .accordion-button::after {
   filter: invert(1);
 }
+
+/* ==========================================================================
+   ESTILOS DE PANELES DE GESTIÓN (VENDEDOR Y ADMINISTRACIÓN)
+   ========================================================================== */
+
+.panel-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.panel-card-header {
+  background-color: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 1rem 1.25rem;
+}
+
+.panel-modal-content {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: var(--radius-lg);
+}
+
+.panel-modal-header {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.panel-modal-footer {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.panel-table {
+  color: var(--text-main);
+}
+
+.panel-table thead th {
+  border-bottom: 2px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background-color: var(--bg-surface-alt);
+}
+
+.panel-table tbody td {
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.nav-pills-panel .nav-link {
+  color: var(--text-main);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.55rem 1.15rem;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+.nav-pills-panel .nav-link:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background-color: var(--color-gold-soft);
+}
+
+.nav-pills-panel .nav-link.active {
+  background-color: var(--color-gold) !important;
+  color: #111827 !important;
+  border-color: var(--color-gold) !important;
+  box-shadow: var(--shadow-gold);
+  font-weight: 700;
+}
+
+.select-panel {
+  background-color: var(--bg-surface-alt);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-normal);
+}
+
+.select-panel:focus {
+  background-color: var(--bg-surface-alt);
+  color: #ffffff;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 0.2rem rgba(229, 169, 60, 0.25);
+}
+
+.panel-col-estado {
+  min-width: 170px;
+}
+
+.panel-modal-img {
+  max-height: 220px;
+  object-fit: cover;
+}
+
+.panel-list-group-item {
+  background-color: var(--bg-surface-alt);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+}
+
+.panel-footer {
+  background-color: var(--bg-surface-alt);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   ESTILOS COMPACTOS PARA PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+.admin-sidebar {
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  min-width: 260px;
+}
+
+.admin-sidebar .nav-link {
+  color: var(--text-main);
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.9rem;
+  font-weight: 500;
+  transition: all var(--transition-normal);
+}
+
+.admin-sidebar .nav-link:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background-color: var(--color-gold-soft);
+}
+
+.admin-sidebar .nav-link.active {
+  background-color: var(--color-gold) !important;
+  color: #111827 !important;
+  border-color: var(--color-gold) !important;
+  font-weight: 700;
+}
+
+.admin-input {
+  background-color: var(--bg-surface-alt) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-main) !important;
+  border-radius: var(--radius-sm);
+}
+
+.admin-input:focus {
+  border-color: var(--color-gold) !important;
+  box-shadow: 0 0 0 0.2rem rgba(229, 169, 60, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.admin-table-thumb {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
