@@ -6,4 +6,5 @@ __pycache__/
 ejemplo/
 documentacion/*
 !documentacion/Requerimientos_Funcionales_simplificado_1.xlsx
+!documentacion/convert_ers_to_docx.py
 

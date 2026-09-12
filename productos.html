@@ -12,6 +12,7 @@
 
     <!-- Estilos Personalizados y Variables Corporativas -->
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/catalogo.css">
 
     <script src="js/app.js" defer></script>
 </head>
@@ -38,7 +39,7 @@
                             <a class="nav-link" href="index.html">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="productos.html">Catálogo</a>
+                            <a class="nav-link" href="productos.html">Catálogo</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="nosotros.html">Nosotros</a>
@@ -59,7 +60,7 @@
                             <!-- RF-02: Badge dinámico de productos -->
                             <span id="contador-carrito" class="badge-carrito">0</span>
                         </a>
-                        
+
                         <!-- NUEVO: Contenedor dinámico para botones de sesión -->
                         <div id="menu-sesion" class="d-flex gap-2">
                             <!-- JS inyectará aquí los botones de 'Ingresar' o 'Cerrar Sesión' -->
@@ -87,15 +88,80 @@
         </section>
     </main>
 
-    <footer></footer>
+    <!-- ====================================================================
+         RF-03: PIE DE PÁGINA INSTITUCIONAL (FOOTER)
+         ==================================================================== -->
+    <footer class="footer-sonido-vivo" id="contacto-footer">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Columna 1: Identidad y Trayectoria -->
+                <div class="col-12 col-md-4">
+                    <h5>Sonido Vivo</h5>
+                    <p class="small text-secondary">
+                        Tienda especializada en instrumentos musicales, amplificación y servicio técnico de luthería en
+                        Viña del
+                        Mar, Región de Valparaíso.
+                    </p>
+                    <span class="footer-badge-lutheria">11 Años de Trayectoria</span>
+                </div>
 
-    <!-- Persistencia (Base de Datos Local) y Lógica de Catálogo -->
-    <script src="js/db.js"></script>
-    <script src="js/catalogo.js"></script>
+                <!-- Columna 2: Navegación Rápida -->
+                <div class="col-6 col-md-2">
+                    <h5>Navegación</h5>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Catálogo</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="blogs.html">Noticias & Blogs</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Categorías Musicales -->
+                <div class="col-6 col-md-3">
+                    <h5>Instrumentos</h5>
+                    <ul>
+                        <li><a href="productos.html">Guitarras Eléctricas & Acústicas</a></li>
+                        <li><a href="productos.html">Bajos y Amplificadores</a></li>
+                        <li><a href="productos.html">Teclados y Sintetizadores</a></li>
+                        <li><a href="productos.html">Micrófonos y Audio en Vivo</a></li>
+                        <li><a href="productos.html">Accesorios & Cuerdas</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Ubicación y Horarios -->
+                <div class="col-12 col-md-3">
+                    <h5>Tienda Física</h5>
+                    <p class="small text-secondary mb-1">
+                        📍 Av. Libertad #1024, Viña del Mar
+                    </p>
+                    <p class="small text-secondary mb-1">
+                        🕒 Lunes a Sábado: 10:30 a 19:30 hrs
+                    </p>
+                    <p class="small text-secondary">
+                        📦 Envíos a todo Chile vía Starken y Chilexpress
+                    </p>
+                </div>
+            </div>
+
+            <!-- Barra Inferior de Derechos -->
+            <div class="footer-bottom">
+                <p class="mb-0 text-secondary">
+                    &copy; 2026 Sonido Vivo - Todos los derechos reservados. Proyecto Académico DSY1104 Full Stack II.
+                </p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <!-- Persistencia (Base de Datos Local) y Catálogo -->
+    <script src="js/db.js"></script>
+    <script src="js/catalogo.js"></script>
+
 </body>
 
 </html>

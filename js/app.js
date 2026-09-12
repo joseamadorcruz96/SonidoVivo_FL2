@@ -41,49 +41,86 @@ function inicializarBienvenidaHero() {
 }
 
 // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Dinamización de Enlace Activo en el Menú de Navegación
+// --------------------------------------------------------------------------
+function actualizarNavegacionActiva() {
+  const enlacesNav = document.querySelectorAll(".navbar-nav .nav-link");
+  if (!enlacesNav || enlacesNav.length === 0) return;
+
+  // Obtener el nombre del archivo actual desde la URL
+  let paginaActual = window.location.pathname.split("/").pop();
+  if (!paginaActual || paginaActual === "") {
+    paginaActual = "index.html";
+  }
+
+  enlacesNav.forEach(function (enlace) {
+    const href = enlace.getAttribute("href");
+    if (!href) return;
+
+    // Normalizar href para comparar solo el nombre del archivo
+    const archivoHref = href.split("/").pop();
+
+    if (archivoHref === paginaActual) {
+      enlace.classList.add("active");
+      enlace.setAttribute("aria-current", "page");
+    } else {
+      enlace.classList.remove("active");
+      enlace.removeAttribute("aria-current");
+    }
+  });
+}
+
+// --------------------------------------------------------------------------
 // Gestión Dinámica del Menú de Sesión
 // --------------------------------------------------------------------------
 function actualizarMenuSesion() {
-    const menuSesion = document.getElementById('menu-sesion');
-    if (!menuSesion) return; // Si no encuentra el contenedor, no hace nada
+  const menuSesion = document.getElementById("menu-sesion");
+  if (!menuSesion) return; // Si no encuentra el contenedor, no hace nada
 
-    const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+  // Compatibilidad: verificar sesión en db.js o en usuarioActivo
+  const sesionActiva =
+    (window.DB && DB.usuarios && typeof DB.usuarios.obtenerSesion === "function"
+      ? DB.usuarios.obtenerSesion()
+      : null) || JSON.parse(localStorage.getItem("usuarioActivo"));
 
-    if (usuarioActivo) {
-        // Si hay sesión iniciada, mostramos panel y salir
-        const rutaPanel = usuarioActivo.rol === 'vendedor' ? 'panel_vendedor.html' : 'panel_cliente.html';
-        
-        menuSesion.innerHTML = `
-            <a href="${rutaPanel}" class="btn btn-outline-light btn-sm d-flex align-items-center" style="border-color: var(--color-gold); color: var(--color-gold);">
-                Mi Panel (${usuarioActivo.nombre.split(' ')[0]})
-            </a>
-            <button onclick="cerrarSesion()" class="btn btn-danger btn-sm">Salir</button>
-        `;
-    } else {
-        // Si no hay sesión, mostramos el botón Ingresar
-        menuSesion.innerHTML = `
-            <a href="login.html" class="btn-nav-login" style="background-color: var(--color-gold); color: #000; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold;">
-                Ingresar
-            </a>
-        `;
+  if (sesionActiva) {
+    // Si hay sesión iniciada, mostramos panel y salir
+    const rol = (sesionActiva.rol || "").toLowerCase();
+    let rutaPanel = "panel_cliente.html";
+    if (rol === "vendedor") {
+      rutaPanel = "panel_vendedor.html";
+    } else if (rol === "administrador" || rol === "admin") {
+      rutaPanel = "admin/index.html";
     }
+
+    const nombreUsuario = (sesionActiva.nombre || "Usuario").split(" ")[0];
+
+    menuSesion.innerHTML = `
+      <a href="${rutaPanel}" class="btn btn-outline-light btn-sm d-flex align-items-center" style="border-color: var(--color-gold); color: var(--color-gold);">
+        Mi Panel (${nombreUsuario})
+      </a>
+      <button onclick="cerrarSesion()" class="btn btn-danger btn-sm">Salir</button>
+    `;
+  } else {
+    // Si no hay sesión, mostramos el botón Ingresar
+    menuSesion.innerHTML = `
+      <a href="login.html" class="btn-nav-login">
+        Ingresar
+      </a>
+    `;
+  }
 }
 
 // Función global para cerrar sesión (puede llamarse desde el HTML)
-window.cerrarSesion = function() {
-    localStorage.removeItem('usuarioActivo');
-    alert("Has cerrado sesión correctamente.");
-    window.location.href = "index.html";
+window.cerrarSesion = function () {
+  localStorage.removeItem("usuarioActivo");
+  if (window.DB && DB.usuarios && typeof DB.usuarios.cerrarSesion === "function") {
+    DB.usuarios.cerrarSesion();
+  }
+  alert("Has cerrado sesión correctamente.");
+  window.location.href = "index.html";
 };
-
-// --------------------------------------------------------------------------
-// INICIALIZACIÓN GENERAL (Se llama a TODO aquí)
-// --------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", function () {
-  sincronizarContadorCarrito();
-  inicializarBienvenidaHero();
-  inicializarLogin();
-});
 
 
 
@@ -243,22 +280,7 @@ function inicializarBlogs() {
   }
 }
 
-// --------------------------------------------------------------------------
-// Sincronizar con el evento DOMContentLoaded
-// --------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", function () {
-  sincronizarContadorCarrito();
-  inicializarBienvenidaHero();
-  inicializarLogin();
 
-  // Módulos de Nosotros y Blogs
-  if (typeof inicializarMapaTienda === "function") inicializarMapaTienda();
-  if (typeof inicializarContadoresNosotros === "function") inicializarContadoresNosotros();
-  
-  // Módulo de Blogs
-  inicializarBlogs();
-  actualizarMenuSesion(); 
-});
 
 // --------------------------------------------------------------------------
 // Lógica Exclusiva para la vista Contacto (Validación de Formulario)
@@ -371,18 +393,19 @@ function inicializarFormularioContacto() {
 }
 
 // --------------------------------------------------------------------------
-// Asegurar inclusión en el escuchador DOMContentLoaded
+// INICIALIZACIÓN GENERAL UNIFICADA (Ciclo de Vida Central)
 // --------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
+  // 1. Componentes globales de navegación y cabecera
+  actualizarNavegacionActiva();
+  actualizarMenuSesion();
   sincronizarContadorCarrito();
-  inicializarBienvenidaHero();
-  if (typeof inicializarLogin === "function") inicializarLogin();
 
-  // Módulos específicos de vistas
+  // 2. Módulos específicos por vista con guardas seguras
+  if (typeof inicializarBienvenidaHero === "function") inicializarBienvenidaHero();
+  if (typeof inicializarLogin === "function") inicializarLogin();
   if (typeof inicializarMapaTienda === "function") inicializarMapaTienda();
   if (typeof inicializarContadoresNosotros === "function") inicializarContadoresNosotros();
   if (typeof inicializarBlogs === "function") inicializarBlogs();
-  
-  // Módulo de Contacto
-  inicializarFormularioContacto();
+  if (typeof inicializarFormularioContacto === "function") inicializarFormularioContacto();
 });

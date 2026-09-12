@@ -65,12 +65,46 @@ a:hover {
   font-size: 0.95rem;
   padding: 0.5rem 0.85rem !important;
   border-radius: var(--radius-sm);
-  transition: all var(--transition-normal);
+  position: relative;
+  transition: color var(--transition-normal), background-color var(--transition-normal), transform var(--transition-normal);
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover {
   color: var(--color-gold) !important;
   background-color: rgba(229, 169, 60, 0.08);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: var(--color-gold) !important;
+  background-color: rgba(229, 169, 60, 0.12);
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 8px rgba(229, 169, 60, 0.6);
+  animation: navIndicatorIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes navIndicatorIn {
+  from {
+    width: 0%;
+    left: 50%;
+    opacity: 0;
+  }
+  to {
+    width: 70%;
+    left: 15%;
+    opacity: 1;
+  }
 }
 
 /* Badge del Carrito en Navegación (RF-02) */
