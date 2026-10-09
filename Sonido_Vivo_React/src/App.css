@@ -1,184 +1,696 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
 }
 
-.hero {
+a {
+  color: var(--text-main);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+}
+
+a:hover {
+  color: var(--color-gold);
+}
+
+/* --- Barra de Navegación Principal (RF-01 y RF-02) --- */
+.navbar-sonido-vivo {
+  background-color: var(--bg-surface) !important;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.85rem 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand img {
+  height: 42px;
+  width: auto;
+  transition: transform var(--transition-normal);
+}
+
+.navbar-brand:hover img {
+  transform: scale(1.03);
+}
+
+.nav-link {
+  color: var(--text-main) !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: var(--radius-sm);
   position: relative;
+  transition: color var(--transition-normal), background-color var(--transition-normal), transform var(--transition-normal);
+}
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
+.nav-link:hover {
+  color: var(--color-gold) !important;
+  background-color: rgba(229, 169, 60, 0.08);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: var(--color-gold) !important;
+  background-color: rgba(229, 169, 60, 0.12);
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background-color: var(--color-gold);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 8px rgba(229, 169, 60, 0.6);
+  animation: navIndicatorIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes navIndicatorIn {
+  from {
+    width: 0%;
+    left: 50%;
+    opacity: 0;
   }
 
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
+  to {
+    width: 70%;
+    left: 15%;
+    opacity: 1;
   }
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
+/* Badge del Carrito en Navegación (RF-02) */
+.btn-carrito-nav {
+  position: relative;
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
 
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
+.btn-carrito-nav:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.badge-carrito {
+  background-color: var(--color-gold);
+  color: #111827;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+/* Botón de Acceso / Login en Nav */
+.btn-nav-login {
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+.btn-nav-login:hover {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+  color: #111827 !important;
+}
+
+/* Botón Toggler para Móvil */
+.navbar-toggler {
+  border: 1px solid var(--border-subtle);
+  padding: 0.4rem 0.6rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 2px var(--color-gold);
+}
+
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* --- Contenedor Principal (Main) --- */
+main {
+  flex: 1 0 auto;
+}
+
+/* --- Sección Hero y Bienvenida Interactiva (RF-04) --- */
+.hero-section {
+  background: radial-gradient(circle at 50% 20%, rgba(229, 169, 60, 0.08) 0%, rgba(17, 24, 39, 0) 70%), var(--bg-body);
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.badge-hero-pill {
+  display: inline-block;
+  background-color: var(--color-gold-soft);
+  color: var(--color-gold);
+  border: 1px solid rgba(229, 169, 60, 0.35);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+}
+
+.hero-titulo {
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.btn-hero-gold {
+  background-color: var(--color-gold);
+  color: #111827;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: var(--shadow-gold);
+  transition: all var(--transition-normal);
+}
+
+.btn-hero-gold:hover {
+  background-color: var(--color-gold-hover);
+  color: #111827;
+  transform: translateY(-2px);
+}
+
+.btn-bienvenida-mostrada {
+  background-color: var(--bg-surface-hover) !important;
+  color: var(--color-gold) !important;
+  border: 1px solid var(--color-gold) !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+
+.btn-hero-outline {
+  background-color: transparent;
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+}
+
+.btn-hero-outline:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background-color: rgba(229, 169, 60, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Caja de Mensaje de Bienvenida Dinámico (RF-04) */
+.alert-bienvenida {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--color-gold);
+  color: var(--text-main);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.98rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), var(--shadow-gold);
+  animation: fadeInDown 0.35s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+/* --- Pie de Página Institucional (RF-03) --- */
+.footer-sonido-vivo {
+  background-color: var(--bg-surface-alt);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 3rem 0 1.5rem;
+  margin-top: 4rem;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+.footer-sonido-vivo h5 {
+  color: var(--text-main);
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
 }
 
-#next-steps ul {
+.footer-sonido-vivo ul {
   list-style: none;
-  padding: 0;
+  padding-left: 0;
+}
+
+.footer-sonido-vivo ul li {
+  margin-bottom: 0.6rem;
+}
+
+.footer-sonido-vivo ul li a {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.footer-sonido-vivo ul li a:hover {
+  color: var(--color-gold);
+  padding-left: 4px;
+}
+
+.footer-badge-lutheria {
+  display: inline-block;
+  background-color: var(--color-gold-soft);
+  color: var(--color-gold);
+  border: 1px solid rgba(229, 169, 60, 0.3);
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(156, 163, 175, 0.1);
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA NOSOTROS
+   ========================================================================== */
+
+.hero-nosotros {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.nosotros-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.nosotros-pillar-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.nosotros-pillar-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+}
+
+.pillar-icon {
+  font-size: 2rem;
+}
+
+.border-gold-soft {
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+.border-bottom-subtle {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Cifras y Estadísticas */
+.bg-surface-alt {
+  background-color: var(--bg-surface-alt);
+}
+
+.stat-box {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Equipo */
+.card-equipo {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.card-equipo:hover {
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.avatar-wrapper {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto;
+  background-color: var(--bg-surface-alt);
+  border: 2px solid var(--color-gold);
+  border-radius: var(--radius-full);
   display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+  align-items: center;
+  justify-content: center;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.avatar-placeholder {
+  font-size: 2rem;
 }
 
-.ticks {
-  position: relative;
+/* Mapa Leaflet */
+.mapa-frame {
+  height: 380px;
   width: 100%;
+  border: 1px solid var(--border-subtle);
+  z-index: 1;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA BLOGS
+   ========================================================================== */
+
+.hero-blogs {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.input-blog-search {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.input-blog-search:focus {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--color-gold);
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(229, 169, 60, 0.25);
+}
+
+.btn-outline-gold {
+  color: var(--color-gold);
+  border-color: rgba(229, 169, 60, 0.4);
+}
+
+.btn-outline-gold:hover,
+.btn-outline-gold.active {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+  color: #111827;
+  font-weight: 600;
+}
+
+.card-blog-custom {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card-blog-custom:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+}
+
+.img-blog-cover {
+  height: 200px;
+  object-fit: cover;
+}
+
+.badge-blog-tag {
+  background-color: rgba(229, 169, 60, 0.15);
+  color: var(--color-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35em 0.7em;
+  border-radius: 50px;
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+.btn-link-gold {
+  color: var(--color-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-link-gold:hover {
+  color: var(--color-gold-hover);
+  text-decoration: underline !important;
+}
+
+.border-top-subtle {
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS: PÁGINA CONTACTO
+   ========================================================================== */
+
+.hero-contacto {
+  background: radial-gradient(circle at 50% 30%, rgba(229, 169, 60, 0.1) 0%, rgba(17, 24, 39, 0) 75%), var(--bg-body);
+}
+
+.card-contacto {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.input-contacto-custom {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--border-subtle);
+  color: #ffffff;
+}
+
+.input-contacto-custom:focus {
+  background-color: var(--bg-surface-alt);
+  border-color: var(--color-gold);
+  color: #ffffff;
+  box-shadow: 0 0 0 0.25rem rgba(229, 169, 60, 0.25);
+}
+
+.check-gold:checked {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+.info-card-contacto {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color var(--transition-normal);
+}
+
+.info-card-contacto:hover {
+  border-color: var(--color-gold);
+}
+
+.info-icon-wrapper {
+  font-size: 1.8rem;
+  background-color: rgba(229, 169, 60, 0.1);
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(229, 169, 60, 0.2);
+}
+
+.badge-lutheria-sm {
+  background-color: rgba(229, 169, 60, 0.15);
+  color: var(--color-gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25em 0.6em;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(229, 169, 60, 0.3);
+}
+
+/* Accordion FAQ */
+.accordion-custom .accordion-button:not(.collapsed) {
+  background-color: var(--bg-surface-alt);
+  color: var(--color-gold);
+  box-shadow: none;
+}
+
+.accordion-custom .accordion-button::after {
+  filter: invert(1);
+}
+
+/* ==========================================================================
+   ESTILOS DEL CARRITO DE COMPRAS (OFFCANVAS Y VISTA DEDICADA)
+   ========================================================================== */
+.drawer-carrito-sv {
+  background-color: var(--bg-surface) !important;
+  border-left: 1px solid var(--border-subtle);
+  width: 380px !important;
+  max-width: 90vw !important;
+}
+
+.card-carrito-drawer {
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+}
+
+.card-carrito-drawer:hover {
+  border-color: rgba(229, 169, 60, 0.4);
+}
+
+.carrito-img-mini {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  background-color: #0f172a;
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-cantidad {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+}
+
+.btn-cantidad:hover {
+  background-color: var(--color-gold);
+  color: #111827;
+  border-color: var(--color-gold);
+}
+
+.btn-eliminar-item {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--transition-normal);
+}
+
+.btn-eliminar-item:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Animación de pulso para el contador de carrito */
+.anim-badge-pulse {
+  animation: badgePulse 0.3s ease-in-out;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  50% {
+    transform: scale(1.35);
+    background-color: #fff;
+    color: #111;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  100% {
+    transform: scale(1);
   }
+}
+
+/* Toast flotante de adición al carrito */
+.sv-toast-carrito {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--bg-surface-alt);
+  color: var(--text-main);
+  border: 1px solid var(--color-gold);
+  box-shadow: var(--shadow-gold), var(--shadow-card);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  z-index: 1090;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.sv-toast-carrito.mostrar {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Tarjeta de Resumen en carrito.html */
+.card-resumen-compra {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.table-carrito {
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.table-carrito th {
+  background-color: var(--bg-surface-alt);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.table-carrito td {
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: transparent;
 }
