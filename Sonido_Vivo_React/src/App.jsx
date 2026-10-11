@@ -4,6 +4,8 @@ import { Inicio } from './pages/Inicio';
 import { Nosotros } from './pages/Nosotros';
 import { Catalogo } from './pages/Catalogo';
 import { NotFound } from './pages/NotFound';
+import { Blogs } from './pages/Blogs';
+import { Contacto } from './pages/Contacto';
 
 export default function App() {
   return (
@@ -15,6 +17,8 @@ export default function App() {
           <Route index element={<Inicio />} />
           <Route path="nosotros" element={<Nosotros />} />
           <Route path="Catalogo" element={<Catalogo />} />
+          <Route path="Blogs" element={<Blogs />} />
+          <Route path="Contacto" element={<Contacto />} />
 
           {/* '*' captura cualquier otra URL no registrada y muestra el error 404 */}
           <Route path="*" element={<NotFound />} />

@@ -46,6 +46,28 @@ export function Navbar() {
                                 Nosotros
                             </NavLink>
                         </li>
+
+                        <li className="nav-item">
+                            <NavLink
+                                to="/Blogs"
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Blogs
+                            </NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink
+                                to="/Contacto"
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Contacto
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
             </nav>
