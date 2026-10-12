@@ -27,7 +27,7 @@ export function Navbar() {
 
                         <li className="nav-item">
                             <NavLink
-                                to="/Catalogo"
+                                to="Catalogo"
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? 'active' : ''}`
                                 }
@@ -38,7 +38,7 @@ export function Navbar() {
 
                         <li className="nav-item">
                             <NavLink
-                                to="/Nosotros"
+                                to="Nosotros"
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? 'active' : ''}`
                                 }
@@ -49,7 +49,7 @@ export function Navbar() {
 
                         <li className="nav-item">
                             <NavLink
-                                to="/Blogs"
+                                to="Blogs"
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? 'active' : ''}`
                                 }
@@ -60,7 +60,7 @@ export function Navbar() {
 
                         <li className="nav-item">
                             <NavLink
-                                to="/Contacto"
+                                to="Contacto"
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? 'active' : ''}`
                                 }
