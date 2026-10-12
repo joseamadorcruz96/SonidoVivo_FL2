@@ -11,7 +11,7 @@ export function Navbar() {
                     {/* Logotipo Oficial Sonido Vivo */}
                     <div className="navbar-brand">
                         <img
-                            src="assets/logo.svg"
+                            src="src/assets/logo.svg"
                             alt="Sonido Vivo - Instrumentos & Audio"
                         />
                     </div>
