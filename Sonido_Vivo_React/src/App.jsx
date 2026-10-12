@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
 import { Inicio } from './pages/Inicio';
 import { Nosotros } from './pages/Nosotros';
-import { Catalogo } from './pages/Catalogo';
+import { Catalogo } from './pages/tienda/Catalogo';
 import { Blogs } from './pages/Blogs';
 import { Contacto } from './pages/Contacto';
 import { NotFound } from './pages/NotFound';
