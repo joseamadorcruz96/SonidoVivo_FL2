@@ -694,3 +694,14 @@ html {
   border-bottom: 1px solid var(--border-subtle);
   background-color: transparent;
 }
+
+.accordion-custom .accordion-item {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.accordion-custom .accordion-button {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+}
