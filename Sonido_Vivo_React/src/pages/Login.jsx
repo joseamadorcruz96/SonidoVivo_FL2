@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUsuario } from '../services/db';
+import { loginUsuario, usuariosDb } from '../services/db';
+import { useAuth } from '../Context/AuthContext';
 
 export function Login() {
     const [email, setEmail] = useState('');
@@ -8,33 +9,46 @@ export function Login() {
     const [error, setError] = useState('');
     
     const navigate = useNavigate();
+    const { iniciarSesion } = useAuth();
+
+    const autenticarYRedirigir = (usuario) => {
+        iniciarSesion(usuario);
+        const rol = (usuario.rol || '').toLowerCase();
+        if (rol === 'admin' || rol === 'administrador') {
+            navigate('/admin'); 
+        } else if (rol === 'vendedor') {
+            navigate('/vendedor');
+        } else {
+            navigate('/');
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
         
-        // Llamamos a la función de db.js
+        // Validamos contra db.js
         const usuario = loginUsuario(email, password);
 
         if (usuario) {
             setError('');
-            
-            // Redirigimos dependiendo del rol del usuario
-            if (usuario.rol === 'admin') {
-                // Redirigir al dashboard administrativo (según rúbrica)[cite: 23]
-                window.location.href = '/admin'; 
-            } else if (usuario.rol === 'vendedor') {
-                window.location.href = '/vendedor';
-            } else {
-                window.location.href = '/'; // El cliente va al inicio
-            }
+            autenticarYRedirigir(usuario);
         } else {
             setError('Correo o contraseña incorrectos.');
         }
     };
 
+    // Accesos rápidos para facilitar pruebas de evaluación
+    const loginRapido = (rolObjetivo) => {
+        const usuarioDemo = usuariosDb.find(u => u.rol.toLowerCase() === rolObjetivo.toLowerCase());
+        if (usuarioDemo) {
+            setError('');
+            autenticarYRedirigir(usuarioDemo);
+        }
+    };
+
     return (
         <section className="d-flex align-items-center justify-content-center py-5" style={{ minHeight: '80vh' }}>
-            <div className="card shadow-lg" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', width: '100%', maxWidth: '400px', borderRadius: 'var(--radius-lg)' }}>
+            <div className="card shadow-lg" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', width: '100%', maxWidth: '420px', borderRadius: 'var(--radius-lg)' }}>
                 <div className="card-body p-4 p-md-5">
                     
                     <div className="text-center mb-4">
@@ -75,10 +89,46 @@ export function Login() {
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-hero-gold w-100 mb-3">
+                        <button type="submit" className="btn btn-hero-gold w-100 mb-3 fw-bold">
                             Ingresar
                         </button>
                     </form>
+
+                    {/* Accesos rápidos para evaluación */}
+                    <div className="mt-4 pt-3 border-top-subtle text-center">
+                        <p className="small text-secondary mb-2">
+                            ⚡ Accesos rápidos para probar roles:
+                        </p>
+                        <div className="d-flex flex-wrap gap-2 justify-content-center">
+                            <button
+                                type="button"
+                                onClick={() => loginRapido('admin')}
+                                className="btn btn-sm btn-outline-warning"
+                            >
+                                Admin
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => loginRapido('vendedor')}
+                                className="btn btn-sm btn-outline-info"
+                            >
+                                Vendedor
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => loginRapido('cliente')}
+                                className="btn btn-sm btn-outline-light"
+                            >
+                                Cliente
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-3">
+                        <Link to="/" className="text-secondary small">
+                            &larr; Volver al Inicio
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>

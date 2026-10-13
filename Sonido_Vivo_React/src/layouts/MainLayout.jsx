@@ -1,11 +1,14 @@
 import { Outlet } from 'react-router-dom';
 import { Navbar } from '../components/Navbarr';
+import { PiePagina } from '../components/PiePagina';
 
 export function MainLayout() {
     return (
         <div>
             {/* 1. Menú persistente superior */}
-            <Navbar />
+            <header>
+                <Navbar />
+            </header>
 
             {/* 2. El hueco donde entrarán Home, About o Products según la URL */}
             <main>
@@ -14,7 +17,7 @@ export function MainLayout() {
 
             {/* 3. Pie de página persistente */}
             <footer>
-                © Guía Práctica de React Router
+                <PiePagina />
             </footer>
         </div>
     );
