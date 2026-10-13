@@ -7,7 +7,7 @@ import { Catalogo } from './pages/tienda/Catalogo';
 import { Carrito } from './pages/tienda/Carrito';
 import { Blogs } from './pages/Blogs';
 import { Contacto } from './pages/Contacto';
-import { Login } from './pages/Login';
+import { Login } from './pages/Login_Beta';
 import { NotFound } from './pages/NotFound';
 import { AuthProvider } from './Context/AuthContext';
 import { CarritoProvider } from './Context/CarritoContext';
