@@ -4,19 +4,41 @@ import { Inicio } from './pages/Inicio';
 import { Nosotros } from './pages/Nosotros';
 import { Catalogo } from './pages/Catalogo';
 import { NotFound } from './pages/NotFound';
+import { Login } from './pages/Login';
+
+// Importamos el guardia y las nuevas vistas
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { VendedorDashboard } from './pages/VendedorDashboard';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta padre que envuelve la estructura con MainLayout */}
         <Route path="/" element={<MainLayout />}>
-          {/* 'index' indica que es la página mostrada en la raíz "/" */}
           <Route index element={<Inicio />} />
           <Route path="nosotros" element={<Nosotros />} />
           <Route path="Catalogo" element={<Catalogo />} />
+          <Route path="login" element={<Login />} />
 
-          {/* '*' captura cualquier otra URL no registrada y muestra el error 404 */}
+          {/* RUTAS PROTEGIDAS POR ROL */}
+          <Route 
+            path="admin" 
+            element={
+              <ProtectedRoute rolPermitido="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="vendedor" 
+            element={
+              <ProtectedRoute rolPermitido="vendedor">
+                <VendedorDashboard />
+              </ProtectedRoute>
+            } 
+          />
+
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
