@@ -1,4 +1,6 @@
 import { NavLink } from 'react-router-dom';
+import { BotonCarritoNav } from './BotonCarritoNav';
+import { MenuUsuarioNav } from './MenuUsuarioNav';
 
 export function Navbar() {
     return (
@@ -68,6 +70,10 @@ export function Navbar() {
                         </NavLink>
                     </li>
                 </ul>
+                <div className="d-flex align-items-center gap-3">
+                    <BotonCarritoNav />
+                    <MenuUsuarioNav />
+                </div>
             </div>
         </nav>
     );
