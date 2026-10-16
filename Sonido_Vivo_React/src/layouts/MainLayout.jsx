@@ -6,7 +6,7 @@ export function MainLayout() {
     return (
         <div>
             {/* 1. Menú persistente superior */}
-            <header>
+            <header className="encabezado-tienda">
                 <Navbar />
             </header>
 

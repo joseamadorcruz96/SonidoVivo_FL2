@@ -20,14 +20,17 @@ a:hover {
 }
 
 /* --- Barra de Navegación Principal (RF-01 y RF-02) --- */
+.encabezado-tienda {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .navbar-sonido-vivo {
   background-color: var(--bg-surface) !important;
   border-bottom: 1px solid var(--border-subtle);
   padding: 0.85rem 1rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .navbar-brand img {
