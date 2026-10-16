@@ -3,84 +3,73 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { regionesYComunas } from '../../data/regionesComunas';
 import { registrarUsuario } from '../../services/db';
+import { useForm } from '../../hooks/useForm';
 import { validarRun, validarEmail, validarPassword, validarTexto } from '../../utils/validaciones';
+
+const valoresIniciales = {
+    run: '',
+    nombre: '',
+    apellidos: '',
+    email: '',
+    fechaNacimiento: '',
+    region: '',
+    comuna: '',
+    direccion: '',
+    password: '',
+    confirmar: ''
+};
 
 export function Registro() {
     const navigate = useNavigate();
-
-    // 1. Estado simple del formulario
-    const [form, setForm] = useState({
-        run: '',
-        nombre: '',
-        apellidos: '',
-        email: '',
-        fechaNacimiento: '',
-        region: '',
-        comuna: '',
-        direccion: '',
-        password: '',
-        confirmar: ''
-    });
-
-    const [errores, setErrores] = useState({});
+    const { datos, setDatos, errores, setErrores, handleChange } = useForm(valoresIniciales);
     const [exito, setExito] = useState(false);
 
-    // 2. Comunas dinámicas según la región elegida
-    const regionActiva = regionesYComunas.find(r => r.region === form.region);
+    // Comunas dinámicas según la región elegida
+    const regionActiva = regionesYComunas.find(r => r.region === datos.region);
     const comunas = regionActiva ? regionActiva.comunas : [];
 
-    // 3. Manejador de cambio único para todos los campos
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm(prev => ({
-            ...prev,
-            [name]: value,
-            ...(name === 'region' ? { comuna: '' } : {}) // limpia comuna si cambia región
-        }));
-
-        if (errores[name]) {
-            setErrores(prev => ({ ...prev, [name]: '' }));
+    // Si cambia la región, aprovechamos handleChange y limpiamos la comuna
+    const manejarCambio = (e) => {
+        handleChange(e);
+        if (e.target.name === 'region') {
+            setDatos(prev => ({ ...prev, comuna: '' }));
         }
     };
 
-    // 4. Manejador de envío con validaciones directas
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validamos todos los campos en un solo objeto limpio
         const nuevosErrores = {
-            run: validarRun(form.run),
-            nombre: validarTexto(form.nombre, 'El nombre', 50),
-            apellidos: validarTexto(form.apellidos, 'Los apellidos', 100),
-            email: validarEmail(form.email),
-            region: !form.region ? 'Selecciona una región' : '',
-            comuna: !form.comuna ? 'Selecciona una comuna' : '',
-            direccion: validarTexto(form.direccion, 'La dirección', 300),
-            password: validarPassword(form.password),
-            confirmar: form.password !== form.confirmar ? 'Las contraseñas no coinciden' : ''
+            run: validarRun(datos.run),
+            nombre: validarTexto(datos.nombre, 'El nombre', 50),
+            apellidos: validarTexto(datos.apellidos, 'Los apellidos', 100),
+            email: validarEmail(datos.email),
+            region: !datos.region ? 'Selecciona una región' : '',
+            comuna: !datos.comuna ? 'Selecciona una comuna' : '',
+            direccion: validarTexto(datos.direccion, 'La dirección', 300),
+            password: validarPassword(datos.password),
+            confirmar: datos.password !== datos.confirmar ? 'Las contraseñas no coinciden' : ''
         };
 
-        // Si alguno tiene mensaje de error, no continuamos
         if (Object.values(nuevosErrores).some(Boolean)) {
             setErrores(nuevosErrores);
             return;
         }
 
         try {
-            registrarUsuario({ ...form, rol: 'cliente' });
+            registrarUsuario({ ...datos, rol: 'cliente' });
             setExito(true);
         } catch (err) {
             setErrores({ general: err.message });
         }
     };
 
-    // Vista de confirmación sencilla
     if (exito) {
         return (
             <div className="container py-5 text-center" style={{ maxWidth: '500px' }}>
                 <div className="card bg-dark text-light p-4 shadow">
                     <h2 className="text-gold mb-3">¡Registro Exitoso!</h2>
-                    <p className="text-secondary">Tu cuenta con <strong>{form.email}</strong> fue creada correctamente.</p>
+                    <p className="text-secondary">Tu cuenta con <strong>{datos.email}</strong> fue creada correctamente.</p>
                     <button onClick={() => navigate('/login')} className="btn btn-hero-gold fw-bold mt-2">
                         Ir a Iniciar Sesión
                     </button>
@@ -105,8 +94,8 @@ export function Registro() {
                         <input
                             name="run"
                             className="form-control"
-                            value={form.run}
-                            onChange={handleChange}
+                            value={datos.run}
+                            onChange={manejarCambio}
                             placeholder="Ej: 19011022K"
                         />
                     </CampoFormulario>
@@ -118,8 +107,8 @@ export function Registro() {
                                 <input
                                     name="nombre"
                                     className="form-control"
-                                    value={form.nombre}
-                                    onChange={handleChange}
+                                    value={datos.nombre}
+                                    onChange={manejarCambio}
                                     placeholder="Matías"
                                 />
                             </CampoFormulario>
@@ -129,8 +118,8 @@ export function Registro() {
                                 <input
                                     name="apellidos"
                                     className="form-control"
-                                    value={form.apellidos}
-                                    onChange={handleChange}
+                                    value={datos.apellidos}
+                                    onChange={manejarCambio}
                                     placeholder="Silva Rojas"
                                 />
                             </CampoFormulario>
@@ -145,8 +134,8 @@ export function Registro() {
                                     name="email"
                                     type="email"
                                     className="form-control"
-                                    value={form.email}
-                                    onChange={handleChange}
+                                    value={datos.email}
+                                    onChange={manejarCambio}
                                     placeholder="@duoc.cl o @gmail.com"
                                 />
                             </CampoFormulario>
@@ -157,8 +146,8 @@ export function Registro() {
                                     name="fechaNacimiento"
                                     type="date"
                                     className="form-control"
-                                    value={form.fechaNacimiento}
-                                    onChange={handleChange}
+                                    value={datos.fechaNacimiento}
+                                    onChange={manejarCambio}
                                 />
                             </CampoFormulario>
                         </div>
@@ -168,7 +157,7 @@ export function Registro() {
                     <div className="row">
                         <div className="col-md-6">
                             <CampoFormulario label="Región" error={errores.region} obligatorio>
-                                <select name="region" className="form-select" value={form.region} onChange={handleChange}>
+                                <select name="region" className="form-select" value={datos.region} onChange={manejarCambio}>
                                     <option value="">Selecciona región...</option>
                                     {regionesYComunas.map(r => (
                                         <option key={r.region} value={r.region}>{r.region}</option>
@@ -181,11 +170,11 @@ export function Registro() {
                                 <select
                                     name="comuna"
                                     className="form-select"
-                                    value={form.comuna}
-                                    onChange={handleChange}
-                                    disabled={!form.region}
+                                    value={datos.comuna}
+                                    onChange={manejarCambio}
+                                    disabled={!datos.region}
                                 >
-                                    <option value="">{form.region ? 'Selecciona comuna...' : 'Elige región primero'}</option>
+                                    <option value="">{datos.region ? 'Selecciona comuna...' : 'Elige región primero'}</option>
                                     {comunas.map(c => (
                                         <option key={c} value={c}>{c}</option>
                                     ))}
@@ -199,8 +188,8 @@ export function Registro() {
                         <input
                             name="direccion"
                             className="form-control"
-                            value={form.direccion}
-                            onChange={handleChange}
+                            value={datos.direccion}
+                            onChange={manejarCambio}
                             placeholder="Calle 123, Depto 4"
                         />
                     </CampoFormulario>
@@ -213,8 +202,8 @@ export function Registro() {
                                     name="password"
                                     type="password"
                                     className="form-control"
-                                    value={form.password}
-                                    onChange={handleChange}
+                                    value={datos.password}
+                                    onChange={manejarCambio}
                                     placeholder="******"
                                 />
                             </CampoFormulario>
@@ -225,8 +214,8 @@ export function Registro() {
                                     name="confirmar"
                                     type="password"
                                     className="form-control"
-                                    value={form.confirmar}
-                                    onChange={handleChange}
+                                    value={datos.confirmar}
+                                    onChange={manejarCambio}
                                     placeholder="******"
                                 />
                             </CampoFormulario>

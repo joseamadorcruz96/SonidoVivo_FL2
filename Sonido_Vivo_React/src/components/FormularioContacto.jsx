@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CampoFormulario } from './CampoFormulario';
+import { useForm } from '../hooks/useForm';
 import { validarEmail, validarTexto } from '../utils/validaciones';
 
 const datosIniciales = {
@@ -12,24 +13,10 @@ const datosIniciales = {
 };
 
 export function FormularioContacto() {
-    const [datos, setDatos] = useState(datosIniciales);
-    const [errores, setErrores] = useState({});
+    // Usamos el hook useForm: nos entrega los datos, errores, handleChange y resetForm
+    const { datos, errores, setErrores, handleChange, resetForm } = useForm(datosIniciales);
     const [enviado, setEnviado] = useState(false);
 
-    // 1. Manejador de cambio único
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setDatos(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-
-        if (errores[name]) {
-            setErrores(prev => ({ ...prev, [name]: '' }));
-        }
-    };
-
-    // 2. Manejador de envío con validaciones limpias
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -47,8 +34,7 @@ export function FormularioContacto() {
         }
 
         setEnviado(true);
-        setDatos(datosIniciales);
-        setErrores({});
+        resetForm();
     };
 
     return (
@@ -65,7 +51,6 @@ export function FormularioContacto() {
             )}
 
             <form onSubmit={handleSubmit} noValidate>
-                {/* Nombre y Correo en fila de 2 columnas */}
                 <div className="row">
                     <div className="col-md-6">
                         <CampoFormulario label="Nombre Completo" error={errores.nombre} obligatorio>
@@ -93,7 +78,6 @@ export function FormularioContacto() {
                     </div>
                 </div>
 
-                {/* Teléfono y Motivo */}
                 <div className="row">
                     <div className="col-md-6">
                         <CampoFormulario label="Teléfono / WhatsApp">
@@ -126,7 +110,6 @@ export function FormularioContacto() {
                     </div>
                 </div>
 
-                {/* Mensaje */}
                 <CampoFormulario label="Mensaje" error={errores.mensaje} obligatorio>
                     <textarea
                         name="mensaje"
@@ -138,7 +121,6 @@ export function FormularioContacto() {
                     />
                 </CampoFormulario>
 
-                {/* Checkbox de términos */}
                 <div className="form-check mb-3">
                     <input
                         id="terminos"

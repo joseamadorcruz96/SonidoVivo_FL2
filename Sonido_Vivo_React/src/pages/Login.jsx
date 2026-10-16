@@ -3,22 +3,16 @@ import { useNavigate, Link } from 'react-router-dom';
 import { loginUsuario, usuariosDb } from '../services/db';
 import { useAuth } from '../Context/AuthContext';
 import { CampoFormulario } from '../components/CampoFormulario';
+import { useForm } from '../hooks/useForm';
 import { validarEmail, validarPassword } from '../utils/validaciones';
 
 export function Login() {
     const navigate = useNavigate();
     const { iniciarSesion } = useAuth();
 
-    // 1. Estado simple del formulario
-    const [form, setForm] = useState({ email: '', password: '' });
-    const [errores, setErrores] = useState({});
+    // Usamos el hook useForm
+    const { datos, errores, setErrores, handleChange } = useForm({ email: '', password: '' });
     const [errorGeneral, setErrorGeneral] = useState('');
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
-        if (errores[name]) setErrores(prev => ({ ...prev, [name]: '' }));
-    };
 
     const autenticar = (usuario) => {
         iniciarSesion(usuario);
@@ -30,10 +24,9 @@ export function Login() {
         e.preventDefault();
         setErrorGeneral('');
 
-        // Validamos usando las utilidades centralizadas
         const nuevosErrores = {
-            email: validarEmail(form.email),
-            password: validarPassword(form.password)
+            email: validarEmail(datos.email),
+            password: validarPassword(datos.password)
         };
 
         if (Object.values(nuevosErrores).some(Boolean)) {
@@ -41,7 +34,7 @@ export function Login() {
             return;
         }
 
-        const usuario = loginUsuario(form.email, form.password);
+        const usuario = loginUsuario(datos.email, datos.password);
         if (usuario) {
             autenticar(usuario);
         } else {
@@ -65,7 +58,7 @@ export function Login() {
                             name="email"
                             type="email"
                             className="form-control"
-                            value={form.email}
+                            value={datos.email}
                             onChange={handleChange}
                             placeholder="ejemplo@gmail.com / @duoc.cl"
                         />
@@ -76,7 +69,7 @@ export function Login() {
                             name="password"
                             type="password"
                             className="form-control"
-                            value={form.password}
+                            value={datos.password}
                             onChange={handleChange}
                             placeholder="Entre 4 y 10 caracteres"
                         />
