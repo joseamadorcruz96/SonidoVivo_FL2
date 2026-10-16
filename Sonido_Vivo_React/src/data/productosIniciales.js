@@ -62,7 +62,7 @@ export const productosIniciales = [
     stock: 5,
     stockCritico: 2,
     descripcion: "Configuración versátil de pastillas PJ, mástil delgado y escala estándar de 34''.",
-    imagen: "https://images.unsplash.com/photo-1520523839898-5071284d7c0f?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1556449895-a33c9dfd3824?w=600&auto=format&fit=crop&q=80",
     destacado: true,
   },
   {
@@ -75,7 +75,7 @@ export const productosIniciales = [
     stock: 2,
     stockCritico: 1,
     descripcion: "Cuerpo de aliso, 2 pastillas Alnico V Jazz single-coil. Definición y pegada profesional.",
-    imagen: "https://images.unsplash.com/photo-1556449895-a33c9dfd3824?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1520523839898-5071284d7c0f?w=600&auto=format&fit=crop&q=80",
     destacado: false,
   },
   {
@@ -114,7 +114,7 @@ export const productosIniciales = [
     stock: 4,
     stockCritico: 2,
     descripcion: "61 teclas sensibles al tacto, 622 voces de alta calidad, función de lecciones y USB to Host.",
-    imagen: "https://images.unsplash.com/photo-1520523839898-5071284d7c0f?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1552422535-c45813c61732?w=600&auto=format&fit=crop&q=80",
     destacado: true,
   },
   {
@@ -153,7 +153,7 @@ export const productosIniciales = [
     stock: 25,
     stockCritico: 5,
     descripcion: "Juego de 6 cuerdas niqueladas para guitarra eléctrica. Calibre ligero de alta duración.",
-    imagen: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80",
     destacado: false,
   },
 ];

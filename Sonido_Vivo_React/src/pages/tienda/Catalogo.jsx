@@ -3,12 +3,22 @@ import { Producto } from '../../components/Producto';
 import { productosIniciales } from '../../data/productosIniciales';
 import { useCarrito } from '../../Context/CarritoContext';
 
-// 1. Carga productos de LocalStorage. Si no hay nada, guarda y devuelve los iniciales.
+// 1. Carga productos de LocalStorage y asegura que las fotos base estén actualizadas.
 export function cargarProductosDesdeLocalStorage() {
   const guardados = localStorage.getItem('sv_productos');
 
   if (guardados) {
-    return JSON.parse(guardados);
+    try {
+      const lista = JSON.parse(guardados);
+      const sincronizados = lista.map((p) => {
+        const original = productosIniciales.find((init) => init.codigo === p.codigo);
+        return original ? { ...p, imagen: original.imagen } : p;
+      });
+      localStorage.setItem('sv_productos', JSON.stringify(sincronizados));
+      return sincronizados;
+    } catch (e) {
+      console.warn('Error al leer productos de LocalStorage, restaurando iniciales', e);
+    }
   }
 
   localStorage.setItem('sv_productos', JSON.stringify(productosIniciales));

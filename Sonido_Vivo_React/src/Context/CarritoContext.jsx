@@ -14,9 +14,46 @@ export function CarritoProvider({ children }) {
         localStorage.setItem('sv_carrito', JSON.stringify(carrito));
     }, [carrito]);
 
-    // Agregar producto
-    function agregarAlCarrito(producto) {
-        setCarrito(prev => [...prev, producto]);
+    // Agregar producto (soporta cantidad opcional)
+    function agregarAlCarrito(producto, cantidad = 1) {
+        const cantidadNumerica = Math.max(1, Number(cantidad) || 1);
+
+        setCarrito(prev => {
+            const index = prev.findIndex(item => item.codigo === producto.codigo);
+
+            if (index !== -1) {
+                const copia = [...prev];
+                const cantidadActual = Number(copia[index].cantidad) || 1;
+                const nuevoTotal = cantidadActual + cantidadNumerica;
+                
+                // Si el producto define stock, no permitir sobrepasarlo
+                const limiteStock = producto.stock || 999;
+                copia[index] = {
+                    ...copia[index],
+                    cantidad: Math.min(nuevoTotal, limiteStock)
+                };
+                return copia;
+            }
+
+            return [...prev, { ...producto, cantidad: cantidadNumerica }];
+        });
+    }
+
+    // Cambiar cantidad directamente (+1 / -1 o nuevo valor)
+    function cambiarCantidad(codigo, nuevaCantidad) {
+        const valor = Number(nuevaCantidad);
+        if (valor <= 0) {
+            quitarDelCarrito(codigo);
+            return;
+        }
+
+        setCarrito(prev => prev.map(item => {
+            if (item.codigo === codigo) {
+                const limiteStock = item.stock || 999;
+                return { ...item, cantidad: Math.min(valor, limiteStock) };
+            }
+            return item;
+        }));
     }
 
     // Quitar por código SKU
@@ -29,15 +66,19 @@ export function CarritoProvider({ children }) {
         setCarrito([]);
     }
 
-    const cantidadTotal = carrito.length;
+    // Totales calculados centralizadamente
+    const cantidadTotal = carrito.reduce((acc, item) => acc + (Number(item.cantidad) || 1), 0);
+    const totalPagar = carrito.reduce((acc, item) => acc + (Number(item.precio || 0) * (Number(item.cantidad) || 1)), 0);
 
     return (
         <CarritoContext.Provider value={{
             carrito,
             agregarAlCarrito,
+            cambiarCantidad,
             quitarDelCarrito,
             vaciarCarrito,
-            cantidadTotal
+            cantidadTotal,
+            totalPagar
         }}>
             {children}
         </CarritoContext.Provider>

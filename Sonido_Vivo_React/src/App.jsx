@@ -16,6 +16,7 @@ import { Catalogo } from './pages/tienda/Catalogo';
 import { Carrito } from './pages/tienda/Carrito';
 import { Blogs } from './pages/tienda/Blogs';
 import { Contacto } from './pages/tienda/Contacto';
+import { DetalleProducto } from './pages/tienda/DetalleProducto';
 import { Login } from './pages/Login';
 import { Registro } from './pages/tienda/Registro';
 import { NotFound } from './pages/NotFound';
@@ -37,6 +38,7 @@ export default function App() {
               <Route index element={<Inicio />} />
               <Route path="nosotros" element={<Nosotros />} />
               <Route path="Catalogo" element={<Catalogo />} />
+              <Route path="producto/:codigo" element={<DetalleProducto />} />
               <Route path="Carrito" element={<Carrito />} />
               <Route path="Blogs" element={<Blogs />} />
               <Route path="Contacto" element={<Contacto />} />

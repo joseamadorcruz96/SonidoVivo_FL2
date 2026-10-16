@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { productosIniciales } from '../../data/productosIniciales';
 import { useForm } from '../../hooks/useForm';
 import { CampoFormulario } from '../../components/CampoFormulario';
+import { BadgeStock } from '../../components/BadgeStock';
 
 const valoresInicialesForm = {
     codigo: '',
@@ -139,9 +140,7 @@ export function AdminProductos() {
                                     ${Number(prod.precio).toLocaleString('es-CL')}
                                 </td>
                                 <td>
-                                    <span className={`badge ${prod.stock > 0 ? 'bg-success' : 'bg-danger'}`}>
-                                        {prod.stock > 0 ? prod.stock : 'Agotado'}
-                                    </span>
+                                    <BadgeStock stock={prod.stock} stockCritico={prod.stockCritico} />
                                 </td>
                                 <td className="text-center">
                                     <button 
