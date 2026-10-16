@@ -7,22 +7,22 @@ import { CarritoProvider } from './Context/CarritoContext';
 // --- Layouts y Guardias ---
 import { MainLayout } from './layouts/MainLayout';
 import { AdminLayout } from './layouts/AdminLayout';
-import { ProtectedRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from './Context/ProtectedRoute';
 
 // --- Páginas Públicas ---
-import { Inicio } from './pages/Inicio';
-import { Nosotros } from './pages/Nosotros';
+import { Inicio } from './pages/tienda/Inicio';
+import { Nosotros } from './pages/tienda/Nosotros';
 import { Catalogo } from './pages/tienda/Catalogo';
 import { Carrito } from './pages/tienda/Carrito';
-import { Blogs } from './pages/Blogs';
-import { Contacto } from './pages/Contacto';
+import { Blogs } from './pages/tienda/Blogs';
+import { Contacto } from './pages/tienda/Contacto';
 import { Login } from './pages/Login';
 import { NotFound } from './pages/NotFound';
 
 // --- Páginas Protegidas por Rol ---
-import { AdminDashboard } from './pages/AdminDashboard';
-import { AdminProductos } from './pages/AdminProductos';
-import { VendedorDashboard } from './pages/VendedorDashboard';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminProductos } from './pages/admin/AdminProductos';
+import { VendedorDashboard } from './pages/admin/VendedorDashboard';
 
 export default function App() {
   return (
