@@ -31,16 +31,16 @@ export function Inicio() {
                 <div className="d-flex justify-content-center gap-3 flex-wrap">
                     <Link 
                         to="/catalogo" 
-                        className="btn btn-lg fw-bold px-5 py-3 shadow-sm" 
-                        style={{ backgroundColor: 'var(--color-gold)', color: '#000', borderRadius: '8px' }}
+                        className="btn btn-lg fw-bold px-4 py-3 shadow-sm d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: 'var(--color-gold)', color: '#000', borderRadius: '8px', width: '290px', maxWidth: '100%' }}
                     >
                         🎸 Explorar Catálogo
                     </Link>
                     
                     <Link 
                         to="/login" 
-                        className="btn btn-lg btn-outline-light px-5 py-3"
-                        style={{ borderRadius: '8px' }}
+                        className="btn btn-lg btn-outline-light px-4 py-3 d-flex align-items-center justify-content-center"
+                        style={{ borderRadius: '8px', width: '290px', maxWidth: '100%' }}
                     >
                         Iniciar Sesión
                     </Link>
