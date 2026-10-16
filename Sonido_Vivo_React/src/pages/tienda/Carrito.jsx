@@ -1,6 +1,7 @@
 import { useCarrito } from '../../Context/CarritoContext';
 import { CarritoVacio } from '../../components/carrito/CarritoVacio';
 import { FilaItemCarrito } from '../../components/carrito/FilaItemCarrito';
+import { TarjetaItemCarrito } from '../../components/carrito/TarjetaItemCarrito';
 import { ResumenPedido } from '../../components/carrito/ResumenPedido';
 
 export function Carrito() {
@@ -13,12 +14,12 @@ export function Carrito() {
     totalPagar,
   } = useCarrito();
 
-  // 1. Pantalla modular cuando no hay productos
+  // Pantalla modular cuando no hay productos
   if (carrito.length === 0) {
     return <CarritoVacio />;
   }
 
-  // 2. Vista con tabla y resumen modular
+  // Vista con diseño responsivo móvil (tarjetas) y escritorio (tabla)
   return (
     <div className="container py-5">
       <div className="text-center mb-5">
@@ -32,9 +33,22 @@ export function Carrito() {
       </div>
 
       <div className="row g-4">
-        {/* Columna Izquierda: Tabla de productos */}
+        {/* Columna Izquierda: Tarjetas en móvil y tabla en escritorio */}
         <div className="col-12 col-lg-8">
-          <div className="table-responsive bg-surface rounded-3 p-3 border-subtle shadow-sm">
+          {/* Vista Móvil: Tarjetas compactas dentro de márgenes sin scroll horizontal */}
+          <div className="d-block d-md-none">
+            {carrito.map((item) => (
+              <TarjetaItemCarrito
+                key={item.codigo}
+                item={item}
+                onCambiarCantidad={cambiarCantidad}
+                onQuitar={quitarDelCarrito}
+              />
+            ))}
+          </div>
+
+          {/* Vista Escritorio: Tabla completa */}
+          <div className="d-none d-md-block table-responsive bg-surface rounded-3 p-3 border-subtle shadow-sm">
             <table className="table table-dark table-hover table-carrito align-middle mb-0">
               <thead>
                 <tr>

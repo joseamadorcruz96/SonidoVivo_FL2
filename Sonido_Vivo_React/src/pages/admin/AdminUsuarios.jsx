@@ -53,8 +53,59 @@ export function AdminUsuarios() {
                 </div>
             </div>
 
-            <div className="table-responsive bg-dark rounded shadow-sm p-3">
-                <table className="table table-dark table-hover align-middle mb-0" style={{ minWidth: '680px' }}>
+            {/* Vista Móvil: Tarjetas individuales dentro de márgenes sin scroll horizontal */}
+            <div className="d-block d-md-none">
+                <div className="d-flex flex-column gap-3">
+                    {usuariosFiltrados.map((user) => (
+                        <div key={user.id} className="bg-dark rounded p-3 border border-secondary border-opacity-50 shadow-sm">
+                            <div className="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                <div>
+                                    <strong className="d-block text-light fs-6">{user.nombre} {user.apellidos || ''}</strong>
+                                    <span className="badge bg-secondary mt-1">{user.run || 'Sin RUN'}</span>
+                                </div>
+                                <button
+                                    className="btn btn-sm btn-outline-danger border-0 p-1 lh-1"
+                                    title="Eliminar usuario"
+                                    onClick={() => eliminarUsuario(user.id, user.email)}
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+
+                            <div className="text-info small text-break mb-1">
+                                ✉️ {user.email}
+                            </div>
+                            <div className="text-secondary small mb-3">
+                                📍 {user.comuna ? `${user.comuna}, ${user.region}` : 'Sin registrar'}
+                            </div>
+
+                            <div className="d-flex align-items-center justify-content-between pt-2 border-top border-secondary border-opacity-25">
+                                <label className="small text-secondary mb-0 fw-semibold">Rol Asignado:</label>
+                                <select
+                                    className={`form-select form-select-sm fw-bold w-auto ${
+                                        user.rol === 'admin' ? 'bg-danger text-white' : 
+                                        user.rol === 'vendedor' ? 'bg-warning text-dark' : 'bg-secondary text-white'
+                                    }`}
+                                    value={user.rol.toLowerCase()}
+                                    onChange={(e) => cambiarRol(user.id, e.target.value)}
+                                    style={{ minWidth: '120px' }}
+                                >
+                                    <option value="cliente">Cliente</option>
+                                    <option value="vendedor">Vendedor</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    ))}
+                    {usuariosFiltrados.length === 0 && (
+                        <p className="text-center mt-3 text-secondary">No se encontraron usuarios coincidentes.</p>
+                    )}
+                </div>
+            </div>
+
+            {/* Vista Escritorio: Tabla completa */}
+            <div className="d-none d-md-block table-responsive bg-dark rounded shadow-sm p-3">
+                <table className="table table-dark table-hover align-middle mb-0">
                     <thead>
                         <tr>
                             <th>RUN</th>
