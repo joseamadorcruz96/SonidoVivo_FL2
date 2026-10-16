@@ -1,12 +1,3 @@
-/**
- * ============================================================================
- * UTILIDADES DE VALIDACIÓN (DRY - Don't Repeat Yourself)
- * Archivo: src/utils/validaciones.js
- * ============================================================================
- * Funciones puras de validación según la pauta DSY1104.
- * Devuelven un string con el mensaje de error si falla, o string vacío "" si es válido.
- */
-
 // 1. Validación de Correo Institucional / Gmail
 // Pauta: Requerido, máx 100 car, solo @duoc.cl, @profesor.duoc.cl y @gmail.com
 export function validarEmail(email) {

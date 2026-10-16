@@ -1,11 +1,3 @@
-/**
- * ============================================================================
- * DATOS DE REGIONES Y COMUNAS DE CHILE
- * Archivo: src/data/regionesComunas.js
- * ============================================================================
- * Arreglo estructurado para alimentar los selectores dependientes del formulario de registro.
- */
-
 export const regionesYComunas = [
     {
         region: 'Valparaíso',
