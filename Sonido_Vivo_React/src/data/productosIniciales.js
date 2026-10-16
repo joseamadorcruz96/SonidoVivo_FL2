@@ -1,4 +1,3 @@
-
 export const productosIniciales = [
   {
     codigo: "GA001",
@@ -49,7 +48,7 @@ export const productosIniciales = [
     stock: 4,
     stockCritico: 2,
     descripcion: "Cuerpo de caoba con tapa de arce, 2 pastillas humbucker para rock potente y blues.",
-    imagen: "https://images.unsplash.com/photo-1550985616-10810253b84d?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?w=600&h=380&auto=format&fit=crop&q=80",
     destacado: true,
   },
   {
@@ -62,7 +61,7 @@ export const productosIniciales = [
     stock: 5,
     stockCritico: 2,
     descripcion: "Configuración versátil de pastillas PJ, mástil delgado y escala estándar de 34''.",
-    imagen: "https://images.unsplash.com/photo-1556449895-a33c9dfd3824?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1571797672731-8b158bcca644?w=600&h=380&auto=format&fit=crop&q=80",
     destacado: true,
   },
   {
@@ -75,7 +74,7 @@ export const productosIniciales = [
     stock: 2,
     stockCritico: 1,
     descripcion: "Cuerpo de aliso, 2 pastillas Alnico V Jazz single-coil. Definición y pegada profesional.",
-    imagen: "https://images.unsplash.com/photo-1520523839898-5071284d7c0f?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1607033992251-5d5f04f0382c?w=600&h=380&auto=format&fit=crop&q=80",
     destacado: false,
   },
   {
@@ -101,7 +100,7 @@ export const productosIniciales = [
     stock: 2,
     stockCritico: 1,
     descripcion: "Módulo con sonidos V-Drums legendarios, pads de respuesta natural, conexión USB.",
-    imagen: "https://images.unsplash.com/photo-1543443436-123927507548?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://static.roland.com/products/td-02kv/images/td-02kv_hero.jpg",
     destacado: false,
   },
   {
@@ -114,7 +113,7 @@ export const productosIniciales = [
     stock: 4,
     stockCritico: 2,
     descripcion: "61 teclas sensibles al tacto, 622 voces de alta calidad, función de lecciones y USB to Host.",
-    imagen: "https://images.unsplash.com/photo-1552422535-c45813c61732?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=600&h=380&auto=format&fit=crop&q=80",
     destacado: true,
   },
   {
@@ -127,7 +126,7 @@ export const productosIniciales = [
     stock: 3,
     stockCritico: 1,
     descripcion: "40 watts de potencia, 4 canales programables, efectos digitales (reverb, delay, chorus).",
-    imagen: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.ctfassets.net/javen7msabdh/5PjrjYH8aPtcjoByeJHdCk/83c83c178cd8b8ba2e1c4cfe5eed4f4a/mg30fx-mobile-01.jpg",
     destacado: false,
   },
   {
@@ -140,7 +139,7 @@ export const productosIniciales = [
     stock: 7,
     stockCritico: 2,
     descripcion: "El pedal de distorsión más vendido del mundo. Ataque definido para guitarras y teclados.",
-    imagen: "https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://static.roland.com/products/ds-1/images/ds-1_hero.jpg",
     destacado: false,
   },
   {
@@ -153,7 +152,7 @@ export const productosIniciales = [
     stock: 25,
     stockCritico: 5,
     descripcion: "Juego de 6 cuerdas niqueladas para guitarra eléctrica. Calibre ligero de alta duración.",
-    imagen: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1697924332507-3e0a455ba432?w=600&h=380&auto=format&fit=crop&q=80",
     destacado: false,
   },
 ];
