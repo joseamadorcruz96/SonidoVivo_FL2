@@ -24,6 +24,7 @@ import { NotFound } from './pages/NotFound';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminProductos } from './pages/admin/AdminProductos';
 import { VendedorDashboard } from './pages/admin/VendedorDashboard';
+import { AdminUsuarios } from './pages/admin/AdminUsuarios';
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
             >
               <Route index element={<AdminDashboard />} />
               <Route path="productos" element={<AdminProductos />} />
+              <Route path="usuarios" element={<AdminUsuarios />} />
             </Route>
 
             <Route
