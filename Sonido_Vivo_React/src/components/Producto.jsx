@@ -78,14 +78,14 @@ export function Producto({ producto, onAgregarAlCarrito }) {
           <div className="d-flex gap-2">
             <Link
               to={`/producto/${codigo}`}
-              className="btn btn-sm btn-outline-secondary flex-grow-1"
+              className="btn btn-sm btn-hero-outline flex-fill"
             >
               Ver Detalle
             </Link>
 
             <button
               type="button"
-              className="btn btn-sm btn-hero-gold px-3 fw-bold btn-agregar-carrito"
+              className="btn btn-sm btn-hero-gold flex-fill btn-agregar-carrito"
               disabled={estaAgotado}
               onClick={manejarClickAgregar}
               title={estaAgotado ? 'Producto agotado' : 'Añadir al carrito'}

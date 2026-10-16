@@ -192,16 +192,23 @@ main {
   color: #111827;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1rem;
-  padding: 0.75rem 1.6rem;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.4rem;
   border-radius: var(--radius-md);
-  border: none;
+  border: 1px solid var(--color-gold);
   box-shadow: var(--shadow-gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.4;
   transition: all var(--transition-normal);
 }
 
 .btn-hero-gold:hover {
   background-color: var(--color-gold-hover);
+  border-color: var(--color-gold-hover);
   color: #111827;
   transform: translateY(-2px);
 }
@@ -219,10 +226,16 @@ main {
   color: var(--text-main);
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 1rem;
-  padding: 0.75rem 1.6rem;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.4rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.4;
   transition: all var(--transition-normal);
 }
 
@@ -231,6 +244,14 @@ main {
   color: var(--color-gold);
   background-color: rgba(229, 169, 60, 0.08);
   transform: translateY(-2px);
+}
+
+/* Variante compacta para botones dentro de tarjetas */
+.btn-hero-gold.btn-sm,
+.btn-hero-outline.btn-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
 }
 
 /* Caja de Mensaje de Bienvenida Dinámico (RF-04) */
