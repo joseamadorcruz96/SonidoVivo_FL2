@@ -1,6 +1,5 @@
 import { useCarrito } from '../../Context/CarritoContext';
 import { CarritoVacio } from '../../components/carrito/CarritoVacio';
-import { FilaItemCarrito } from '../../components/carrito/FilaItemCarrito';
 import { TarjetaItemCarrito } from '../../components/carrito/TarjetaItemCarrito';
 import { ResumenPedido } from '../../components/carrito/ResumenPedido';
 
@@ -19,7 +18,7 @@ export function Carrito() {
     return <CarritoVacio />;
   }
 
-  // Vista con diseño responsivo móvil (tarjetas) y escritorio (tabla)
+  // Vista con lista de tarjetas responsivas y panel de resumen
   return (
     <div className="container py-5">
       <div className="text-center mb-5">
@@ -33,10 +32,9 @@ export function Carrito() {
       </div>
 
       <div className="row g-4">
-        {/* Columna Izquierda: Tarjetas en móvil y tabla en escritorio */}
+        {/* Columna Izquierda: Lista de tarjetas individualizadas */}
         <div className="col-12 col-lg-8">
-          {/* Vista Móvil: Tarjetas compactas dentro de márgenes sin scroll horizontal */}
-          <div className="d-block d-md-none">
+          <div className="d-flex flex-column gap-3">
             {carrito.map((item) => (
               <TarjetaItemCarrito
                 key={item.codigo}
@@ -45,31 +43,6 @@ export function Carrito() {
                 onQuitar={quitarDelCarrito}
               />
             ))}
-          </div>
-
-          {/* Vista Escritorio: Tabla completa */}
-          <div className="d-none d-md-block table-responsive bg-surface rounded-3 p-3 border-subtle shadow-sm">
-            <table className="table table-dark table-hover table-carrito align-middle mb-0">
-              <thead>
-                <tr>
-                  <th scope="col" className="text-light">Instrumento</th>
-                  <th scope="col" className="text-end text-light">Precio Unit.</th>
-                  <th scope="col" className="text-center text-light">Cantidad</th>
-                  <th scope="col" className="text-end text-light">Subtotal</th>
-                  <th scope="col" className="text-center text-light">Eliminar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {carrito.map((item) => (
-                  <FilaItemCarrito
-                    key={item.codigo}
-                    item={item}
-                    onCambiarCantidad={cambiarCantidad}
-                    onQuitar={quitarDelCarrito}
-                  />
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
 

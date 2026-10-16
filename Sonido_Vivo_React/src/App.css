@@ -697,12 +697,26 @@ html {
   opacity: 1;
 }
 
-/* Tarjeta de Resumen en carrito.html */
+/* Tarjeta de Resumen en carrito */
 .card-resumen-compra {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+}
+
+/* Tarjeta individualizada de cada item en el carrito */
+.card-item-carrito {
+  background: linear-gradient(145deg, #1f2937, #16202e);
+  border: 1px solid rgba(156, 163, 175, 0.22);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-item-carrito:hover {
+  transform: translateY(-2px);
+  border-color: rgba(229, 169, 60, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
 }
 
 .table-carrito {
