@@ -12,6 +12,7 @@ const categorias = [
 export function Blogs() {
   const [busqueda, setBusqueda] = useState('');
   const [categoriaActual, setCategoriaActual] = useState('todos');
+  const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
 
   const textoBusqueda = busqueda.toLowerCase().trim();
 
@@ -119,12 +120,58 @@ export function Blogs() {
                   fecha={articulo.fecha}
                   titulo={articulo.titulo}
                   descripcion={articulo.descripcion}
+                  onLeerArticulo={() => setArticuloSeleccionado(articulo)}
                 />
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Modal de Lectura Extendida del Artículo (Detalle Blogs) */}
+      {articuloSeleccionado && (
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-content bg-dark text-light border-secondary">
+              <div className="modal-header border-secondary">
+                <div className="d-flex align-items-center gap-2">
+                  <span className="badge-blog-tag">{articuloSeleccionado.categoria}</span>
+                  <small className="text-secondary">{articuloSeleccionado.fecha}</small>
+                </div>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setArticuloSeleccionado(null)}
+                ></button>
+              </div>
+
+              <div className="modal-body p-4">
+                <img
+                  src={articuloSeleccionado.imagen}
+                  alt={articuloSeleccionado.textoAlternativo}
+                  className="img-fluid rounded mb-4 w-100"
+                  style={{ maxHeight: '350px', objectFit: 'cover' }}
+                />
+                <h2 className="h4 fw-bold text-gold mb-3">{articuloSeleccionado.titulo}</h2>
+                <div className="text-secondary" style={{ whiteSpace: 'pre-line', lineHeight: '1.8' }}>
+                  {articuloSeleccionado.descripcionLarga || articuloSeleccionado.descripcion}
+                </div>
+              </div>
+
+              <div className="modal-footer border-secondary justify-content-between">
+                <small className="text-gold">Equipo Técnico Sonido Vivo · Viña del Mar</small>
+                <button
+                  type="button"
+                  className="btn btn-outline-light"
+                  onClick={() => setArticuloSeleccionado(null)}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

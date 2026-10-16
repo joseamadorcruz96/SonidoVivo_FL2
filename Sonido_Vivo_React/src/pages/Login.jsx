@@ -5,6 +5,7 @@ import { useAuth } from '../Context/AuthContext';
 import { CampoFormulario } from '../components/CampoFormulario';
 import { useForm } from '../hooks/useForm';
 import { validarEmail, validarPassword } from '../utils/validaciones';
+import logo from '../assets/logo.svg';
 
 export function Login() {
     const navigate = useNavigate();
@@ -45,6 +46,10 @@ export function Login() {
     return (
         <section className="d-flex align-items-center justify-content-center py-5">
             <div className="card bg-dark text-light p-4 shadow" style={{ width: '100%', maxWidth: '420px' }}>
+                <div className="text-center mb-3">
+                    <img src={logo} alt="Sonido Vivo" style={{ height: '48px' }} className="mb-2" />
+                    <h1 className="h4 fw-bold text-light mb-0">Sonido <span className="text-gold">Vivo</span></h1>
+                </div>
                 <h2 className="text-center fw-bold text-gold mb-1">Iniciar Sesión</h2>
                 <p className="text-center text-secondary small mb-4">Ingresa a tu cuenta de Sonido Vivo</p>
 

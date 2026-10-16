@@ -1,4 +1,12 @@
-export function TarjetaBlog({imagen, textoAlternativo, categoria, fecha, titulo, descripcion,}) {
+export function TarjetaBlog({
+  imagen,
+  textoAlternativo,
+  categoria,
+  fecha,
+  titulo,
+  descripcion,
+  onLeerArticulo,
+}) {
   return (
     <article className="card h-100 card-blog-custom">
       <img
@@ -22,9 +30,13 @@ export function TarjetaBlog({imagen, textoAlternativo, categoria, fecha, titulo,
         </p>
 
         <div className="pt-3 border-top-subtle">
-          <span className="btn-link-gold">
+          <button
+            type="button"
+            className="btn btn-link p-0 btn-link-gold text-decoration-none"
+            onClick={onLeerArticulo}
+          >
             Leer artículo completo &rarr;
-          </span>
+          </button>
         </div>
       </div>
     </article>

@@ -8,6 +8,7 @@ export const articulosBlog = [
     fecha: '10 Sep, 2026',
     titulo: '5 Señales de que tu Guitarra Necesita Calibración Urgente',
     descripcion: 'Trasteos, tensión excesiva en el mástil o problemas de entonación. Aprende a detectar cuándo tu instrumento requiere pasar por el taller.',
+    descripcionLarga: 'Una guitarra descalibrada no solo dificulta la ejecución técnica, sino que también puede generar fatiga muscular y desafinaciones constantes. Las 5 señales principales que atendemos en nuestro taller de Sonido Vivo en Viña del Mar son:\n\n1. Trasteo excesivo en los primeros o últimos trastes debido a variaciones en la curvatura del alma (truss rod).\n2. Acción de cuerdas demasiado alta, provocando incomodidad y falta de precisión.\n3. Problemas de octavación: cuando la cuerda al aire está afinada pero en el traste 12 suena alta o baja.\n4. Ruidos o zumbidos en el selector de pastillas y potenciómetros por acumulación de estática o sulfato.\n5. Desgaste irregular en cejuela y selletas.\n\nRecomendamos realizar una calibración completa al menos dos veces al año o ante cambios bruscos de estación climática.',
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ export const articulosBlog = [
     fecha: '02 Sep, 2026',
     titulo: 'Cómo Ordenar tu Pedalboard: Guía Práctica de Cadena de Señal',
     descripcion: '¿Afinador, Overdrive, Delay o Reverb primero? Te explicamos el orden estándar para sacarle el máximo provecho a tus pedales de efecto.',
+    descripcionLarga: 'El orden de tu cadena de efectos define la claridad, ganancia y dinámica de tu sonido en vivo o estudio. La regla de oro estándar recomendada por nuestro equipo técnico es:\n\n1. Filtros y Afinadores: Wah-wah, compresores y afinadores van al inicio para capturar la señal más limpia y directa de las pastillas.\n2. Ganancia y Saturación: Overdrives, distorsiones y fuzz. Un buen truco es colocar el overdrive de baja ganancia antes de una distorsión pesada.\n3. Modulación: Chorus, phaser y flanger añaden textura y amplitud al tono ya distorsionado.\n4. Tiempo y Espacio: Delays y reverbs van al final de la cadena (o por el loop de efectos del amplificador) para que las repeticiones y colas no se ensucien.\n\nExperimentar siempre es bienvenido, pero este orden base garantiza consistencia sonora sin ruidos parásitos.',
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ export const articulosBlog = [
     fecha: '25 Ago, 2026',
     titulo: 'Guía de Micrófonos: ¿Condensador o Dinámico para tu Home Studio?',
     descripcion: 'Compara las diferencias entre micrófonos dinámicos y de condensador para elegir la mejor opción según tu espacio de grabación.',
+    descripcionLarga: 'Elegir el micrófono adecuado depende directamente de la acústica de tu habitación. Los micrófonos dinámicos (como el clásico Shure SM58) son robustos, toleran altos niveles de presión sonora y rechazan el ruido ambiente, haciéndolos ideales para habitaciones no tratadas acústicamente. Por otro lado, los micrófonos de condensador ofrecen mayor sensibilidad y respuesta en frecuencias agudas, capturando detalles sutiles de la voz e instrumentos acústicos, aunque requieren alimentación Phantom de 48V y un entorno silencioso.',
   },
   {
     id: 4,
@@ -38,5 +41,6 @@ export const articulosBlog = [
     fecha: '18 Ago, 2026',
     titulo: 'Cuidado de Maderas en Zonas Costeras: El Impacto de la Humedad',
     descripcion: 'Vivir cerca del mar en Viña del Mar afecta la madera y los trastes. Te damos recomendaciones para proteger tu instrumento de la humedad.',
+    descripcionLarga: 'La brisa marina y los altos niveles de humedad relativa en zonas como Viña del Mar y Valparaíso pueden oxidar rápidamente las cuerdas y alterar la madera del diapasón. Mantener tu instrumento dentro de una funda acolchada o estuche rígido con bolsitas de sílice, limpiar las cuerdas con un paño seco después de cada sesión y aplicar aceite de limón al diapasón son hábitos esenciales para conservar su resonancia y valor.',
   },
 ];

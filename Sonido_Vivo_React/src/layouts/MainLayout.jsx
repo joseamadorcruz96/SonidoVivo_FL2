@@ -16,9 +16,7 @@ export function MainLayout() {
             </main>
 
             {/* 3. Pie de página persistente */}
-            <footer>
-                <PiePagina />
-            </footer>
+            <PiePagina />
         </div>
     );
 }

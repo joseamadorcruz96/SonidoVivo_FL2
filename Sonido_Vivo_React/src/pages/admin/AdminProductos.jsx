@@ -54,17 +54,35 @@ export function AdminProductos() {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        // Validación básica
+        // Validación de producto según pauta
         const nuevosErrores = {};
-        if (!datos.codigo.trim()) nuevosErrores.codigo = "El código es obligatorio";
-        if (productos.some(p => p.codigo.toUpperCase() === datos.codigo.trim().toUpperCase())) {
+        const cod = datos.codigo.trim();
+        if (!cod) {
+            nuevosErrores.codigo = "El código es obligatorio";
+        } else if (cod.length < 3) {
+            nuevosErrores.codigo = "El código debe tener al menos 3 caracteres";
+        } else if (productos.some(p => p.codigo.toUpperCase() === cod.toUpperCase())) {
             nuevosErrores.codigo = "Ya existe un producto con este código";
         }
-        if (!datos.nombre.trim()) nuevosErrores.nombre = "El nombre es obligatorio";
+
+        const nom = datos.nombre.trim();
+        if (!nom) {
+            nuevosErrores.nombre = "El nombre es obligatorio";
+        } else if (nom.length > 100) {
+            nuevosErrores.nombre = "El nombre no puede superar los 100 caracteres";
+        }
+
+        if (datos.descripcion && datos.descripcion.length > 500) {
+            nuevosErrores.descripcion = "La descripción no puede superar los 500 caracteres";
+        }
+
         if (!datos.categoria) nuevosErrores.categoria = "Selecciona una categoría";
-        if (Number(datos.precio) <= 0) nuevosErrores.precio = "El precio debe ser mayor a 0";
-        if (Number(datos.stock) < 0) nuevosErrores.stock = "El stock no puede ser negativo";
-        if (!datos.imagen.trim()) nuevosErrores.imagen = "Ingresa la URL de la imagen";
+        if (datos.precio === '' || Number(datos.precio) < 0 || isNaN(Number(datos.precio))) {
+            nuevosErrores.precio = "El precio debe ser 0 o superior (0 = FREE)";
+        }
+        if (datos.stock === '' || Number(datos.stock) < 0) {
+            nuevosErrores.stock = "El stock no puede ser negativo";
+        }
 
         if (Object.keys(nuevosErrores).length > 0) {
             setErrores(nuevosErrores);
@@ -74,10 +92,11 @@ export function AdminProductos() {
         // Formatear datos
         const nuevoProducto = {
             ...datos,
-            codigo: datos.codigo.trim().toUpperCase(),
+            codigo: cod.toUpperCase(),
             precio: Number(datos.precio),
-            stock: Number(datos.stock),
+            stock: Math.floor(Number(datos.stock)),
             stockCritico: Number(datos.stockCritico) || 2,
+            imagen: datos.imagen.trim() || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80',
         };
 
         // Actualizar estado y LocalStorage
@@ -221,8 +240,8 @@ export function AdminProductos() {
                                         </div>
 
                                         <div className="col-12">
-                                            <CampoFormulario label="URL de la Imagen" error={errores.imagen} obligatorio>
-                                                <input name="imagen" className="form-control" value={datos.imagen} onChange={handleChange} placeholder="https://ejemplo.com/imagen.jpg" />
+                                            <CampoFormulario label="URL de la Imagen (Opcional)" error={errores.imagen}>
+                                                <input name="imagen" className="form-control" value={datos.imagen} onChange={handleChange} placeholder="https://ejemplo.com/imagen.jpg (opcional)" />
                                             </CampoFormulario>
                                         </div>
 
