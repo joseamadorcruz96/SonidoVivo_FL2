@@ -31,47 +31,47 @@ export function AdminDashboard() {
             </h2>
             
             {/* Tarjetas de Resumen General */}
-            <div className="row mb-4">
-                <div className="col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm">
-                        <div className="card-body text-center">
-                            <h5 className="text-secondary">Ventas del Mes</h5>
-                            <h2 className="text-success fw-bold">$6.000.000</h2>
+            <div className="row g-3 g-md-4 mb-4">
+                <div className="col-12 col-sm-6 col-md-4">
+                    <div className="card bg-dark border-secondary shadow-sm h-100">
+                        <div className="card-body text-center p-3">
+                            <h5 className="text-secondary small">Ventas del Mes</h5>
+                            <h2 className="text-success fw-bold fs-3">$6.000.000</h2>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm">
-                        <div className="card-body text-center">
-                            <h5 className="text-secondary">Órdenes Completadas</h5>
-                            <h2 className="text-light fw-bold">124</h2>
+                <div className="col-12 col-sm-6 col-md-4">
+                    <div className="card bg-dark border-secondary shadow-sm h-100">
+                        <div className="card-body text-center p-3">
+                            <h5 className="text-secondary small">Órdenes Completadas</h5>
+                            <h2 className="text-light fw-bold fs-3">124</h2>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm">
-                        <div className="card-body text-center">
-                            <h5 className="text-secondary">Nuevos Clientes</h5>
-                            <h2 className="text-info fw-bold">18</h2>
+                <div className="col-12 col-sm-12 col-md-4">
+                    <div className="card bg-dark border-secondary shadow-sm h-100">
+                        <div className="card-body text-center p-3">
+                            <h5 className="text-secondary small">Nuevos Clientes</h5>
+                            <h2 className="text-info fw-bold fs-3">18</h2>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Sección de Gráficos */}
-            <div className="row">
+            <div className="row g-4">
                 {/* Gráfico de Barras: Productos Más Vendidos */}
-                <div className="col-lg-7 mb-4">
+                <div className="col-12 col-lg-7 mb-3 mb-lg-0">
                     <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
-                        <h5 className="text-light mb-4">Top 5 Productos Más Vendidos (Unidades)</h5>
-                        <div style={{ width: '100%', height: 300 }}>
-                            <ResponsiveContainer>
-                                <BarChart data={datosProductosMasVendidos} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <h5 className="text-light mb-3 fs-6 fw-bold">Top 5 Productos Más Vendidos (Unidades)</h5>
+                        <div style={{ width: '100%', height: 320 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={datosProductosMasVendidos} margin={{ top: 10, right: 10, left: -15, bottom: 45 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                                    <XAxis dataKey="nombre" stroke="#ccc" tick={{fontSize: 12}} />
-                                    <YAxis stroke="#ccc" />
-                                    <TooltipBar cursor={{fill: '#333'}} contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }} />
-                                    <Legend wrapperStyle={{ paddingTop: '10px' }}/>
+                                    <XAxis dataKey="nombre" stroke="#ccc" tick={{ fontSize: 11 }} angle={-25} textAnchor="end" interval={0} height={55} />
+                                    <YAxis stroke="#ccc" tick={{ fontSize: 11 }} />
+                                    <TooltipBar cursor={{ fill: '#333' }} contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }} />
+                                    <Legend wrapperStyle={{ paddingTop: '5px' }} />
                                     <Bar dataKey="ventas" name="Unidades Vendidas" fill="var(--color-gold, #FFC107)" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -80,18 +80,18 @@ export function AdminDashboard() {
                 </div>
 
                 {/* Gráfico de Torta: Ingresos por Categoría */}
-                <div className="col-lg-5 mb-4">
+                <div className="col-12 col-lg-5">
                     <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
-                        <h5 className="text-light mb-4">Ingresos por Categoría</h5>
-                        <div style={{ width: '100%', height: 300 }}>
-                            <ResponsiveContainer>
+                        <h5 className="text-light mb-3 fs-6 fw-bold">Ingresos por Categoría</h5>
+                        <div style={{ width: '100%', height: 320 }}>
+                            <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
                                         data={datosVentasPorCategoria}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={60} // Esto lo hace ver como un anillo (Doughnut)
-                                        outerRadius={100}
+                                        innerRadius={55}
+                                        outerRadius={90}
                                         paddingAngle={5}
                                         dataKey="valor"
                                         nameKey="nombre"

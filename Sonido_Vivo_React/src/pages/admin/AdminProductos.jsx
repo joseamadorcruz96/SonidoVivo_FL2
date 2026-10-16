@@ -117,16 +117,16 @@ export function AdminProductos() {
 
     return (
         <div className="container-fluid text-light py-2 position-relative">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="fw-bold" style={{ color: 'var(--color-gold)' }}>Catálogo y Productos</h2>
+            <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+                <h2 className="fw-bold mb-0" style={{ color: 'var(--color-gold)' }}>Catálogo y Productos</h2>
                 <button className="btn btn-warning fw-bold text-dark" onClick={abrirModal}>
                     + Nuevo Producto
                 </button>
             </div>
 
-            {/* Tabla de Productos */}
+            {/* Tabla de Productos con scroll horizontal en móvil */}
             <div className="table-responsive bg-dark rounded shadow-sm p-3">
-                <table className="table table-dark table-hover align-middle mb-0">
+                <table className="table table-dark table-hover align-middle mb-0" style={{ minWidth: '650px' }}>
                     <thead>
                         <tr>
                             <th>Imagen</th>
@@ -190,7 +190,7 @@ export function AdminProductos() {
                                 <button type="button" className="btn-close btn-close-white" onClick={cerrarModal}></button>
                             </div>
                             
-                            <div className="modal-body p-4">
+                            <div className="modal-body p-3 p-md-4">
                                 <form id="form-producto" onSubmit={handleSubmit}>
                                     <div className="row g-3">
                                         <div className="col-md-4">

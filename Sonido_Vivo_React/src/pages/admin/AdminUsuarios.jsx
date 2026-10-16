@@ -40,9 +40,9 @@ export function AdminUsuarios() {
 
     return (
         <div className="container-fluid text-light py-2">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="fw-bold" style={{ color: 'var(--color-gold)' }}>Gestión de Usuarios</h2>
-                <div style={{ width: '300px' }}>
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                <h2 className="fw-bold mb-0" style={{ color: 'var(--color-gold)' }}>Gestión de Usuarios</h2>
+                <div className="w-100" style={{ maxWidth: '320px' }}>
                     <input
                         type="text"
                         className="form-control bg-dark text-light border-secondary"
@@ -54,7 +54,7 @@ export function AdminUsuarios() {
             </div>
 
             <div className="table-responsive bg-dark rounded shadow-sm p-3">
-                <table className="table table-dark table-hover align-middle mb-0">
+                <table className="table table-dark table-hover align-middle mb-0" style={{ minWidth: '680px' }}>
                     <thead>
                         <tr>
                             <th>RUN</th>

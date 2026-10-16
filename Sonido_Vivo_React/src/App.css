@@ -59,6 +59,12 @@ a:hover {
   transform: translateY(-1px);
 }
 
+@media (min-width: 992px) {
+  .border-lg-0 {
+    border: 0 !important;
+  }
+}
+
 .nav-link.active {
   color: var(--color-gold) !important;
   background-color: rgba(229, 169, 60, 0.12);
