@@ -35,14 +35,14 @@ export function Carrito() {
         {/* Columna Izquierda: Tabla de productos */}
         <div className="col-12 col-lg-8">
           <div className="table-responsive bg-surface rounded-3 p-3 border-subtle shadow-sm">
-            <table className="table table-carrito align-middle mb-0">
+            <table className="table table-dark table-hover table-carrito align-middle mb-0">
               <thead>
                 <tr>
-                  <th scope="col">Instrumento</th>
-                  <th scope="col" className="text-end">Precio Unit.</th>
-                  <th scope="col" className="text-center">Cantidad</th>
-                  <th scope="col" className="text-end">Subtotal</th>
-                  <th scope="col" className="text-center">Eliminar</th>
+                  <th scope="col" className="text-light">Instrumento</th>
+                  <th scope="col" className="text-end text-light">Precio Unit.</th>
+                  <th scope="col" className="text-center text-light">Cantidad</th>
+                  <th scope="col" className="text-end text-light">Subtotal</th>
+                  <th scope="col" className="text-center text-light">Eliminar</th>
                 </tr>
               </thead>
               <tbody>

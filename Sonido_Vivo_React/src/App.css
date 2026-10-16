@@ -836,3 +836,9 @@ html {
   color: var(--text-muted);
   font-size: 1.15rem;
 }
+
+/* Encabezados blancos para la tabla del carrito */
+.table-carrito th {
+  color: #FFFFFF !important;
+  border-bottom: 1px solid var(--border-subtle);
+}
