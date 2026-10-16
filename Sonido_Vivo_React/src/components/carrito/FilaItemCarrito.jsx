@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { BadgeStock } from '../BadgeStock';
 
 export function FilaItemCarrito({ item, onCambiarCantidad, onQuitar }) {
   const cantidad = Number(item.cantidad) || 1;
@@ -33,9 +34,14 @@ export function FilaItemCarrito({ item, onCambiarCantidad, onQuitar }) {
             >
               {item.nombre}
             </Link>
-            <small className="text-secondary">
-              {item.marca} · {item.modelo}
-            </small>
+            <div className="d-flex align-items-center gap-2 mt-1 flex-wrap">
+              <small className="text-secondary">
+                {item.marca} · {item.modelo}
+              </small>
+              {Number(item.stock) <= Number(item.stockCritico || 2) && (
+                <BadgeStock stock={item.stock} stockCritico={item.stockCritico} />
+              )}
+            </div>
           </div>
         </div>
       </td>

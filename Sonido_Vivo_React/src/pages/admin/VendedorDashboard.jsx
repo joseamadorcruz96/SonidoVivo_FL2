@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContext';
+import { BadgeStock } from '../../components/BadgeStock';
 
 export function VendedorDashboard() {
     const [productos, setProductos] = useState([]);
@@ -160,42 +161,36 @@ export function VendedorDashboard() {
                             </thead>
                             <tbody>
                                 {productosMostrados.length > 0 ? (
-                                    productosMostrados.map((prod) => {
-                                        let colorBadge = 'bg-success';
-                                        if (Number(prod.stock) === 0) colorBadge = 'bg-danger';
-                                        else if (Number(prod.stock) <= Number(prod.stockCritico)) colorBadge = 'bg-warning text-dark';
-
-                                        return (
-                                            <tr key={prod.codigo}>
-                                                <td className="ps-4"><small className="text-secondary">{prod.codigo}</small></td>
-                                                <td>
-                                                    <strong className="d-block">{prod.nombre}</strong>
-                                                </td>
-                                                <td><span className="badge bg-secondary">{prod.categoria}</span></td>
-                                                <td className="text-center">
-                                                    <div className="d-flex align-items-center justify-content-center gap-2">
-                                                        <button 
-                                                            className="btn btn-sm btn-outline-secondary" 
-                                                            onClick={() => ajustarStock(prod.codigo, -1)}
-                                                            disabled={prod.stock <= 0}
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <span className={`badge fs-6 ${colorBadge}`} style={{ width: '45px' }}>
-                                                            {prod.stock}
-                                                        </span>
-                                                        <button 
-                                                            className="btn btn-sm btn-outline-secondary" 
-                                                            onClick={() => ajustarStock(prod.codigo, 1)}
-                                                        >
-                                                            +
-                                                        </button>
+                                    productosMostrados.map((prod) => (
+                                        <tr key={prod.codigo}>
+                                            <td className="ps-4"><small className="text-secondary">{prod.codigo}</small></td>
+                                            <td>
+                                                <strong className="d-block">{prod.nombre}</strong>
+                                            </td>
+                                            <td><span className="badge bg-secondary">{prod.categoria}</span></td>
+                                            <td className="text-center">
+                                                <div className="d-flex align-items-center justify-content-center gap-2">
+                                                    <button 
+                                                        className="btn btn-sm btn-outline-secondary" 
+                                                        onClick={() => ajustarStock(prod.codigo, -1)}
+                                                        disabled={prod.stock <= 0}
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <div style={{ minWidth: '45px' }}>
+                                                        <BadgeStock stock={prod.stock} stockCritico={prod.stockCritico} compacto />
                                                     </div>
-                                                </td>
-                                                <td className="text-center text-secondary">{prod.stockCritico}</td>
-                                            </tr>
-                                        );
-                                    })
+                                                    <button 
+                                                        className="btn btn-sm btn-outline-secondary" 
+                                                        onClick={() => ajustarStock(prod.codigo, 1)}
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td className="text-center text-secondary">{prod.stockCritico}</td>
+                                        </tr>
+                                    ))
                                 ) : (
                                     <tr>
                                         <td colSpan="5" className="text-center py-4 text-success">
