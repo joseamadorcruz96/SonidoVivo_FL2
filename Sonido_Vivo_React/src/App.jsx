@@ -6,6 +6,7 @@ import { CarritoProvider } from './Context/CarritoContext';
 
 // --- Layouts y Guardias ---
 import { MainLayout } from './layouts/MainLayout';
+import { AdminLayout } from './layouts/AdminLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 // --- Páginas Públicas ---
@@ -20,6 +21,7 @@ import { NotFound } from './pages/NotFound';
 
 // --- Páginas Protegidas por Rol ---
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminProductos } from './pages/AdminProductos';
 import { VendedorDashboard } from './pages/VendedorDashboard';
 
 export default function App() {
@@ -28,35 +30,39 @@ export default function App() {
       <CarritoProvider>
         <BrowserRouter>
           <Routes>
+            {/* 1. RUTAS PÚBLICAS (Dentro de MainLayout) */}
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Inicio />} />
-              <Route path="Nosotros" element={<Nosotros />} />
+              <Route path="nosotros" element={<Nosotros />} />
               <Route path="Catalogo" element={<Catalogo />} />
               <Route path="Carrito" element={<Carrito />} />
               <Route path="Blogs" element={<Blogs />} />
               <Route path="Contacto" element={<Contacto />} />
-              <Route path="Login" element={<Login />} />
-
-              {/* RUTAS PROTEGIDAS POR ROL */}
-              <Route
-                path="admin"
-                element={
-                  <ProtectedRoute rolPermitido="admin">
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="vendedor"
-                element={
-                  <ProtectedRoute rolPermitido="vendedor">
-                    <VendedorDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
+              <Route path="login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Route>
+
+            {/* 2. RUTAS PROTEGIDAS (FUERA de MainLayout) */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute rolPermitido="admin">
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="productos" element={<AdminProductos />} />
+            </Route>
+
+            <Route
+              path="/vendedor"
+              element={
+                <ProtectedRoute rolPermitido="vendedor">
+                  <VendedorDashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </CarritoProvider>
