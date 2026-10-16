@@ -93,26 +93,6 @@ export function Login() {
                         </Link>
                     </div>
                 </form>
-
-                {/* Accesos rápidos para evaluación */}
-                <div className="mt-4 pt-3 border-top border-secondary text-center">
-                    <p className="small text-secondary mb-2">⚡ Probar roles rápidos:</p>
-                    <div className="d-flex gap-2 justify-content-center">
-                        {['admin', 'vendedor', 'cliente'].map(rol => (
-                            <button
-                                key={rol}
-                                type="button"
-                                onClick={() => {
-                                    const u = usuariosDb.find(user => user.rol.toLowerCase() === rol);
-                                    if (u) autenticar(u);
-                                }}
-                                className="btn btn-sm btn-outline-warning text-capitalize"
-                            >
-                                {rol}
-                            </button>
-                        ))}
-                    </div>
-                </div>
             </div>
         </section>
     );
