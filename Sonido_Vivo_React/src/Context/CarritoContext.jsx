@@ -1,22 +1,30 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CarritoContext = createContext();
 
 export function CarritoProvider({ children }) {
-    const [carrito, setCarrito] = useState([]);
+    // 1. Estado inicial: lee los productos guardados en LocalStorage (RF-19)
+    const [carrito, setCarrito] = useState(() => {
+        const guardado = localStorage.getItem('sv_carrito');
+        return guardado ? JSON.parse(guardado) : [];
+    });
 
-    // 1. Agregar
+    // 2. Efecto: cada vez que el carrito cambie, se sincroniza en LocalStorage
+    useEffect(() => {
+        localStorage.setItem('sv_carrito', JSON.stringify(carrito));
+    }, [carrito]);
+
+    // Agregar producto
     function agregarAlCarrito(producto) {
-        setCarrito([...carrito, producto]);
+        setCarrito(prev => [...prev, producto]);
     }
 
-    // 2. Quitar por código SKU
+    // Quitar por código SKU
     function quitarDelCarrito(codigo) {
-        const carritoActualizado = carrito.filter(item => item.codigo !== codigo);
-        setCarrito(carritoActualizado);
+        setCarrito(prev => prev.filter(item => item.codigo !== codigo));
     }
 
-    // 3. Vaciar todo (por ejemplo, después de pagar)
+    // Vaciar todo (por ejemplo, después de pagar)
     function vaciarCarrito() {
         setCarrito([]);
     }
@@ -36,7 +44,7 @@ export function CarritoProvider({ children }) {
     );
 }
 
-// Hook personalizado para usarlo fácilmente con: const { carrito } = useCarrito();
+// Hook personalizado para usarlo fácilmente: const { carrito } = useCarrito();
 export function useCarrito() {
     return useContext(CarritoContext);
 }

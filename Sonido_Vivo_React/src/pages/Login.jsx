@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUsuario, usuariosDb } from '../services/db';
 import { useAuth } from '../Context/AuthContext';
+import { CampoFormulario } from '../components/CampoFormulario';
+import { validarEmail, validarPassword } from '../utils/validaciones';
 
 export function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [errores, setErrores] = useState({});
+    const [errorGeneral, setErrorGeneral] = useState('');
     
     const navigate = useNavigate();
     const { iniciarSesion } = useAuth();
@@ -25,23 +28,38 @@ export function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
-        
-        // Validamos contra db.js
+        setErrorGeneral('');
+
+        // 1. Validaciones según pauta DSY1104
+        const errorEmail = validarEmail(email);
+        const errorPass = validarPassword(password);
+
+        if (errorEmail || errorPass) {
+            setErrores({
+                email: errorEmail,
+                password: errorPass
+            });
+            return;
+        }
+
+        setErrores({});
+
+        // 2. Comprobar credenciales
         const usuario = loginUsuario(email, password);
 
         if (usuario) {
-            setError('');
             autenticarYRedirigir(usuario);
         } else {
-            setError('Correo o contraseña incorrectos.');
+            setErrorGeneral('Correo o contraseña incorrectos. Verifica tus datos.');
         }
     };
 
-    // Accesos rápidos para facilitar pruebas de evaluación
+    // Accesos rápidos para facilitar pruebas de evaluación al docente
     const loginRapido = (rolObjetivo) => {
         const usuarioDemo = usuariosDb.find(u => u.rol.toLowerCase() === rolObjetivo.toLowerCase());
         if (usuarioDemo) {
-            setError('');
+            setErrorGeneral('');
+            setErrores({});
             autenticarYRedirigir(usuarioDemo);
         }
     };
@@ -56,42 +74,65 @@ export function Login() {
                         <p className="text-secondary small">Ingresa a tu cuenta de Sonido Vivo</p>
                     </div>
 
-                    {error && (
-                        <div className="alert alert-danger py-2 text-center" style={{ fontSize: '0.9rem' }}>
-                            {error}
+                    {errorGeneral && (
+                        <div className="alert alert-danger py-2 text-center small" role="alert">
+                            {errorGeneral}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label className="form-label fw-semibold" style={{ color: 'var(--text-main)' }}>Correo Electrónico</label>
+                    <form onSubmit={handleSubmit} noValidate>
+                        {/* Campo de Correo con CampoFormulario */}
+                        <CampoFormulario
+                            label="Correo Electrónico"
+                            id="login-email"
+                            error={errores.email}
+                            obligatorio
+                        >
                             <input
+                                id="login-email"
                                 type="email"
-                                className="form-control"
+                                className={`form-control ${errores.email ? 'is-invalid' : ''}`}
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="ejemplo@correo.com"
-                                required
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (errores.email) setErrores(prev => ({ ...prev, email: '' }));
+                                }}
+                                placeholder="ejemplo@gmail.com / @duoc.cl"
                                 style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
                             />
-                        </div>
+                        </CampoFormulario>
 
-                        <div className="mb-4">
-                            <label className="form-label fw-semibold" style={{ color: 'var(--text-main)' }}>Contraseña</label>
+                        {/* Campo de Contraseña con CampoFormulario */}
+                        <CampoFormulario
+                            label="Contraseña"
+                            id="login-password"
+                            error={errores.password}
+                            obligatorio
+                        >
                             <input
+                                id="login-password"
                                 type="password"
-                                className="form-control"
+                                className={`form-control ${errores.password ? 'is-invalid' : ''}`}
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="******"
-                                required
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (errores.password) setErrores(prev => ({ ...prev, password: '' }));
+                                }}
+                                placeholder="Entre 4 y 10 caracteres"
                                 style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
                             />
-                        </div>
+                        </CampoFormulario>
 
                         <button type="submit" className="btn btn-hero-gold w-100 mb-3 fw-bold">
                             Ingresar
                         </button>
+
+                        <div className="text-center mt-3">
+                            <span className="small text-secondary">¿No tienes cuenta? </span>
+                            <Link to="/registro" className="small text-gold fw-bold text-decoration-none">
+                                Regístrate aquí
+                            </Link>
+                        </div>
                     </form>
 
                     {/* Accesos rápidos para evaluación */}
@@ -124,11 +165,6 @@ export function Login() {
                         </div>
                     </div>
 
-                    <div className="text-center mt-3">
-                        <Link to="/" className="text-secondary small">
-                            &larr; Volver al Inicio
-                        </Link>
-                    </div>
                 </div>
             </div>
         </section>

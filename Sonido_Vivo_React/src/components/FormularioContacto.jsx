@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { validarEmail } from '../utils/validaciones';
 
 const datosIniciales = {
     nombre: '',
@@ -64,8 +65,9 @@ export function FormularioContacto() {
             nuevosErrores.nombre = 'Ingresa tu nombre (mínimo 3 caracteres).';
         }
 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.email.trim())) {
-            nuevosErrores.email = 'Ingresa un correo electrónico válido.';
+        const errorEmail = validarEmail(datos.email);
+        if (errorEmail) {
+            nuevosErrores.email = errorEmail;
         }
 
         if (telefono && !/^(\+?56)?9[0-9]{8}$/.test(telefono)) {

@@ -17,6 +17,7 @@ import { Carrito } from './pages/tienda/Carrito';
 import { Blogs } from './pages/tienda/Blogs';
 import { Contacto } from './pages/tienda/Contacto';
 import { Login } from './pages/Login';
+import { Registro } from './pages/tienda/Registro';
 import { NotFound } from './pages/NotFound';
 
 // --- Páginas Protegidas por Rol ---
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="Blogs" element={<Blogs />} />
               <Route path="Contacto" element={<Contacto />} />
               <Route path="login" element={<Login />} />
+              <Route path="registro" element={<Registro />} />
               <Route path="*" element={<NotFound />} />
             </Route>
 
