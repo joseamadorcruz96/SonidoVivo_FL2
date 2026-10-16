@@ -3,18 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { regionesYComunas } from '../../data/regionesComunas';
 import { registrarUsuario } from '../../services/db';
-import {
-    validarRun,
-    validarEmail,
-    validarPassword,
-    validarTexto
-} from '../../utils/validaciones';
+import { validarRun, validarEmail, validarPassword, validarTexto } from '../../utils/validaciones';
 
 export function Registro() {
     const navigate = useNavigate();
 
-    // 1. Estado de los datos del formulario
-    const [formulario, setFormulario] = useState({
+    // 1. Estado simple del formulario
+    const [form, setForm] = useState({
         run: '',
         nombre: '',
         apellidos: '',
@@ -24,118 +19,70 @@ export function Registro() {
         comuna: '',
         direccion: '',
         password: '',
-        confirmarPassword: ''
+        confirmar: ''
     });
 
-    // 2. Estado de errores y feedback
     const [errores, setErrores] = useState({});
-    const [registroExitoso, setRegistroExitoso] = useState(false);
-    const [errorServidor, setErrorServidor] = useState('');
+    const [exito, setExito] = useState(false);
 
-    // Lista de comunas dependiente de la región elegida
-    const regionSeleccionada = regionesYComunas.find(r => r.region === formulario.region);
-    const comunasDisponibles = regionSeleccionada ? regionSeleccionada.comunas : [];
+    // 2. Comunas dinámicas según la región elegida
+    const regionActiva = regionesYComunas.find(r => r.region === form.region);
+    const comunas = regionActiva ? regionActiva.comunas : [];
 
-    // Manejador de cambios en inputs
-    const manejarCambio = (e) => {
+    // 3. Manejador de cambio único para todos los campos
+    const handleChange = (e) => {
         const { name, value } = e.target;
+        setForm(prev => ({
+            ...prev,
+            [name]: value,
+            ...(name === 'region' ? { comuna: '' } : {}) // limpia comuna si cambia región
+        }));
 
-        setFormulario(prev => {
-            const nuevoEstado = { ...prev, [name]: value };
-            // Si cambia la región, reiniciamos la comuna seleccionada
-            if (name === 'region') {
-                nuevoEstado.comuna = '';
-            }
-            return nuevoEstado;
-        });
-
-        // Limpiar error del campo al escribir
         if (errores[name]) {
             setErrores(prev => ({ ...prev, [name]: '' }));
         }
     };
 
-    // Manejador del envío del formulario
-    const manejarEnvio = (e) => {
+    // 4. Manejador de envío con validaciones directas
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setErrorServidor('');
 
-        // Validaciones según pauta DSY1104
-        const nuevosErrores = {};
+        // Validamos todos los campos en un solo objeto limpio
+        const nuevosErrores = {
+            run: validarRun(form.run),
+            nombre: validarTexto(form.nombre, 'El nombre', 50),
+            apellidos: validarTexto(form.apellidos, 'Los apellidos', 100),
+            email: validarEmail(form.email),
+            region: !form.region ? 'Selecciona una región' : '',
+            comuna: !form.comuna ? 'Selecciona una comuna' : '',
+            direccion: validarTexto(form.direccion, 'La dirección', 300),
+            password: validarPassword(form.password),
+            confirmar: form.password !== form.confirmar ? 'Las contraseñas no coinciden' : ''
+        };
 
-        const errRun = validarRun(formulario.run);
-        if (errRun) nuevosErrores.run = errRun;
-
-        const errNombre = validarTexto(formulario.nombre, 'El nombre', 50, 2);
-        if (errNombre) nuevosErrores.nombre = errNombre;
-
-        const errApellidos = validarTexto(formulario.apellidos, 'Los apellidos', 100, 2);
-        if (errApellidos) nuevosErrores.apellidos = errApellidos;
-
-        const errEmail = validarEmail(formulario.email);
-        if (errEmail) nuevosErrores.email = errEmail;
-
-        if (!formulario.region) {
-            nuevosErrores.region = 'Debes seleccionar una región.';
-        }
-
-        if (!formulario.comuna) {
-            nuevosErrores.comuna = 'Debes seleccionar una comuna.';
-        }
-
-        const errDireccion = validarTexto(formulario.direccion, 'La dirección', 300, 5);
-        if (errDireccion) nuevosErrores.direccion = errDireccion;
-
-        const errPass = validarPassword(formulario.password);
-        if (errPass) nuevosErrores.password = errPass;
-
-        if (formulario.password !== formulario.confirmarPassword) {
-            nuevosErrores.confirmarPassword = 'Las contraseñas no coinciden.';
-        }
-
-        // Si hay errores, no continúa
-        if (Object.keys(nuevosErrores).length > 0) {
+        // Si alguno tiene mensaje de error, no continuamos
+        if (Object.values(nuevosErrores).some(Boolean)) {
             setErrores(nuevosErrores);
             return;
         }
 
         try {
-            // Guardar usuario en LocalStorage mediante db.js
-            registrarUsuario({
-                run: formulario.run.trim().toUpperCase(),
-                nombre: formulario.nombre.trim(),
-                apellidos: formulario.apellidos.trim(),
-                email: formulario.email.trim().toLowerCase(),
-                fechaNacimiento: formulario.fechaNacimiento,
-                region: formulario.region,
-                comuna: formulario.comuna,
-                direccion: formulario.direccion.trim(),
-                password: formulario.password,
-                rol: 'cliente'
-            });
-
-            setRegistroExitoso(true);
-        } catch (error) {
-            setErrorServidor(error.message || 'Error al registrar usuario.');
+            registrarUsuario({ ...form, rol: 'cliente' });
+            setExito(true);
+        } catch (err) {
+            setErrores({ general: err.message });
         }
     };
 
-    // Pantalla de confirmación de registro exitoso
-    if (registroExitoso) {
+    // Vista de confirmación sencilla
+    if (exito) {
         return (
-            <div className="container py-5 text-center" style={{ maxWidth: '600px' }}>
-                <div className="card shadow-lg p-5" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)' }}>
-                    <div className="text-gold display-4 mb-3">✓</div>
-                    <h2 className="text-light fw-bold mb-3">¡Registro Exitoso!</h2>
-                    <p className="text-secondary mb-4">
-                        Tu cuenta ha sido creada correctamente con el correo <strong>{formulario.email}</strong>. Ya puedes iniciar sesión para acceder a Sonido Vivo.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/login')}
-                        className="btn btn-hero-gold fw-bold px-4 py-2"
-                    >
-                        Ir al Inicio de Sesión
+            <div className="container py-5 text-center" style={{ maxWidth: '500px' }}>
+                <div className="card bg-dark text-light p-4 shadow">
+                    <h2 className="text-gold mb-3">¡Registro Exitoso!</h2>
+                    <p className="text-secondary">Tu cuenta con <strong>{form.email}</strong> fue creada correctamente.</p>
+                    <button onClick={() => navigate('/login')} className="btn btn-hero-gold fw-bold mt-2">
+                        Ir a Iniciar Sesión
                     </button>
                 </div>
             </div>
@@ -143,262 +90,160 @@ export function Registro() {
     }
 
     return (
-        <div className="container py-5" style={{ maxWidth: '750px' }}>
-            <div className="card shadow-lg" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)' }}>
-                <div className="card-body p-4 p-md-5">
+        <div className="container py-5" style={{ maxWidth: '650px' }}>
+            <div className="card bg-dark text-light p-4 shadow">
+                <h2 className="text-center fw-bold text-gold mb-1">Crear Cuenta</h2>
+                <p className="text-center text-secondary small mb-4">Completa tus datos para registrarte</p>
 
-                    <div className="text-center mb-4">
-                        <span className="badge-hero-pill mb-2">Comunidad Musical</span>
-                        <h1 className="h2 fw-bold text-light mb-2">
-                            Crear Cuenta en <span className="text-gold">Sonido Vivo</span>
-                        </h1>
-                        <p className="text-secondary small">
-                            Regístrate para comprar instrumentos y consultar tus pedidos.
-                        </p>
+                {errores.general && (
+                    <div className="alert alert-danger py-2 small">{errores.general}</div>
+                )}
+
+                <form onSubmit={handleSubmit} noValidate>
+                    {/* RUN */}
+                    <CampoFormulario label="RUN (sin puntos ni guión)" error={errores.run} obligatorio>
+                        <input
+                            name="run"
+                            className="form-control"
+                            value={form.run}
+                            onChange={handleChange}
+                            placeholder="Ej: 19011022K"
+                        />
+                    </CampoFormulario>
+
+                    {/* Nombre y Apellidos */}
+                    <div className="row">
+                        <div className="col-md-6">
+                            <CampoFormulario label="Nombre" error={errores.nombre} obligatorio>
+                                <input
+                                    name="nombre"
+                                    className="form-control"
+                                    value={form.nombre}
+                                    onChange={handleChange}
+                                    placeholder="Matías"
+                                />
+                            </CampoFormulario>
+                        </div>
+                        <div className="col-md-6">
+                            <CampoFormulario label="Apellidos" error={errores.apellidos} obligatorio>
+                                <input
+                                    name="apellidos"
+                                    className="form-control"
+                                    value={form.apellidos}
+                                    onChange={handleChange}
+                                    placeholder="Silva Rojas"
+                                />
+                            </CampoFormulario>
+                        </div>
                     </div>
 
-                    {errorServidor && (
-                        <div className="alert alert-danger py-2 text-center small mb-4" role="alert">
-                            {errorServidor}
+                    {/* Correo y Fecha de Nacimiento */}
+                    <div className="row">
+                        <div className="col-md-7">
+                            <CampoFormulario label="Correo Electrónico" error={errores.email} obligatorio>
+                                <input
+                                    name="email"
+                                    type="email"
+                                    className="form-control"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    placeholder="@duoc.cl o @gmail.com"
+                                />
+                            </CampoFormulario>
                         </div>
-                    )}
-
-                    <form onSubmit={manejarEnvio} noValidate>
-                        {/* RUN */}
-                        <CampoFormulario
-                            label="RUN (RUT)"
-                            id="reg-run"
-                            error={errores.run}
-                            obligatorio
-                        >
-                            <input
-                                id="reg-run"
-                                name="run"
-                                type="text"
-                                className={`form-control ${errores.run ? 'is-invalid' : ''}`}
-                                value={formulario.run}
-                                onChange={manejarCambio}
-                                placeholder="Sin puntos ni guión (Ej: 19011022K)"
-                                style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                            />
-                        </CampoFormulario>
-
-                        {/* Nombre y Apellidos (en fila de 2 columnas) */}
-                        <div className="row">
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Nombre"
-                                    id="reg-nombre"
-                                    error={errores.nombre}
-                                    obligatorio
-                                >
-                                    <input
-                                        id="reg-nombre"
-                                        name="nombre"
-                                        type="text"
-                                        className={`form-control ${errores.nombre ? 'is-invalid' : ''}`}
-                                        value={formulario.nombre}
-                                        onChange={manejarCambio}
-                                        placeholder="Ej: Matías"
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
-
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Apellidos"
-                                    id="reg-apellidos"
-                                    error={errores.apellidos}
-                                    obligatorio
-                                >
-                                    <input
-                                        id="reg-apellidos"
-                                        name="apellidos"
-                                        type="text"
-                                        className={`form-control ${errores.apellidos ? 'is-invalid' : ''}`}
-                                        value={formulario.apellidos}
-                                        onChange={manejarCambio}
-                                        placeholder="Ej: Silva Rojas"
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
+                        <div className="col-md-5">
+                            <CampoFormulario label="Fecha de Nacimiento">
+                                <input
+                                    name="fechaNacimiento"
+                                    type="date"
+                                    className="form-control"
+                                    value={form.fechaNacimiento}
+                                    onChange={handleChange}
+                                />
+                            </CampoFormulario>
                         </div>
+                    </div>
 
-                        {/* Correo y Fecha de Nacimiento */}
-                        <div className="row">
-                            <div className="col-12 col-md-7">
-                                <CampoFormulario
-                                    label="Correo Electrónico"
-                                    id="reg-email"
-                                    error={errores.email}
-                                    obligatorio
-                                >
-                                    <input
-                                        id="reg-email"
-                                        name="email"
-                                        type="email"
-                                        className={`form-control ${errores.email ? 'is-invalid' : ''}`}
-                                        value={formulario.email}
-                                        onChange={manejarCambio}
-                                        placeholder="@duoc.cl, @profesor.duoc.cl o @gmail.com"
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
-
-                            <div className="col-12 col-md-5">
-                                <CampoFormulario
-                                    label="Fecha de Nacimiento"
-                                    id="reg-fecha"
-                                >
-                                    <input
-                                        id="reg-fecha"
-                                        name="fechaNacimiento"
-                                        type="date"
-                                        className="form-control"
-                                        value={formulario.fechaNacimiento}
-                                        onChange={manejarCambio}
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
+                    {/* Región y Comuna (Selector dependiente) */}
+                    <div className="row">
+                        <div className="col-md-6">
+                            <CampoFormulario label="Región" error={errores.region} obligatorio>
+                                <select name="region" className="form-select" value={form.region} onChange={handleChange}>
+                                    <option value="">Selecciona región...</option>
+                                    {regionesYComunas.map(r => (
+                                        <option key={r.region} value={r.region}>{r.region}</option>
+                                    ))}
+                                </select>
+                            </CampoFormulario>
                         </div>
-
-                        {/* Select dependiente: Región y Comuna */}
-                        <div className="row">
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Región"
-                                    id="reg-region"
-                                    error={errores.region}
-                                    obligatorio
+                        <div className="col-md-6">
+                            <CampoFormulario label="Comuna" error={errores.comuna} obligatorio>
+                                <select
+                                    name="comuna"
+                                    className="form-select"
+                                    value={form.comuna}
+                                    onChange={handleChange}
+                                    disabled={!form.region}
                                 >
-                                    <select
-                                        id="reg-region"
-                                        name="region"
-                                        className={`form-select ${errores.region ? 'is-invalid' : ''}`}
-                                        value={formulario.region}
-                                        onChange={manejarCambio}
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    >
-                                        <option value="">Selecciona una región...</option>
-                                        {regionesYComunas.map(item => (
-                                            <option key={item.region} value={item.region}>
-                                                {item.region}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </CampoFormulario>
-                            </div>
-
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Comuna"
-                                    id="reg-comuna"
-                                    error={errores.comuna}
-                                    obligatorio
-                                >
-                                    <select
-                                        id="reg-comuna"
-                                        name="comuna"
-                                        className={`form-select ${errores.comuna ? 'is-invalid' : ''}`}
-                                        value={formulario.comuna}
-                                        onChange={manejarCambio}
-                                        disabled={!formulario.region}
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    >
-                                        <option value="">
-                                            {formulario.region ? 'Selecciona una comuna...' : 'Primero elige una región'}
-                                        </option>
-                                        {comunasDisponibles.map(comuna => (
-                                            <option key={comuna} value={comuna}>
-                                                {comuna}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </CampoFormulario>
-                            </div>
+                                    <option value="">{form.region ? 'Selecciona comuna...' : 'Elige región primero'}</option>
+                                    {comunas.map(c => (
+                                        <option key={c} value={c}>{c}</option>
+                                    ))}
+                                </select>
+                            </CampoFormulario>
                         </div>
+                    </div>
 
-                        {/* Dirección */}
-                        <CampoFormulario
-                            label="Dirección"
-                            id="reg-direccion"
-                            error={errores.direccion}
-                            obligatorio
-                        >
-                            <input
-                                id="reg-direccion"
-                                name="direccion"
-                                type="text"
-                                className={`form-control ${errores.direccion ? 'is-invalid' : ''}`}
-                                value={formulario.direccion}
-                                onChange={manejarCambio}
-                                placeholder="Calle, número, departamento o referencia"
-                                style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                            />
-                        </CampoFormulario>
+                    {/* Dirección */}
+                    <CampoFormulario label="Dirección" error={errores.direccion} obligatorio>
+                        <input
+                            name="direccion"
+                            className="form-control"
+                            value={form.direccion}
+                            onChange={handleChange}
+                            placeholder="Calle 123, Depto 4"
+                        />
+                    </CampoFormulario>
 
-                        {/* Contraseña y Confirmar Contraseña */}
-                        <div className="row">
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Contraseña"
-                                    id="reg-password"
-                                    error={errores.password}
-                                    obligatorio
-                                >
-                                    <input
-                                        id="reg-password"
-                                        name="password"
-                                        type="password"
-                                        className={`form-control ${errores.password ? 'is-invalid' : ''}`}
-                                        value={formulario.password}
-                                        onChange={manejarCambio}
-                                        placeholder="Entre 4 y 10 caracteres"
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
-
-                            <div className="col-12 col-md-6">
-                                <CampoFormulario
-                                    label="Confirmar Contraseña"
-                                    id="reg-confirmar"
-                                    error={errores.confirmarPassword}
-                                    obligatorio
-                                >
-                                    <input
-                                        id="reg-confirmar"
-                                        name="confirmarPassword"
-                                        type="password"
-                                        className={`form-control ${errores.confirmarPassword ? 'is-invalid' : ''}`}
-                                        value={formulario.confirmarPassword}
-                                        onChange={manejarCambio}
-                                        placeholder="Repite tu contraseña"
-                                        style={{ backgroundColor: 'var(--bg-body)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)' }}
-                                    />
-                                </CampoFormulario>
-                            </div>
+                    {/* Contraseñas */}
+                    <div className="row">
+                        <div className="col-md-6">
+                            <CampoFormulario label="Contraseña (4-10 car.)" error={errores.password} obligatorio>
+                                <input
+                                    name="password"
+                                    type="password"
+                                    className="form-control"
+                                    value={form.password}
+                                    onChange={handleChange}
+                                    placeholder="******"
+                                />
+                            </CampoFormulario>
                         </div>
-
-                        <button
-                            type="submit"
-                            className="btn btn-hero-gold w-100 py-2 fw-bold mt-3"
-                        >
-                            Completar Registro
-                        </button>
-
-                        <div className="text-center mt-4">
-                            <span className="small text-secondary">¿Ya tienes una cuenta registrada? </span>
-                            <Link to="/login" className="small text-gold fw-bold text-decoration-none">
-                                Inicia Sesión
-                            </Link>
+                        <div className="col-md-6">
+                            <CampoFormulario label="Confirmar Contraseña" error={errores.confirmar} obligatorio>
+                                <input
+                                    name="confirmar"
+                                    type="password"
+                                    className="form-control"
+                                    value={form.confirmar}
+                                    onChange={handleChange}
+                                    placeholder="******"
+                                />
+                            </CampoFormulario>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <button type="submit" className="btn btn-hero-gold w-100 fw-bold mt-3">
+                        Completar Registro
+                    </button>
+
+                    <div className="text-center mt-3">
+                        <span className="small text-secondary">¿Ya tienes cuenta? </span>
+                        <Link to="/login" className="small text-gold fw-bold text-decoration-none">
+                            Inicia Sesión
+                        </Link>
+                    </div>
+                </form>
             </div>
         </div>
     );

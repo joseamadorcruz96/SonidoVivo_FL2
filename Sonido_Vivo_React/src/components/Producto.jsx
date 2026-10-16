@@ -1,18 +1,3 @@
-/**
- * ============================================================================
- * SONIDO VIVO - Componente Tonto: Producto
- * Archivo: src/components/tienda/Producto.jsx
- * ============================================================================
- * COMPONENTE TONTO (Presentacional / Dumb Component):
- * - No maneja estados complejos ni efectos secundarios (sin useEffect).
- * - No accede directamente a LocalStorage ni a APIs.
- * - Solo recibe propiedades (props) y renderiza la estructura visual.
- * - Comunica acciones del usuario hacia el padre mediante callbacks (onAgregarAlCarrito).
- *
- * Basado en la estructura DOM de: old/js/catalogo.js
- * Estilos vinculados a: src/App.css (.card-producto, .card-producto-img, etc.)
- */
-
 export function Producto({ producto, onAgregarAlCarrito }) {
   if (!producto) return null;
 
