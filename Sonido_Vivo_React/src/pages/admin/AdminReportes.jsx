@@ -123,12 +123,12 @@ export function AdminReportes() {
       {/* Gráficos Recharts */}
       <div className="row g-4 mb-4">
         {/* Gráfico de Barras: Niveles de Stock */}
-        <div className="col-12 col-lg-7">
+        <div className="col-12 col-lg-7" style={{ minWidth: 0 }}>
           <div className="card bg-dark border-secondary p-4 h-100 shadow-sm">
             <h4 className="h6 fw-bold text-light mb-3">
               Nivel de Stock vs. Umbral Crítico (Muestra de Productos)
             </h4>
-            <div style={{ width: '100%', height: 280 }}>
+            <div style={{ width: '100%', height: 280, minWidth: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={datosStockProductos} margin={{ top: 10, right: 10, left: -20, bottom: 25 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#444" />
@@ -145,12 +145,12 @@ export function AdminReportes() {
         </div>
 
         {/* Gráfico de Torta: Distribución por Categoría */}
-        <div className="col-12 col-lg-5">
+        <div className="col-12 col-lg-5" style={{ minWidth: 0 }}>
           <div className="card bg-dark border-secondary p-4 h-100 shadow-sm">
             <h4 className="h6 fw-bold text-light mb-3">
               Distribución de Catálogo por Categorías
             </h4>
-            <div style={{ width: '100%', height: 280 }}>
+            <div style={{ width: '100%', height: 280, minWidth: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie

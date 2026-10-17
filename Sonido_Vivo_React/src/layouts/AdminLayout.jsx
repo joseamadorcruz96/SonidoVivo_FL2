@@ -125,7 +125,7 @@ export function AdminLayout() {
 
 
             {/* Contenedor Dinámico Derecho */}
-            <main className="flex-grow-1 p-3 p-md-4" style={{ overflowY: 'auto' }}>
+            <main className="flex-grow-1 p-3 p-md-4 min-w-0" style={{ minWidth: 0, overflowX: 'hidden', overflowY: 'auto' }}>
                 <Outlet /> 
             </main>
         </div>

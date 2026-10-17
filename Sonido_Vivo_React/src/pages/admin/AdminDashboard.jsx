@@ -57,7 +57,7 @@ export function AdminDashboard() {
   ];
 
   return (
-    <div className="container-fluid py-3" style={{ backgroundColor: 'var(--bg-body)', minHeight: '80vh' }}>
+    <div className="container-fluid text-light py-2" style={{ minWidth: 0 }}>
       {/* Cabecera Principal (Figura 9) */}
       <div className="mb-4">
         <h2 className="text-light fw-bold m-0">Dashboard</h2>
@@ -180,10 +180,10 @@ export function AdminDashboard() {
       {/* Sección de Gráficos Recharts */}
       <div className="row g-4">
         {/* Gráfico de Barras: Productos Más Vendidos */}
-        <div className="col-12 col-lg-7">
+        <div className="col-12 col-lg-7" style={{ minWidth: 0 }}>
           <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
             <h5 className="text-light mb-3 fs-6 fw-bold">Top 5 Productos Más Vendidos (Unidades)</h5>
-            <div style={{ width: '100%', height: 300 }}>
+            <div style={{ width: '100%', height: 300, minWidth: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={datosProductosMasVendidos} margin={{ top: 10, right: 10, left: -15, bottom: 45 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#444" />
@@ -199,10 +199,10 @@ export function AdminDashboard() {
         </div>
 
         {/* Gráfico de Torta: Ingresos por Categoría */}
-        <div className="col-12 col-lg-5">
+        <div className="col-12 col-lg-5" style={{ minWidth: 0 }}>
           <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
             <h5 className="text-light mb-3 fs-6 fw-bold">Ingresos por Categoría</h5>
-            <div style={{ width: '100%', height: 300 }}>
+            <div style={{ width: '100%', height: 300, minWidth: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
