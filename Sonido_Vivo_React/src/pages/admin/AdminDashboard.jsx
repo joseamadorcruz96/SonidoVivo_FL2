@@ -1,116 +1,235 @@
-import React from 'react';
-import { 
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as TooltipBar, Legend, ResponsiveContainer,
-    PieChart, Pie, Cell, Tooltip as TooltipPie
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as TooltipBar,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as TooltipPie,
 } from 'recharts';
+import { getOrdenes, getUsuarios } from '../../services/db';
 
-// --- Datos simulados para los gráficos ---
-const datosProductosMasVendidos = [
-    { nombre: 'Fender Stratocaster', ventas: 45 },
-    { nombre: 'Bajo Yamaha TRBX', ventas: 30 },
-    { nombre: 'Teclado Casio', ventas: 25 },
-    { nombre: 'Batería Pearl', ventas: 18 },
-    { nombre: 'Micrófono Shure', ventas: 40 },
-];
-
-const datosVentasPorCategoria = [
-    { nombre: 'Guitarras', valor: 3500000 },
-    { nombre: 'Bajos', valor: 1200000 },
-    { nombre: 'Audio/Micrófonos', valor: 850000 },
-    { nombre: 'Accesorios', valor: 450000 },
-];
-
-// Colores dorados y oscuros para mantener la estética de Sonido Vivo
-const COLORES_TORTA = ['#FFC107', '#FF9800', '#FF5722', '#795548'];
+const COLORES_TORTA = ['#FFC107', '#FF9800', '#FF5722', '#795548', '#00BCD4'];
 
 export function AdminDashboard() {
-    return (
-        <div className="container-fluid py-4" style={{ backgroundColor: 'var(--bg-body)', minHeight: '80vh' }}>
-            <h2 className="text-light fw-bold mb-4">
-                Dashboard <span style={{ color: 'var(--color-gold)' }}>Principal</span>
-            </h2>
-            
-            {/* Tarjetas de Resumen General */}
-            <div className="row g-3 g-md-4 mb-4">
-                <div className="col-12 col-sm-6 col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm h-100">
-                        <div className="card-body text-center p-3">
-                            <h5 className="text-secondary small">Ventas del Mes</h5>
-                            <h2 className="text-success fw-bold fs-3">$6.000.000</h2>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 col-sm-6 col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm h-100">
-                        <div className="card-body text-center p-3">
-                            <h5 className="text-secondary small">Órdenes Completadas</h5>
-                            <h2 className="text-light fw-bold fs-3">124</h2>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 col-sm-12 col-md-4">
-                    <div className="card bg-dark border-secondary shadow-sm h-100">
-                        <div className="card-body text-center p-3">
-                            <h5 className="text-secondary small">Nuevos Clientes</h5>
-                            <h2 className="text-info fw-bold fs-3">18</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const ordenes = getOrdenes();
+  const usuarios = getUsuarios();
 
-            {/* Sección de Gráficos */}
-            <div className="row g-4">
-                {/* Gráfico de Barras: Productos Más Vendidos */}
-                <div className="col-12 col-lg-7 mb-3 mb-lg-0">
-                    <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
-                        <h5 className="text-light mb-3 fs-6 fw-bold">Top 5 Productos Más Vendidos (Unidades)</h5>
-                        <div style={{ width: '100%', height: 320 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={datosProductosMasVendidos} margin={{ top: 10, right: 10, left: -15, bottom: 45 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                                    <XAxis dataKey="nombre" stroke="#ccc" tick={{ fontSize: 11 }} angle={-25} textAnchor="end" interval={0} height={55} />
-                                    <YAxis stroke="#ccc" tick={{ fontSize: 11 }} />
-                                    <TooltipBar cursor={{ fill: '#333' }} contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }} />
-                                    <Legend wrapperStyle={{ paddingTop: '5px' }} />
-                                    <Bar dataKey="ventas" name="Unidades Vendidas" fill="var(--color-gold, #FFC107)" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
+  const metricas = useMemo(() => {
+    const ordenesCompletadas = ordenes.filter((o) => o.estado === 'completada');
+    const totalVentas = ordenesCompletadas.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
 
-                {/* Gráfico de Torta: Ingresos por Categoría */}
-                <div className="col-12 col-lg-5">
-                    <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
-                        <h5 className="text-light mb-3 fs-6 fw-bold">Ingresos por Categoría</h5>
-                        <div style={{ width: '100%', height: 320 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={datosVentasPorCategoria}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={55}
-                                        outerRadius={90}
-                                        paddingAngle={5}
-                                        dataKey="valor"
-                                        nameKey="nombre"
-                                    >
-                                        {datosVentasPorCategoria.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORES_TORTA[index % COLORES_TORTA.length]} />
-                                        ))}
-                                    </Pie>
-                                    <TooltipPie 
-                                        formatter={(value) => `$${value.toLocaleString('es-CL')}`} 
-                                        contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }}
-                                    />
-                                    <Legend />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
+    const guardadosProductos = localStorage.getItem('sv_productos');
+    const productos = guardadosProductos ? JSON.parse(guardadosProductos) : [];
+    const stockTotal = productos.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
+
+    return {
+      totalVentas,
+      cantidadOrdenes: ordenes.length,
+      totalProductos: productos.length,
+      stockTotal,
+      totalUsuarios: usuarios.length,
+    };
+  }, [ordenes, usuarios]);
+
+  // Datos simulados para los gráficos de ventas
+  const datosProductosMasVendidos = [
+    { nombre: 'Stratocaster', ventas: 45 },
+    { nombre: 'Bajo Jazz', ventas: 30 },
+    { nombre: 'Teclado Yamaha', ventas: 25 },
+    { nombre: 'Batería Pearl', ventas: 18 },
+    { nombre: 'Pedal Boss', ventas: 40 },
+  ];
+
+  const datosVentasPorCategoria = [
+    { nombre: 'Guitarras', valor: 3500000 },
+    { nombre: 'Bajos', valor: 1200000 },
+    { nombre: 'Teclados', valor: 950000 },
+    { nombre: 'Baterías', valor: 850000 },
+    { nombre: 'Accesorios', valor: 450000 },
+  ];
+
+  return (
+    <div className="container-fluid py-3" style={{ backgroundColor: 'var(--bg-body)', minHeight: '80vh' }}>
+      {/* Cabecera Principal (Figura 9) */}
+      <div className="mb-4">
+        <h2 className="text-light fw-bold m-0">Dashboard</h2>
+        <p className="text-secondary small m-0">Resumen de las actividades y operaciones del sistema</p>
+      </div>
+
+      {/* Tarjetas Superiores de Métricas (Figura 9: Compras, Productos, Usuarios) */}
+      <div className="row g-3 mb-4">
+        <div className="col-12 col-md-4">
+          <div className="card bg-primary bg-opacity-75 text-white border-0 shadow-sm h-100 p-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <span className="small text-white-50 text-uppercase fw-bold">Compras / Órdenes</span>
+                <h3 className="fw-bold my-1">
+                  {metricas.cantidadOrdenes > 0 ? metricas.cantidadOrdenes : '1,234'}
+                </h3>
+                <small className="text-white-50">
+                  Total facturado: ${metricas.totalVentas.toLocaleString('es-CL')}
+                </small>
+              </div>
+              <span className="fs-1 opacity-50">🛒</span>
             </div>
+          </div>
         </div>
-    );
+
+        <div className="col-12 col-md-4">
+          <div className="card bg-success bg-opacity-75 text-white border-0 shadow-sm h-100 p-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <span className="small text-white-50 text-uppercase fw-bold">Productos</span>
+                <h3 className="fw-bold my-1">{metricas.totalProductos}</h3>
+                <small className="text-white-50">Inventario disponible: {metricas.stockTotal} un.</small>
+              </div>
+              <span className="fs-1 opacity-50">📦</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-4">
+          <div className="card bg-warning bg-opacity-75 text-dark border-0 shadow-sm h-100 p-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <span className="small text-black-50 text-uppercase fw-bold">Usuarios</span>
+                <h3 className="fw-bold my-1">{metricas.totalUsuarios}</h3>
+                <small className="text-black-50">Cuentas registradas en plataforma</small>
+              </div>
+              <span className="fs-1 opacity-50">👥</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Cuadrícula de Accesos Rápidos (Propuesta Figura 9) */}
+      <div className="row g-3 mb-5">
+        <div className="col-6 col-md-3">
+          <Link to="/admin" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">📊</span>
+            <strong className="text-light small d-block">Dashboard</strong>
+            <span className="text-secondary smaller">Visión general y métricas</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/ordenes" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">🧾</span>
+            <strong className="text-light small d-block">Órdenes</strong>
+            <span className="text-secondary smaller">Gestión y boletas de compra</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/productos" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">🎸</span>
+            <strong className="text-light small d-block">Productos</strong>
+            <span className="text-secondary smaller">Catálogo y stock crítico</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/categorias" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">📁</span>
+            <strong className="text-light small d-block">Categorías</strong>
+            <span className="text-secondary smaller">Familias de instrumentos</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/usuarios" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">👥</span>
+            <strong className="text-light small d-block">Usuarios</strong>
+            <span className="text-secondary smaller">Roles y cuentas de usuario</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/reportes" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">📈</span>
+            <strong className="text-light small d-block">Reportes</strong>
+            <span className="text-secondary smaller">Informes y estadísticas</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/admin/perfil" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">👤</span>
+            <strong className="text-light small d-block">Perfil</strong>
+            <span className="text-secondary smaller">Configuración de cuenta</span>
+          </Link>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <Link to="/" className="card bg-dark border-secondary p-3 text-center text-decoration-none h-100 hover-card">
+            <span className="fs-3 mb-1">🛍️</span>
+            <strong className="text-light small d-block">Tienda</strong>
+            <span className="text-secondary smaller">Ir a la vista de cliente</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Sección de Gráficos Recharts */}
+      <div className="row g-4">
+        {/* Gráfico de Barras: Productos Más Vendidos */}
+        <div className="col-12 col-lg-7">
+          <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
+            <h5 className="text-light mb-3 fs-6 fw-bold">Top 5 Productos Más Vendidos (Unidades)</h5>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={datosProductosMasVendidos} margin={{ top: 10, right: 10, left: -15, bottom: 45 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                  <XAxis dataKey="nombre" stroke="#ccc" tick={{ fontSize: 11 }} angle={-25} textAnchor="end" interval={0} height={55} />
+                  <YAxis stroke="#ccc" tick={{ fontSize: 11 }} />
+                  <TooltipBar cursor={{ fill: '#333' }} contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }} />
+                  <Legend wrapperStyle={{ paddingTop: '5px' }} />
+                  <Bar dataKey="ventas" name="Unidades Vendidas" fill="var(--color-gold, #FFC107)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Gráfico de Torta: Ingresos por Categoría */}
+        <div className="col-12 col-lg-5">
+          <div className="card bg-dark border-secondary h-100 shadow-sm p-3">
+            <h5 className="text-light mb-3 fs-6 fw-bold">Ingresos por Categoría</h5>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={datosVentasPorCategoria}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={90}
+                    paddingAngle={5}
+                    dataKey="valor"
+                    nameKey="nombre"
+                  >
+                    {datosVentasPorCategoria.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORES_TORTA[index % COLORES_TORTA.length]} />
+                    ))}
+                  </Pie>
+                  <TooltipPie
+                    formatter={(value) => `$${value.toLocaleString('es-CL')}`}
+                    contentStyle={{ backgroundColor: '#222', borderColor: '#444', color: '#fff' }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

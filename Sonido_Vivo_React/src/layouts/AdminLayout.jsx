@@ -1,9 +1,17 @@
 import { useState } from 'react';
-import { NavLink, Outlet, Link } from 'react-router-dom';
+import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext';
 
 export function AdminLayout() {
     const [sidebarAbierto, setSidebarAbierto] = useState(false);
     const cerrarSidebar = () => setSidebarAbierto(false);
+    const { cerrarSesion } = useAuth();
+    const navigate = useNavigate();
+
+    function manejarLogout() {
+        cerrarSesion();
+        navigate('/login');
+    }
 
     return (
         <div className="d-flex flex-column flex-md-row" style={{ minHeight: '100vh', backgroundColor: '#1a1a1a' }}>
@@ -45,11 +53,29 @@ export function AdminLayout() {
                         </li>
                         <li className="nav-item">
                             <NavLink 
+                                to="/admin/ordenes" 
+                                onClick={cerrarSidebar}
+                                className={({ isActive }) => `nav-link ${isActive ? 'bg-warning text-dark fw-bold' : 'text-light'}`}
+                            >
+                                🧾 Órdenes y Boletas
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
                                 to="/admin/productos" 
                                 onClick={cerrarSidebar}
                                 className={({ isActive }) => `nav-link ${isActive ? 'bg-warning text-dark fw-bold' : 'text-light'}`}
                             >
-                                🎸 Catálogo y Productos
+                                🎸 Productos y Stock
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                to="/admin/categorias" 
+                                onClick={cerrarSidebar}
+                                className={({ isActive }) => `nav-link ${isActive ? 'bg-warning text-dark fw-bold' : 'text-light'}`}
+                            >
+                                📁 Categorías
                             </NavLink>
                         </li>
                         <li className="nav-item">
@@ -62,13 +88,41 @@ export function AdminLayout() {
                             </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link to="/" onClick={cerrarSidebar} className="nav-link text-danger mt-md-4">
-                                ⬅ Volver a la Tienda
+                            <NavLink 
+                                to="/admin/reportes" 
+                                onClick={cerrarSidebar}
+                                className={({ isActive }) => `nav-link ${isActive ? 'bg-warning text-dark fw-bold' : 'text-light'}`}
+                            >
+                                📈 Reportes
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                to="/admin/perfil" 
+                                onClick={cerrarSidebar}
+                                className={({ isActive }) => `nav-link ${isActive ? 'bg-warning text-dark fw-bold' : 'text-light'}`}
+                            >
+                                👤 Mi Perfil
+                            </NavLink>
+                        </li>
+                        <li className="nav-item mt-3 pt-3 border-top border-secondary border-opacity-25">
+                            <Link to="/" onClick={cerrarSidebar} className="nav-link text-info">
+                                🛍️ Volver a la Tienda
                             </Link>
+                        </li>
+                        <li className="nav-item">
+                            <button 
+                                type="button" 
+                                onClick={manejarLogout} 
+                                className="nav-link text-danger w-100 text-start border-0 bg-transparent"
+                            >
+                                🚪 Cerrar Sesión
+                            </button>
                         </li>
                     </ul>
                 </div>
             </aside>
+
 
             {/* Contenedor Dinámico Derecho */}
             <main className="flex-grow-1 p-3 p-md-4" style={{ overflowY: 'auto' }}>

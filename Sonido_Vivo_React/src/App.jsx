@@ -29,8 +29,12 @@ import { NotFound } from './pages/NotFound';
 // --- Páginas Protegidas por Rol ---
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminProductos } from './pages/admin/AdminProductos';
-import { VendedorDashboard } from './pages/admin/VendedorDashboard';
+import { AdminCategorias } from './pages/admin/AdminCategorias';
+import { AdminOrdenes } from './pages/admin/AdminOrdenes';
 import { AdminUsuarios } from './pages/admin/AdminUsuarios';
+import { AdminReportes } from './pages/admin/AdminReportes';
+import { AdminPerfil } from './pages/admin/AdminPerfil';
+import { VendedorDashboard } from './pages/admin/VendedorDashboard';
 
 export default function App() {
   return (
@@ -57,7 +61,6 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
 
-
             {/* 2. RUTAS PROTEGIDAS (FUERA de MainLayout) */}
             <Route
               path="/admin"
@@ -68,9 +71,14 @@ export default function App() {
               }
             >
               <Route index element={<AdminDashboard />} />
+              <Route path="ordenes" element={<AdminOrdenes />} />
               <Route path="productos" element={<AdminProductos />} />
+              <Route path="categorias" element={<AdminCategorias />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
+              <Route path="reportes" element={<AdminReportes />} />
+              <Route path="perfil" element={<AdminPerfil />} />
             </Route>
+
 
             <Route
               path="/vendedor"

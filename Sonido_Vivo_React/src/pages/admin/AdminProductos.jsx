@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { productosIniciales } from '../../data/productosIniciales';
 import { useForm } from '../../hooks/useForm';
 import { CampoFormulario } from '../../components/CampoFormulario';
@@ -24,22 +24,25 @@ const categoriasDisponibles = [
 ];
 
 export function AdminProductos() {
-    const [productos, setProductos] = useState([]);
-    const [mostrarModal, setMostrarModal] = useState(false);
-
-    // Integramos el hook useForm
-    const { datos, setDatos, errores, setErrores, handleChange, resetForm } = useForm(valoresInicialesForm);
-
-    // 1. Cargar productos desde LocalStorage al iniciar
-    useEffect(() => {
+    const [productos, setProductos] = useState(() => {
         const guardados = localStorage.getItem('sv_productos');
         if (guardados) {
-            setProductos(JSON.parse(guardados));
-        } else {
-            localStorage.setItem('sv_productos', JSON.stringify(productosIniciales));
-            setProductos(productosIniciales);
+            try {
+                return JSON.parse(guardados);
+            } catch (e) {
+                console.warn('Error al leer productos', e);
+            }
         }
-    }, []);
+        localStorage.setItem('sv_productos', JSON.stringify(productosIniciales));
+        return productosIniciales;
+    });
+
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const [soloCriticos, setSoloCriticos] = useState(false);
+
+    // Integramos el hook useForm
+    const { datos, errores, setErrores, handleChange, resetForm } = useForm(valoresInicialesForm);
+
 
     // 2. Eliminar producto
     const eliminarProducto = (codigo) => {
@@ -115,19 +118,39 @@ export function AdminProductos() {
         resetForm();
     };
 
+    // Filtro para listado de productos críticos (Requerimiento Figura 10)
+    const productosVisibles = soloCriticos
+        ? productos.filter(p => Number(p.stock) <= Number(p.stockCritico || 2))
+        : productos;
+
     return (
         <div className="container-fluid text-light py-2 position-relative">
             <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
-                <h2 className="fw-bold mb-0" style={{ color: 'var(--color-gold)' }}>Catálogo y Productos</h2>
-                <button className="btn btn-warning fw-bold text-dark" onClick={abrirModal}>
-                    + Nuevo Producto
-                </button>
+                <div>
+                    <h2 className="fw-bold mb-0" style={{ color: 'var(--color-gold)' }}>Catálogo y Productos</h2>
+                    {soloCriticos && (
+                        <span className="badge bg-danger mt-1">⚠️ Mostrando solo productos con stock crítico</span>
+                    )}
+                </div>
+                <div className="d-flex gap-2 flex-wrap">
+                    <button
+                        type="button"
+                        className={`btn ${soloCriticos ? 'btn-danger' : 'btn-outline-danger'}`}
+                        onClick={() => setSoloCriticos(prev => !prev)}
+                    >
+                        ⚠️ {soloCriticos ? 'Ver Todos los Productos' : 'Listado Productos Críticos'}
+                    </button>
+                    <button type="button" className="btn btn-warning fw-bold text-dark" onClick={abrirModal}>
+                        + Nuevo Producto
+                    </button>
+                </div>
             </div>
 
             {/* Vista Móvil: Tarjetas individuales dentro de márgenes sin scroll horizontal */}
             <div className="d-block d-md-none">
                 <div className="d-flex flex-column gap-3">
-                    {productos.map((prod) => (
+                    {productosVisibles.map((prod) => (
+
                         <div key={prod.codigo} className="bg-dark rounded p-3 border border-secondary border-opacity-50 shadow-sm">
                             <div className="d-flex align-items-start gap-3">
                                 <img 
@@ -172,8 +195,10 @@ export function AdminProductos() {
                             </div>
                         </div>
                     ))}
-                    {productos.length === 0 && (
-                        <p className="text-center mt-3 text-secondary">No hay productos registrados en el catálogo.</p>
+                    {productosVisibles.length === 0 && (
+                        <p className="text-center mt-3 text-secondary">
+                            {soloCriticos ? 'No hay productos con stock crítico.' : 'No hay productos registrados en el catálogo.'}
+                        </p>
                     )}
                 </div>
             </div>
@@ -193,7 +218,8 @@ export function AdminProductos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {productos.map((prod) => (
+                        {productosVisibles.map((prod) => (
+
                             <tr key={prod.codigo}>
                                 <td>
                                     <img 
@@ -229,9 +255,12 @@ export function AdminProductos() {
                     </tbody>
                 </table>
                 
-                {productos.length === 0 && (
-                    <p className="text-center mt-4 text-secondary">No hay productos registrados en el catálogo.</p>
+                {productosVisibles.length === 0 && (
+                    <p className="text-center mt-4 text-secondary">
+                        {soloCriticos ? 'No hay productos con stock crítico.' : 'No hay productos registrados en el catálogo.'}
+                    </p>
                 )}
+
             </div>
 
             {/* Modal de Nuevo Producto */}

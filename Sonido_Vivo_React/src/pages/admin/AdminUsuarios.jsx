@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
-import { getUsuarios } from '../../services/db';
+import { useState } from 'react';
+import { getUsuarios, getOrdenes } from '../../services/db';
 
 export function AdminUsuarios() {
-    const [usuarios, setUsuarios] = useState([]);
+    const [usuarios, setUsuarios] = useState(getUsuarios);
     const [busqueda, setBusqueda] = useState('');
+    const [usuarioHistorial, setUsuarioHistorial] = useState(null);
 
-    // 1. Cargar usuarios al montar la vista
-    useEffect(() => {
-        setUsuarios(getUsuarios());
-    }, []);
 
     // 2. Cambiar el rol de un usuario
     const cambiarRol = (id, nuevoRol) => {
@@ -145,13 +142,24 @@ export function AdminUsuarios() {
                                     </select>
                                 </td>
                                 <td className="text-center">
-                                    <button
-                                        className="btn btn-sm btn-outline-danger"
-                                        title="Eliminar usuario"
-                                        onClick={() => eliminarUsuario(user.id, user.email)}
-                                    >
-                                        🗑️ Eliminar
-                                    </button>
+                                    <div className="btn-group btn-group-sm">
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-info"
+                                            title="Ver historial de compras"
+                                            onClick={() => setUsuarioHistorial(user)}
+                                        >
+                                            📜 Compras
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-danger"
+                                            title="Eliminar usuario"
+                                            onClick={() => eliminarUsuario(user.id, user.email)}
+                                        >
+                                            🗑️ Eliminar
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -162,6 +170,94 @@ export function AdminUsuarios() {
                     <p className="text-center mt-4 text-secondary">No se encontraron usuarios coincidentes.</p>
                 )}
             </div>
+
+            {/* Modal de Historial de Compras (Requerimiento Figura 10) */}
+            {usuarioHistorial && (
+                <div
+                    className="modal d-block bg-black bg-opacity-75"
+                    tabIndex="-1"
+                    style={{ zIndex: 1050 }}
+                    onClick={() => setUsuarioHistorial(null)}
+                >
+                    <div
+                        className="modal-dialog modal-lg modal-dialog-centered"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="modal-content bg-dark text-light border border-secondary shadow-lg">
+                            <div className="modal-header border-secondary">
+                                <h5 className="modal-title fw-bold text-gold">
+                                    Historial de Compras: {usuarioHistorial.nombre} {usuarioHistorial.apellidos || ''}
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn-close btn-close-white"
+                                    onClick={() => setUsuarioHistorial(null)}
+                                    aria-label="Cerrar"
+                                />
+                            </div>
+                            <div className="modal-body p-4">
+                                <p className="text-secondary small mb-3">
+                                    Órdenes registradas para la cuenta <strong>{usuarioHistorial.email}</strong>:
+                                </p>
+
+                                {(() => {
+                                    const ordenesUsuario = getOrdenes().filter(
+                                        (o) => (o.cliente?.email || '').toLowerCase() === usuarioHistorial.email?.toLowerCase()
+                                    );
+
+                                    if (ordenesUsuario.length === 0) {
+                                        return (
+                                            <div className="p-4 text-center text-muted bg-black bg-opacity-50 rounded border border-secondary border-opacity-25">
+                                                Este usuario no tiene compras registradas en el sistema.
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="table-responsive">
+                                            <table className="table table-dark table-sm align-middle mb-0">
+                                                <thead>
+                                                    <tr className="text-secondary smaller">
+                                                        <th>N° Orden</th>
+                                                        <th>Código</th>
+                                                        <th>Fecha</th>
+                                                        <th>Total</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {ordenesUsuario.map((ord) => (
+                                                        <tr key={ord.id}>
+                                                            <td><strong className="text-light">{ord.numeroOrden}</strong></td>
+                                                            <td><span className="badge bg-secondary">{ord.codigoOrden}</span></td>
+                                                            <td className="small text-secondary">{new Date(ord.fecha).toLocaleDateString('es-CL')}</td>
+                                                            <td className="text-gold fw-bold">${Number(ord.total || 0).toLocaleString('es-CL')}</td>
+                                                            <td>
+                                                                <span className={`badge ${ord.estado === 'completada' ? 'bg-success' : 'bg-danger'}`}>
+                                                                    {ord.estado}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                            <div className="modal-footer border-secondary">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => setUsuarioHistorial(null)}
+                                >
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-}
+}
