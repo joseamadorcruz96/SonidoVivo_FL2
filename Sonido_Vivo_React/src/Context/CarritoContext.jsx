@@ -17,6 +17,10 @@ export function CarritoProvider({ children }) {
     // Agregar producto (soporta cantidad opcional)
     function agregarAlCarrito(producto, cantidad = 1) {
         const cantidadNumerica = Math.max(1, Number(cantidad) || 1);
+        const limiteStock = producto.stock == null ? 999 : Math.max(0, Number(producto.stock) || 0);
+
+        // Un stock de cero no significa que falte el dato: el producto está agotado.
+        if (limiteStock === 0) return;
 
         setCarrito(prev => {
             const index = prev.findIndex(item => item.codigo === producto.codigo);
@@ -27,7 +31,6 @@ export function CarritoProvider({ children }) {
                 const nuevoTotal = cantidadActual + cantidadNumerica;
                 
                 // Si el producto define stock, no permitir sobrepasarlo
-                const limiteStock = producto.stock || 999;
                 copia[index] = {
                     ...copia[index],
                     cantidad: Math.min(nuevoTotal, limiteStock)
@@ -36,7 +39,6 @@ export function CarritoProvider({ children }) {
             }
 
             // Limitar al stock disponible del producto
-            const limiteStock = Number(producto.stock) >= 0 ? Number(producto.stock) : 999;
             const cantidadInicial = Math.min(cantidadNumerica, limiteStock);
             return [...prev, { ...producto, cantidad: cantidadInicial }];
         });
@@ -52,11 +54,11 @@ export function CarritoProvider({ children }) {
 
         setCarrito(prev => prev.map(item => {
             if (item.codigo === codigo) {
-                const limiteStock = item.stock || 999;
+                const limiteStock = item.stock == null ? 999 : Math.max(0, Number(item.stock) || 0);
                 return { ...item, cantidad: Math.min(valor, limiteStock) };
             }
             return item;
-        }));
+        }).filter(item => Number(item.cantidad ?? 1) > 0));
     }
 
     // Quitar por código SKU
@@ -70,8 +72,8 @@ export function CarritoProvider({ children }) {
     }
 
     // Totales calculados centralizadamente
-    const cantidadTotal = carrito.reduce((acc, item) => acc + (Number(item.cantidad) || 1), 0);
-    const totalPagar = carrito.reduce((acc, item) => acc + (Number(item.precio || 0) * (Number(item.cantidad) || 1)), 0);
+    const cantidadTotal = carrito.reduce((acc, item) => acc + Number(item.cantidad ?? 1), 0);
+    const totalPagar = carrito.reduce((acc, item) => acc + (Number(item.precio || 0) * Number(item.cantidad ?? 1)), 0);
 
     return (
         <CarritoContext.Provider value={{

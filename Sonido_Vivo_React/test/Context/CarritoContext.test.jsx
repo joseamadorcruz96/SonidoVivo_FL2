@@ -61,7 +61,7 @@ describe('Pruebas unitarias en CarritoContext', () => {
         expect(result.current.carrito[0].cantidad).toBe(3);
     });
 
-    it('Debe cambiar la cantidad y eliminar el producto si la nueva cantidad es 0 o menor', () => {
+    it('Debe eliminar el producto si la nueva cantidad es 0', () => {
         const { result } = renderHook(() => useCarrito(), { wrapper });
 
         const producto = { codigo: 'AMP01', nombre: 'Amplificador', precio: 80000, stock: 5 };
@@ -107,6 +107,89 @@ describe('Pruebas unitarias en CarritoContext', () => {
         });
 
         expect(result.current.carrito).toEqual([]);
+        expect(result.current.cantidadTotal).toBe(0);
+        expect(result.current.totalPagar).toBe(0);
+        expect(JSON.parse(localStorage.getItem('sv_carrito'))).toEqual([]);
+    });
+
+    it('actualiza la cantidad positiva y recalcula ambos totales', () => {
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        act(() => result.current.agregarAlCarrito({ codigo: 'P1', precio: 1000, stock: 5 }));
+        act(() => result.current.cambiarCantidad('P1', 3));
+
+        expect(result.current.carrito[0].cantidad).toBe(3);
+        expect(result.current.cantidadTotal).toBe(3);
+        expect(result.current.totalPagar).toBe(3000);
+    });
+
+    it('limita al stock al incrementar un producto existente o cambiar su cantidad', () => {
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        const producto = { codigo: 'P1', precio: 1000, stock: 3 };
+        act(() => result.current.agregarAlCarrito(producto, 2));
+        act(() => result.current.agregarAlCarrito(producto, 5));
+        expect(result.current.carrito[0].cantidad).toBe(3);
+
+        act(() => result.current.cambiarCantidad('P1', 8));
+        expect(result.current.cantidadTotal).toBe(3);
+        expect(result.current.totalPagar).toBe(3000);
+    });
+
+    it('guarda los artículos y cantidades en localStorage al añadir', () => {
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        act(() => result.current.agregarAlCarrito({ codigo: 'P1', precio: 1000, stock: 5 }, 2));
+
+        const guardados = JSON.parse(localStorage.getItem('sv_carrito'));
+        expect(guardados).toHaveLength(1);
+        expect(guardados[0]).toMatchObject({ codigo: 'P1', cantidad: 2 });
+    });
+
+    it('recupera el carrito guardado y sus totales al iniciar', () => {
+        localStorage.setItem('sv_carrito', JSON.stringify([
+            { codigo: 'P1', precio: 1000, stock: 5, cantidad: 2 },
+        ]));
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+
+        expect(result.current.carrito[0].cantidad).toBe(2);
+        expect(result.current.cantidadTotal).toBe(2);
+        expect(result.current.totalPagar).toBe(2000);
+    });
+
+    it('no incorpora un producto nuevo sin stock', () => {
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        act(() => result.current.agregarAlCarrito({ codigo: 'P1', precio: 1000, stock: 0 }));
+
+        expect(result.current.carrito).toEqual([]);
+        expect(result.current.cantidadTotal).toBe(0);
+        expect(result.current.totalPagar).toBe(0);
+    });
+
+    it('no incrementa un producto existente si llega sin stock', () => {
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        const producto = { codigo: 'P1', precio: 1000, stock: 2 };
+        act(() => result.current.agregarAlCarrito(producto));
+        act(() => result.current.agregarAlCarrito({ ...producto, stock: 0 }));
+
+        expect(result.current.cantidadTotal).toBe(1);
+        expect(result.current.totalPagar).toBe(1000);
+    });
+
+    it('no permite aumentar un artículo guardado cuyo stock es cero', () => {
+        localStorage.setItem('sv_carrito', JSON.stringify([
+            { codigo: 'P1', precio: 1000, stock: 0, cantidad: 0 },
+        ]));
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+        act(() => result.current.cambiarCantidad('P1', 2));
+
+        expect(result.current.carrito).toEqual([]);
+        expect(result.current.totalPagar).toBe(0);
+    });
+
+    it('no cuenta como una unidad una cantidad cero guardada previamente', () => {
+        localStorage.setItem('sv_carrito', JSON.stringify([
+            { codigo: 'P1', precio: 1000, stock: 0, cantidad: 0 },
+        ]));
+        const { result } = renderHook(() => useCarrito(), { wrapper });
+
         expect(result.current.cantidadTotal).toBe(0);
         expect(result.current.totalPagar).toBe(0);
     });

@@ -5,12 +5,18 @@ import { BadgeStock } from '../../src/components/BadgeStock';
 // Pruebas unitarias para el componente de alertas de inventario BadgeStock
 describe('Pruebas unitarias en BadgeStock', () => {
 
-    it('Debe renderizar "Agotado" con estilo bg-danger cuando el stock es 0 o negativo', () => {
+    it('Debe renderizar "Agotado" con estilo bg-danger cuando el stock es 0', () => {
         const { container } = render(<BadgeStock stock={0} />);
 
         expect(screen.getByText('Agotado')).toBeDefined();
         const badge = container.querySelector('.badge');
         expect(badge.className).toContain('bg-danger');
+    });
+
+    it('Debe mostrar Agotado cuando el stock es negativo', () => {
+        render(<BadgeStock stock={-1} />);
+
+        expect(screen.getByText('Agotado')).toHaveClass('bg-danger');
     });
 
     it('Debe renderizar "Stock Crítico" con estilo bg-warning cuando stock <= stockCritico', () => {

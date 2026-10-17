@@ -13,10 +13,13 @@ describe('Pruebas unitarias en db.js', () => {
 
     beforeEach(() => {
         localStorage.clear();
+        // Cada prueba recibe una copia guardada; registrar no modifica usuariosDb.
+        localStorage.setItem('sv_usuarios', JSON.stringify(usuariosDb));
     });
 
     describe('getUsuarios', () => {
         it('Debe inicializar y retornar usuariosDb cuando localStorage está vacío', () => {
+            localStorage.clear();
             const usuarios = getUsuarios();
             expect(usuarios).toHaveLength(usuariosDb.length);
             expect(localStorage.getItem('sv_usuarios')).toBeTruthy();
@@ -65,7 +68,7 @@ describe('Pruebas unitarias en db.js', () => {
     });
 
     describe('loginUsuario y logoutUsuario', () => {
-        it('Debe iniciar sesión y guardar token/sesión si las credenciales coinciden', () => {
+        it('Debe iniciar sesión y guardar la sesión simulada si las credenciales coinciden', () => {
             const usuario = loginUsuario('admin@gmail.com', '123');
 
             expect(usuario).not.toBeNull();
