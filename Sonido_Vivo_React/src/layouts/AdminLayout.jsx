@@ -14,12 +14,12 @@ export function AdminLayout() {
     }
 
     return (
-        <div className="d-flex flex-column flex-md-row" style={{ minHeight: '100vh', backgroundColor: '#1a1a1a' }}>
+        <div className="d-flex flex-column flex-md-row w-100" style={{ minHeight: '100vh', backgroundColor: 'var(--bg-body)' }}>
             
             {/* Sidebar / Barra Superior en Móvil */}
             <aside 
                 className="p-3 shadow-lg flex-shrink-0" 
-                style={{ backgroundColor: '#111', minWidth: '260px' }}
+                style={{ backgroundColor: 'var(--bg-surface-alt)', minWidth: '260px', borderRight: '1px solid var(--border-subtle)' }}
             >
                 {/* Cabecera del sidebar con toggle móvil */}
                 <div className="d-flex justify-content-between align-items-center mb-md-4">
