@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BadgeStock } from './BadgeStock';
+import { BadgeStock } from '../../src/components/BadgeStock';
 
 // Pruebas unitarias para el componente de alertas de inventario BadgeStock
 describe('Pruebas unitarias en BadgeStock', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validarEmail, validarPassword, validarRun, validarTexto } from './validaciones';
+import { validarEmail, validarPassword, validarRun, validarTexto } from '../../src/utils/validaciones';
 
 // Pruebas unitarias para utilidades de validación de formularios
 describe('Pruebas unitarias en validaciones.js', () => {

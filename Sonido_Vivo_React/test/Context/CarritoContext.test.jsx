@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { CarritoProvider, useCarrito } from './CarritoContext';
+import { CarritoProvider, useCarrito } from '../../src/Context/CarritoContext';
 
 // Pruebas unitarias para la lógica del CarritoContext
 describe('Pruebas unitarias en CarritoContext', () => {

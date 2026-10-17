@@ -32,7 +32,7 @@ En el desarrollo profesional de software (siguiendo el principio de la *Testing 
 
 ## 3. 📋 Catálogo de Pruebas Unitarias a Implementar
 
-### Suite 1: Validaciones de Formularios y Datos (`src/utils/validaciones.test.js`)
+### Suite 1: Validaciones de Formularios y Datos (`test/utils/validaciones.test.js`)
 *Protege la integridad de los datos que ingresan los usuarios antes de guardarlos.*
 
 | Función | Caso de Prueba | Resultado Esperado |
@@ -52,7 +52,7 @@ En el desarrollo profesional de software (siguiendo el principio de la *Testing 
 
 ---
 
-### Suite 2: Autenticación, Registro y Persistencia (`src/services/db.test.js`)
+### Suite 2: Autenticación, Registro y Persistencia (`test/services/db.test.js`)
 *Garantiza que la capa de datos simulada y la gestión de usuarios funcionen sin fallas.*
 
 | Función | Caso de Prueba | Resultado Esperado |
@@ -66,7 +66,7 @@ En el desarrollo profesional de software (siguiendo el principio de la *Testing 
 
 ---
 
-### Suite 3: Lógica de Negocio del Carrito (`src/Context/CarritoContext.test.jsx`)
+### Suite 3: Lógica de Negocio del Carrito (`test/Context/CarritoContext.test.jsx`)
 *Protege la lógica financiera y de inventario de la tienda.*
 
 | Operación | Caso de Prueba | Resultado Esperado |
@@ -82,7 +82,7 @@ En el desarrollo profesional de software (siguiendo el principio de la *Testing 
 
 ---
 
-### Suite 4: Lógica de Alertas de Inventario (`src/components/BadgeStock.test.jsx`)
+### Suite 4: Lógica de Alertas de Inventario (`test/components/BadgeStock.test.jsx`)
 *Verifica que las alertas visuales de stock muestren la información correcta.*
 
 | Props de Entrada | Estado Esperado | Renderizado / Clase |
@@ -113,12 +113,12 @@ npm test
 
 ## 5. 👥 Distribución y Estado de Avance
 
-- [x] **Suite 1: Validaciones de Formularios** (`validaciones.test.js`) — *19 pruebas operativas.*
-- [x] **Suite 2: Servicio de Base de Datos y Sesión** (`db.test.js`) — *7 pruebas operativas.*
-- [x] **Suite 3: Lógica y Cálculos del Carrito** (`CarritoContext.test.jsx`) — *7 pruebas operativas.*
-- [x] **Suite 4: Alertas de Inventario** (`BadgeStock.test.jsx`) — *5 pruebas operativas.*
+- [x] **Suite 1: Validaciones de Formularios** (`test/utils/validaciones.test.js`) — *19 pruebas operativas.*
+- [x] **Suite 2: Servicio de Base de Datos y Sesión** (`test/services/db.test.js`) — *7 pruebas operativas.*
+- [x] **Suite 3: Lógica y Cálculos del Carrito** (`test/Context/CarritoContext.test.jsx`) — *7 pruebas operativas.*
+- [x] **Suite 4: Alertas de Inventario** (`test/components/BadgeStock.test.jsx`) — *5 pruebas operativas.*
 
-**Total:** 4 suites / 38 pruebas unitarias automatizadas y pasando al 100%.
+**Total:** 4 suites / 38 pruebas unitarias automatizadas y pasando al 100% en la estructura espejo `test/`.
 
 ---
 

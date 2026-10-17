@@ -6,7 +6,7 @@ import {
     logoutUsuario,
     getUsuarioLogueado,
     usuariosDb,
-} from './db';
+} from '../../src/services/db';
 
 // Pruebas unitarias para el servicio de persistencia y autenticación
 describe('Pruebas unitarias en db.js', () => {
