@@ -66,3 +66,26 @@ export const getUsuarioLogueado = () => {
     const data = localStorage.getItem('usuarioSonidoVivo') || localStorage.getItem('sv_sesion_activa');
     return data ? JSON.parse(data) : null;
 };
+
+// ================= ÓRDENES Y COMPRAS =================
+
+// Obtener lista de órdenes de compra
+export const getOrdenes = () => {
+    const guardadas = localStorage.getItem('sv_ordenes');
+    return guardadas ? JSON.parse(guardadas) : [];
+};
+
+// Guardar una nueva orden de compra
+export const guardarOrden = (nuevaOrden) => {
+    const ordenes = getOrdenes();
+    const ordenConMetadatos = {
+        ...nuevaOrden,
+        id: nuevaOrden.id || Date.now(),
+        numeroOrden: nuevaOrden.numeroOrden || `#${Math.floor(10000000 + Math.random() * 90000000)}`,
+        codigoOrden: nuevaOrden.codigoOrden || `ORDER-${Date.now().toString().slice(-6)}`,
+        fecha: nuevaOrden.fecha || new Date().toISOString(),
+    };
+    ordenes.unshift(ordenConMetadatos);
+    localStorage.setItem('sv_ordenes', JSON.stringify(ordenes));
+    return ordenConMetadatos;
+};

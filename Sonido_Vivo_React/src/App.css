@@ -861,4 +861,52 @@ html {
 .table-carrito th {
   color: #FFFFFF !important;
   border-bottom: 1px solid var(--border-subtle);
-}
+}
+
+/* Utilidades auxiliares para Checkout, Boletas e Impresión */
+.max-w-600 {
+  max-width: 600px;
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.max-h-300 {
+  max-height: 300px;
+}
+
+.smaller {
+  font-size: 0.78rem;
+}
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .navbar,
+  footer,
+  .no-print,
+  .btn {
+    display: none !important;
+  }
+
+  #boleta-imprimible {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+  }
+
+  #boleta-imprimible * {
+    color: #000000 !important;
+    background-color: transparent !important;
+    border-color: #dddddd !important;
+  }
+}
+

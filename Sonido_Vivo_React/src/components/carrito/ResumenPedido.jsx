@@ -27,13 +27,13 @@ export function ResumenPedido({ total, cantidadTotal, onVaciar }) {
         <strong className="text-gold fs-4">{totalFormateado}</strong>
       </div>
 
-      <button
-        type="button"
-        className="btn btn-hero-gold w-100 py-2 fw-bold shadow-sm"
-        onClick={() => alert(`¡Gracias por tu compra en Sonido Vivo!\nTotal procesado: ${totalFormateado}`)}
+      <Link
+        to="/checkout"
+        className="btn btn-hero-gold w-100 py-2 fw-bold shadow-sm text-center text-decoration-none d-block"
       >
         Continuar al Pago &rarr;
-      </button>
+      </Link>
+
 
       {/* Enlaces y acciones secundarias */}
       <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">

@@ -68,6 +68,31 @@ export function Navbar() {
 
                         <li className="nav-item">
                             <NavLink
+                                to="/categorias"
+                                onClick={cerrarMenu}
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Categorías
+                            </NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink
+                                to="/ofertas"
+                                onClick={cerrarMenu}
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Ofertas
+                            </NavLink>
+                        </li>
+
+
+                        <li className="nav-item">
+                            <NavLink
                                 to="/Nosotros"
                                 onClick={cerrarMenu}
                                 className={({ isActive }) =>

@@ -13,10 +13,15 @@ import { ProtectedRoute } from './Context/ProtectedRoute';
 import { Inicio } from './pages/tienda/Inicio';
 import { Nosotros } from './pages/tienda/Nosotros';
 import { Catalogo } from './pages/tienda/Catalogo';
+import { Categorias } from './pages/tienda/Categorias';
+import { Ofertas } from './pages/tienda/Ofertas';
+import { DetalleProducto } from './pages/tienda/DetalleProducto';
 import { Carrito } from './pages/tienda/Carrito';
+import { Checkout } from './pages/tienda/Checkout';
+import { CompraExitosa } from './pages/tienda/CompraExitosa';
+import { PagoError } from './pages/tienda/PagoError';
 import { Blogs } from './pages/tienda/Blogs';
 import { Contacto } from './pages/tienda/Contacto';
-import { DetalleProducto } from './pages/tienda/DetalleProducto';
 import { Login } from './pages/Login';
 import { Registro } from './pages/tienda/Registro';
 import { NotFound } from './pages/NotFound';
@@ -38,14 +43,20 @@ export default function App() {
               <Route index element={<Inicio />} />
               <Route path="nosotros" element={<Nosotros />} />
               <Route path="Catalogo" element={<Catalogo />} />
+              <Route path="categorias" element={<Categorias />} />
+              <Route path="ofertas" element={<Ofertas />} />
               <Route path="producto/:codigo" element={<DetalleProducto />} />
               <Route path="Carrito" element={<Carrito />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="compra-exitosa" element={<CompraExitosa />} />
+              <Route path="pago-error" element={<PagoError />} />
               <Route path="Blogs" element={<Blogs />} />
               <Route path="Contacto" element={<Contacto />} />
               <Route path="login" element={<Login />} />
               <Route path="registro" element={<Registro />} />
               <Route path="*" element={<NotFound />} />
             </Route>
+
 
             {/* 2. RUTAS PROTEGIDAS (FUERA de MainLayout) */}
             <Route
