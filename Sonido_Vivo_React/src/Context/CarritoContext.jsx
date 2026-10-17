@@ -35,7 +35,10 @@ export function CarritoProvider({ children }) {
                 return copia;
             }
 
-            return [...prev, { ...producto, cantidad: cantidadNumerica }];
+            // Limitar al stock disponible del producto
+            const limiteStock = Number(producto.stock) >= 0 ? Number(producto.stock) : 999;
+            const cantidadInicial = Math.min(cantidadNumerica, limiteStock);
+            return [...prev, { ...producto, cantidad: cantidadInicial }];
         });
     }
 
