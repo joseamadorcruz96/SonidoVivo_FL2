@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { CampoFormulario } from '../../components/CampoFormulario';
+import { useForm } from '../../hooks/useForm';
 
 const categoriasIniciales = [
   { id: 1, nombre: 'Guitarras Acústicas', descripcion: 'Guitarras clásicas, electroacústicas y folk.' },
@@ -28,9 +29,12 @@ export function AdminCategorias() {
 
   const [modoEdicion, setModoEdicion] = useState(false);
   const [categoriaActualId, setCategoriaActualId] = useState(null);
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [errorNombre, setErrorNombre] = useState('');
+
+  // Hook useForm para gestionar formulario de categoría
+  const { datos, setDatos, errores, setErrores, handleChange, resetForm } = useForm({
+    nombre: '',
+    descripcion: '',
+  });
 
   // Contar productos por categoría desde LocalStorage
   const conteoPorCategoria = useMemo(() => {
@@ -52,17 +56,17 @@ export function AdminCategorias() {
   function limpiarFormulario() {
     setModoEdicion(false);
     setCategoriaActualId(null);
-    setNombre('');
-    setDescripcion('');
-    setErrorNombre('');
+    resetForm();
   }
 
   function iniciarEdicion(cat) {
     setModoEdicion(true);
     setCategoriaActualId(cat.id);
-    setNombre(cat.nombre);
-    setDescripcion(cat.descripcion || '');
-    setErrorNombre('');
+    setDatos({
+      nombre: cat.nombre,
+      descripcion: cat.descripcion || '',
+    });
+    setErrores({});
   }
 
   function eliminarCategoria(id, nom) {
@@ -77,21 +81,21 @@ export function AdminCategorias() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!nombre.trim()) {
-      setErrorNombre('El nombre de la categoría es obligatorio.');
+    if (!datos.nombre.trim()) {
+      setErrores({ nombre: 'El nombre de la categoría es obligatorio.' });
       return;
     }
 
     if (modoEdicion) {
       const actualizadas = categorias.map((c) =>
-        c.id === categoriaActualId ? { ...c, nombre: nombre.trim(), descripcion: descripcion.trim() } : c
+        c.id === categoriaActualId ? { ...c, nombre: datos.nombre.trim(), descripcion: datos.descripcion.trim() } : c
       );
       guardarCategoriasEnStorage(actualizadas);
     } else {
       const nueva = {
         id: Date.now(),
-        nombre: nombre.trim(),
-        descripcion: descripcion.trim(),
+        nombre: datos.nombre.trim(),
+        descripcion: datos.descripcion.trim(),
       };
       guardarCategoriasEnStorage([...categorias, nueva]);
     }
@@ -125,18 +129,16 @@ export function AdminCategorias() {
                 id="nombre-categoria"
                 label="Nombre de la Categoría"
                 obligatorio
-                error={errorNombre}
+                error={errores.nombre}
               >
                 <input
                   type="text"
                   id="nombre-categoria"
-                  className={`form-control bg-dark text-light border-secondary ${errorNombre ? 'is-invalid' : ''}`}
+                  name="nombre"
+                  className={`form-control bg-dark text-light border-secondary ${errores.nombre ? 'is-invalid' : ''}`}
                   placeholder="Ej: Teclados, Percusión..."
-                  value={nombre}
-                  onChange={(e) => {
-                    setNombre(e.target.value);
-                    if (errorNombre) setErrorNombre('');
-                  }}
+                  value={datos.nombre}
+                  onChange={handleChange}
                 />
               </CampoFormulario>
 
@@ -146,11 +148,12 @@ export function AdminCategorias() {
               >
                 <textarea
                   id="desc-categoria"
+                  name="descripcion"
                   rows="3"
                   className="form-control bg-dark text-light border-secondary"
                   placeholder="Detalles sobre los instrumentos de esta categoría..."
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
+                  value={datos.descripcion}
+                  onChange={handleChange}
                 />
               </CampoFormulario>
 

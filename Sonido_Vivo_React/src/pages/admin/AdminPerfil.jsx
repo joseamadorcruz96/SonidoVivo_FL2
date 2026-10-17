@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { getUsuarios } from '../../services/db';
+import { useForm } from '../../hooks/useForm';
 
 export function AdminPerfil() {
   const { usuario, iniciarSesion } = useAuth();
 
-  const [nombre, setNombre] = useState(usuario?.nombre || '');
-  const [apellidos, setApellidos] = useState(usuario?.apellidos || '');
-  const [password, setPassword] = useState('');
+  const { datos, handleChange, setDatos } = useForm({
+    nombre: usuario?.nombre || '',
+    apellidos: usuario?.apellidos || '',
+    password: '',
+  });
   const [mensajeExito, setMensajeExito] = useState(false);
 
   function handleSubmit(e) {
@@ -19,9 +22,9 @@ export function AdminPerfil() {
     // Actualizar usuario en sesión
     const usuarioActualizado = {
       ...usuario,
-      nombre: nombre.trim(),
-      apellidos: apellidos.trim(),
-      ...(password.trim() ? { password: password.trim() } : {}),
+      nombre: datos.nombre.trim(),
+      apellidos: datos.apellidos.trim(),
+      ...(datos.password.trim() ? { password: datos.password.trim() } : {}),
     };
 
     iniciarSesion(usuarioActualizado);
@@ -34,7 +37,7 @@ export function AdminPerfil() {
     localStorage.setItem('sv_usuarios', JSON.stringify(nuevaLista));
 
     setMensajeExito(true);
-    setPassword('');
+    setDatos((prev) => ({ ...prev, password: '' }));
     setTimeout(() => setMensajeExito(false), 4000);
   }
 
@@ -103,9 +106,10 @@ export function AdminPerfil() {
                     <input
                       type="text"
                       id="perfil-nombre"
+                      name="nombre"
                       className="form-control bg-dark text-light border-secondary"
-                      value={nombre}
-                      onChange={(e) => setNombre(e.target.value)}
+                      value={datos.nombre}
+                      onChange={handleChange}
                     />
                   </CampoFormulario>
                 </div>
@@ -115,9 +119,10 @@ export function AdminPerfil() {
                     <input
                       type="text"
                       id="perfil-apellidos"
+                      name="apellidos"
                       className="form-control bg-dark text-light border-secondary"
-                      value={apellidos}
-                      onChange={(e) => setApellidos(e.target.value)}
+                      value={datos.apellidos}
+                      onChange={handleChange}
                     />
                   </CampoFormulario>
                 </div>
@@ -140,10 +145,11 @@ export function AdminPerfil() {
                 <input
                   type="password"
                   id="perfil-password"
+                  name="password"
                   className="form-control bg-dark text-light border-secondary"
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={datos.password}
+                  onChange={handleChange}
                 />
               </CampoFormulario>
 

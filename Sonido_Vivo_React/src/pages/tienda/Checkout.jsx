@@ -5,14 +5,21 @@ import { useAuth } from '../../Context/AuthContext';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { regionesYComunas } from '../../data/regionesComunas';
 import { guardarOrden } from '../../services/db';
+import { useForm } from '../../hooks/useForm';
 
 export function Checkout() {
   const navigate = useNavigate();
   const { carrito, totalPagar, vaciarCarrito } = useCarrito();
   const { usuario } = useAuth();
 
-  // Estados del Formulario (inicializados con datos de usuario si hay sesión activa)
-  const [formData, setFormData] = useState(() => ({
+  // Estados del Formulario gestionados mediante el hook useForm (DRY)
+  const {
+    datos: formData,
+    setDatos: setFormData,
+    errores,
+    setErrores,
+    handleChange,
+  } = useForm({
     nombre: usuario?.nombre || '',
     apellidos: usuario?.apellidos || '',
     email: usuario?.email || usuario?.correo || '',
@@ -21,11 +28,9 @@ export function Checkout() {
     region: usuario?.region || '',
     comuna: usuario?.comuna || '',
     indicaciones: '',
-  }));
+  });
 
-  const [errores, setErrores] = useState({});
   const [simularFallo, setSimularFallo] = useState(false);
-
 
   // Obtener comunas correspondientes a la región seleccionada
   const comunasDisponibles = regionesYComunas.find(
@@ -33,18 +38,10 @@ export function Checkout() {
   )?.comunas || [];
 
   function manejarCambio(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => {
-      const actual = { ...prev, [name]: value };
-      // Si cambia de región, reiniciar la comuna seleccionada
-      if (name === 'region') {
-        actual.comuna = '';
-      }
-      return actual;
-    });
-
-    if (errores[name]) {
-      setErrores((prev) => ({ ...prev, [name]: '' }));
+    handleChange(e);
+    // Si cambia de región, reiniciar la comuna seleccionada
+    if (e.target.name === 'region') {
+      setFormData((prev) => ({ ...prev, comuna: '' }));
     }
   }
 
