@@ -1,14 +1,13 @@
 Contexto_Negocio/
 planes_implementacion/
 Pauta_Evaluacion_Instrucciones/
-__pycache__/
+*.py
 *.pyc
+__pycache__/
 ejemplo/
+informe_pruebas_unitarias.html
 documentacion/*
 !documentacion/Requerimientos_Funcionales_simplificado_1.xlsx
 !documentacion/Requerimientos_Funcionales_simplificado_1.md
-!documentacion/informe_pruebas_unitarias.html
-!documentacion/generate_excel.py
-!documentacion/convert_ers_to_docx.py
 Curso/
 
