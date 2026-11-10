@@ -1,6 +1,7 @@
 Contexto_Negocio/
 planes_implementacion/
 Pauta_Evaluacion_Instrucciones/
+backend-springbot/Documentacion
 *.py
 *.pyc
 __pycache__/
