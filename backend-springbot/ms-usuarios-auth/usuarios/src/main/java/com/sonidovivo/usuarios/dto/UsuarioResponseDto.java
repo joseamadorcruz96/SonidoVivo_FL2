@@ -17,5 +17,9 @@ public class UsuarioResponseDto {
     private String nombre;
     private String correo;
     private Rol rol;
+    private String numeroContacto;
+    private String region;
+    private String comuna;
+    private String direccion;
 
 }

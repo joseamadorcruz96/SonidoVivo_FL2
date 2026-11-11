@@ -1,5 +1,7 @@
 package com.sonidovivo.usuarios.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,14 +25,25 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String run;
     @Column(nullable = false)
     private String nombre;
     @Column(nullable = false)
+    private String apellido;
+    @Column(nullable = false, unique = true)
     private String correo;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Rol rol;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private LocalDate fechaNacimiento;
+
+    // datos contacto adicionales
+    private String numeroContacto;
+    private String region;
+    private String comuna;
+    private String direccion;
 }
