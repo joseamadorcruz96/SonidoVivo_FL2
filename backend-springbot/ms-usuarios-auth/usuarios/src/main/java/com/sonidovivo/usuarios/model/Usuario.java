@@ -1,5 +1,6 @@
 package com.sonidovivo.usuarios.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,9 +23,14 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
+    @Column(nullable = false)
+    private String run;
+    @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private String correo;
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    @Column(nullable = false)
     private String password;
 }
