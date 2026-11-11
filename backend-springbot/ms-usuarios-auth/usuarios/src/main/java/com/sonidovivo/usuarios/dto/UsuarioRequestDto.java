@@ -2,7 +2,7 @@ package com.sonidovivo.usuarios.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.sonidovivo.usuarios.utils.ValidRut;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,8 +20,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsuarioRequestDto {
 
+    @NotBlank(message = "El run es invalido")
+    @ValidRut
+    private String run;
     @NotBlank(message = "El nombre es necesario")
     private String nombre;
+    @NotBlank(message = "El apellido es necesario")
+    private String apellido;
+    @NotBlank(message = "El correo es necesario")
     @Email(message = "formato de correo invalido")
     private String correo;
     @NotBlank
