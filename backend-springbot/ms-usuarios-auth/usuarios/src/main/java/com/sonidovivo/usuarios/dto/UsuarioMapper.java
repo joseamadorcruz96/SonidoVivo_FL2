@@ -7,7 +7,7 @@ import com.sonidovivo.usuarios.model.Usuario;
 @Component
 public class UsuarioMapper {
 
-    public UsuarioResponseDto toDto(Usuario usuario) {
+    public UsuarioResponseDto toResponseDto(Usuario usuario) {
         if (usuario == null) {
             return null;
         }
@@ -37,7 +37,7 @@ public class UsuarioMapper {
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .correo(dto.getCorreo())
-                .password(dto.getPassword())
+                .password(null)
                 .numeroContacto(dto.getNumeroContacto())
                 .region(dto.getRegion())
                 .comuna(dto.getComuna())
