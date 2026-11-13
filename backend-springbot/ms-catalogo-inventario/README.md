@@ -82,6 +82,23 @@ Alineado con la **Figura 1 del Anexo 1 (`[ PRODUCTO ] <─── [ CATEGORIA ]`)
 | `GET` | `/api/v1/productos/codigo/{codigo}` | Público / `VENDEDOR` / **OpenFeign** | Obtiene un producto por su SKU (ej: `"GA001"`). Usado por `DetalleProducto.jsx` y por `ms-ventas-boletas`. | `200 OK`: `Producto` (`404` si no existe). |
 | `POST` | `/api/v1/productos` | `ADMIN` | Crea un nuevo producto en el catálogo (`AdminProductos.jsx`). | `201 Created`: `Producto` |
 | `PUT` | `/api/v1/productos/{codigo}` | `ADMIN` | Actualiza un producto existente por su código SKU. | `200 OK`: `Producto` |
-| `PUT` | `/api/v1/productos/{codigo}/stock` | `VENDEDOR` / `ADMIN` / **OpenFeign** | Ajusta o descuenta el stock de un producto (recibe `{ "cantidadCambio": -2 }` o `{ "nuevoStock": 6 }`). Valida que el stock resultante nunca sea menor a `0`. | `200 OK`: `Producto` actualizado (`400 Bad Request` si stock insuficiente). |
+| `PUT` | `/api/v1/productos/{codigo}/stock` | `VENDEDOR` / `ADMIN` | Ajuste manual con `cantidadCambio` positiva o negativa. | `200 OK`: producto actualizado. `409 Conflict` si el stock resultante está fuera de rango. |
+| `PUT` | `/api/v1/interno/productos/{codigo}/stock` | **Ventas** | Descuento por compra con `cantidadCambio` negativa y cabecera `X-Ventas-Key`. | `200 OK`: producto actualizado. `400` si la cantidad no es negativa, `401` sin credencial válida en una llamada sin JWT, `404` si no existe el producto y `409` si falta stock. |
 | `DELETE` | `/api/v1/productos/{codigo}` | `ADMIN` | Elimina un producto del catálogo por su SKU. | `204 No Content` |
 
+### Descuento de stock desde Ventas
+
+Configurar el mismo secreto `VENTAS_SERVICE_KEY` en el entorno de ambos microservicios. Inventario rechaza las llamadas a esta ruta si el secreto no está configurado. Enviar la clave solo entre los dos backends, por conexión interna protegida. Mantener la ruta interna fuera del Gateway público.
+
+En `InventarioFeignClient`, conservar el GET por SKU y apuntar el PUT a la ruta interna:
+
+```java
+@PutMapping("/api/v1/interno/productos/{codigo}/stock")
+ProductoInventarioResponse ajustarStock(
+        @PathVariable("codigo") String codigo,
+        @RequestHeader("X-Ventas-Key") String claveVentas,
+        @RequestBody AjusteStockRequest request
+);
+```
+
+Desde el servicio de Ventas, leer el secreto del entorno y pasarlo en `claveVentas`. Enviar un cuerpo como `{"cantidadCambio": -2}`. El token del comprador se usa para autorizar el checkout en Ventas. Cada llamada descuenta un SKU y el descuento se aplica una vez por llamada exitosa, por lo que un reintento ciego puede descontar dos veces. El checkout de varios SKU requiere coordinar el manejo de fallos parciales.

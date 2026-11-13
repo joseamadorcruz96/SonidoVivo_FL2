@@ -3,6 +3,7 @@ package com.sonidovivo.inventario.controller;
 import com.sonidovivo.inventario.dto.CategoriaRequest;
 import com.sonidovivo.inventario.dto.CategoriaResponse;
 import com.sonidovivo.inventario.service.CategoriaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,16 +36,19 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaService.buscarPorId(id));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<CategoriaResponse> crear(@Valid @RequestBody CategoriaRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.crear(request));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaResponse> actualizar(@PathVariable Long id, @Valid @RequestBody CategoriaRequest request){
         return ResponseEntity.ok(categoriaService.actualizar(id, request));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         categoriaService.eliminar(id);
