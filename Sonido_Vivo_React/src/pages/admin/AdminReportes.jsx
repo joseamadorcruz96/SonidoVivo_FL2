@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -13,22 +13,37 @@ import {
   Cell,
   Tooltip as TooltipPie,
 } from 'recharts';
-import { getOrdenes } from '../../services/db';
+import { listarBoletas } from '../../services/boletaService';
+import { listarProductos } from '../../services/productoService';
 
 const COLORES = ['#FFC107', '#FF9800', '#FF5722', '#00BCD4', '#4CAF50', '#9C27B0', '#E91E63', '#607D8B'];
 
 export function AdminReportes() {
-  const ordenes = getOrdenes();
+  const [ordenes, setOrdenes] = useState([]);
+  const [productos, setProductos] = useState([]);
 
-  // Calcular métricas clave
+  // Obtiene boletas e inventario real desde el backend
+  useEffect(() => {
+    let activo = true;
+    Promise.allSettled([listarBoletas(), listarProductos()]).then(([resBoletas, resProductos]) => {
+      if (!activo) return;
+      setOrdenes(resBoletas.status === 'fulfilled' ? resBoletas.value : []);
+      setProductos(resProductos.status === 'fulfilled' ? resProductos.value : []);
+    });
+    return () => {
+      activo = false;
+    };
+  }, []);
+
+  // Calcula metricas clave desde datos reales
   const metricas = useMemo(() => {
-    const completadas = ordenes.filter((o) => o.estado === 'completada');
+    const completadas = ordenes.filter((o) => {
+      const estado = String(o.estado || '').toLowerCase();
+      return !estado || ['completada', 'pagada', 'emitida'].includes(estado);
+    });
     const totalVentas = completadas.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
     const ticketPromedio = completadas.length > 0 ? Math.round(totalVentas / completadas.length) : 0;
-
-    const guardadosProductos = localStorage.getItem('sv_productos');
-    const productos = guardadosProductos ? JSON.parse(guardadosProductos) : [];
-    const criticos = productos.filter((p) => Number(p.stock) <= Number(p.stockCritico || 2));
+    const criticos = productos.filter((p) => Number(p.stock) <= Number(p.stockCritico ?? 2));
 
     return {
       totalVentas,
@@ -38,33 +53,30 @@ export function AdminReportes() {
       productosCriticos: criticos.length,
       listaCriticos: criticos,
     };
-  }, [ordenes]);
+  }, [ordenes, productos]);
 
-  // Datos para gráfico de categorías (derivado de productos)
+  // Datos para grafico de categorias derivado del inventario real
   const datosPorCategoria = useMemo(() => {
-    const guardadosProductos = localStorage.getItem('sv_productos');
-    const productos = guardadosProductos ? JSON.parse(guardadosProductos) : [];
     const conteo = {};
     productos.forEach((p) => {
-      conteo[p.categoria] = (conteo[p.categoria] || 0) + 1;
+      const cat = p.categoria || 'Sin categoria';
+      conteo[cat] = (conteo[cat] || 0) + 1;
     });
 
     return Object.entries(conteo).map(([nombre, cantidad]) => ({
       nombre,
       cantidad,
     }));
-  }, []);
+  }, [productos]);
 
-  // Datos para gráfico de productos con mayor inventario vs stock crítico
+  // Datos para grafico de productos con inventario vs stock critico
   const datosStockProductos = useMemo(() => {
-    const guardadosProductos = localStorage.getItem('sv_productos');
-    const productos = guardadosProductos ? JSON.parse(guardadosProductos) : [];
     return productos.slice(0, 6).map((p) => ({
       nombre: p.nombre.length > 15 ? p.nombre.slice(0, 15) + '...' : p.nombre,
       stock: Number(p.stock || 0),
-      critico: Number(p.stockCritico || 2),
+      critico: Number(p.stockCritico ?? 2),
     }));
-  }, []);
+  }, [productos]);
 
   return (
     <div className="container-fluid text-light py-2">

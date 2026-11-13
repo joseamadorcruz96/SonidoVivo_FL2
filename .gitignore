@@ -11,4 +11,8 @@ documentacion/*
 !documentacion/Requerimientos_Funcionales_simplificado_1.xlsx
 !documentacion/Requerimientos_Funcionales_simplificado_1.md
 Curso/
+.env
+.env.*
+!.env.example
+application-local.*
 

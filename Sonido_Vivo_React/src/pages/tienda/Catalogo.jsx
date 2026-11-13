@@ -1,51 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Producto } from '../../components/Producto';
-import { productosIniciales } from '../../data/productosIniciales';
 import { useCarrito } from '../../Context/CarritoContext';
-
-// 1. Carga productos de LocalStorage y asegura que las fotos base estén actualizadas.
-export function cargarProductosDesdeLocalStorage() {
-  const guardados = localStorage.getItem('sv_productos');
-
-  if (guardados) {
-    try {
-      const lista = JSON.parse(guardados);
-      const sincronizados = lista.map((p) => {
-        const original = productosIniciales.find((init) => init.codigo === p.codigo);
-        return original ? { ...p, imagen: original.imagen } : p;
-      });
-      localStorage.setItem('sv_productos', JSON.stringify(sincronizados));
-      return sincronizados;
-    } catch (e) {
-      console.warn('Error al leer productos de LocalStorage, restaurando iniciales', e);
-    }
-  }
-
-  localStorage.setItem('sv_productos', JSON.stringify(productosIniciales));
-  return productosIniciales;
-}
+import { listarProductos } from '../../services/productoService';
 
 export function Catalogo({ onAgregarAlCarrito }) {
-  // 2. Estado inicial: se carga directamente llamando a la función
-  const [productos] = useState(cargarProductosDesdeLocalStorage);
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
   const { agregarAlCarrito } = useCarrito();
 
-  // Si no se pasó una prop onAgregarAlCarrito, usa directamente la del contexto
   const funcionAgregar = onAgregarAlCarrito || agregarAlCarrito;
 
-  // 3. Convierte cada producto del arreglo en un componente visual <Producto />
-  function renderizarProductos() {
-    return productos.map((producto) => (
-      <div key={producto.codigo} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-        <Producto
-          producto={producto}
-          onAgregarAlCarrito={funcionAgregar}
-        />
-      </div>
-    ));
-  }
+  useEffect(() => {
+    let activo = true;
+    listarProductos()
+      .then((lista) => {
+        if (activo) {
+          setProductos(lista);
+          setError('');
+        }
+      })
+      .catch(() => {
+        if (activo) {
+          setProductos([]);
+          setError('No fue posible cargar el catálogo desde el servidor de inventario.');
+        }
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
 
-  // 4. Estructura visual principal
+    return () => {
+      activo = false;
+    };
+  }, []);
+
   return (
     <div className="container py-5">
       <div className="text-center mb-5">
@@ -57,8 +46,18 @@ export function Catalogo({ onAgregarAlCarrito }) {
         </p>
       </div>
 
+      {cargando && <p className="text-center text-secondary">Cargando catálogo...</p>}
+      {!cargando && error && <div className="alert alert-warning text-center">{error}</div>}
+      {!cargando && !error && productos.length === 0 && (
+        <p className="text-center text-secondary">No hay productos disponibles en el catálogo.</p>
+      )}
+
       <div className="row g-4" id="galeria_productos">
-        {renderizarProductos()}
+        {productos.map((producto) => (
+          <div key={producto.codigo} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+            <Producto producto={producto} onAgregarAlCarrito={funcionAgregar} />
+          </div>
+        ))}
       </div>
     </div>
   );

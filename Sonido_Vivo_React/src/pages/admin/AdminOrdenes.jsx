@@ -1,9 +1,35 @@
-import { useState, useMemo } from 'react';
-import { getOrdenes } from '../../services/db';
+import { useState, useEffect, useMemo } from 'react';
+import { listarBoletas } from '../../services/boletaService';
 
 export function AdminOrdenes() {
-  const [ordenes] = useState(getOrdenes);
+  const [ordenes, setOrdenes] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
   const [ordenSeleccionada, setOrdenSeleccionada] = useState(null);
+
+  useEffect(() => {
+    let activo = true;
+    listarBoletas()
+      .then((lista) => {
+        if (activo) {
+          setOrdenes(lista);
+          setError('');
+        }
+      })
+      .catch(() => {
+        if (activo) {
+          setOrdenes([]);
+          setError('No se pudieron cargar las boletas desde el servidor de ventas.');
+        }
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const [filtroEstado, setFiltroEstado] = useState('todas');
   const [busqueda, setBusqueda] = useState('');
@@ -64,7 +90,13 @@ export function AdminOrdenes() {
       </div>
 
       {/* Lista de Órdenes */}
-      {ordenesFiltradas.length === 0 ? (
+      {cargando ? (
+        <div className="card bg-dark border-secondary p-5 text-center text-secondary">
+          Cargando órdenes registradas...
+        </div>
+      ) : error ? (
+        <div className="alert alert-warning text-center">{error}</div>
+      ) : ordenesFiltradas.length === 0 ? (
         <div className="card bg-dark border-secondary p-5 text-center">
           <span className="fs-1 mb-2">🧾</span>
           <h4 className="text-secondary">No se encontraron órdenes registradas</h4>

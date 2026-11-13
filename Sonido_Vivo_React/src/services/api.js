@@ -30,7 +30,7 @@ export const limpiarSesionStorage = () => {
 };
 
 const sVivoApi = axios.create({
-    baseURL: import.meta.env.VITE_SONIDO_VIVO_API_URL || "http://localhost:8081",
+    baseURL: import.meta.env.VITE_SONIDO_VIVO_API_URL || "http://localhost:8080",
     headers: {
         "Content-Type": "application/json",
     },

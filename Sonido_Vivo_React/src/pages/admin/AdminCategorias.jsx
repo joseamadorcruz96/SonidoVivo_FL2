@@ -1,57 +1,60 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { useForm } from '../../hooks/useForm';
-
-const categoriasIniciales = [
-  { id: 1, nombre: 'Guitarras Acústicas', descripcion: 'Guitarras clásicas, electroacústicas y folk.' },
-  { id: 2, nombre: 'Guitarras Eléctricas', descripcion: 'Modelos Stratocaster, Les Paul, Telecaster y más.' },
-  { id: 3, nombre: 'Bajos Eléctricos', descripcion: 'Bajos de 4 y 5 cuerdas para todo estilo musical.' },
-  { id: 4, nombre: 'Baterías', descripcion: 'Baterías acústicas, electrónicas y percusión variada.' },
-  { id: 5, nombre: 'Teclados y Pianos', descripcion: 'Sintetizadores, pianos digitales y controladores MIDI.' },
-  { id: 6, nombre: 'Amplificadores', descripcion: 'Cabezales, cajas y combos para guitarra y bajo.' },
-  { id: 7, nombre: 'Pedales de Efectos', descripcion: 'Distorsiones, delays, reverbs y pedaleras multiefecto.' },
-  { id: 8, nombre: 'Accesorios', descripcion: 'Cuerdas, cables, afinadores, correas y fundas.' },
-];
+import {
+  listarCategorias,
+  crearCategoria,
+  actualizarCategoria,
+  eliminarCategoriaApi,
+} from '../../services/categoriaService';
+import { listarProductos } from '../../services/productoService';
+import { extraerMensajeError } from '../../services/authService';
 
 export function AdminCategorias() {
-  const [categorias, setCategorias] = useState(() => {
-    const guardadas = localStorage.getItem('sv_categorias');
-    if (guardadas) {
-      try {
-        return JSON.parse(guardadas);
-      } catch (e) {
-        console.warn('Error al leer categorías', e);
-      }
-    }
-    localStorage.setItem('sv_categorias', JSON.stringify(categoriasIniciales));
-    return categoriasIniciales;
-  });
+  const [categorias, setCategorias] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [procesando, setProcesando] = useState(false);
+  const [errorServidor, setErrorServidor] = useState('');
 
   const [modoEdicion, setModoEdicion] = useState(false);
   const [categoriaActualId, setCategoriaActualId] = useState(null);
 
-  // Hook useForm para gestionar formulario de categoría
+  // Hook useForm para gestionar formulario de categoria
   const { datos, setDatos, errores, setErrores, handleChange, resetForm } = useForm({
     nombre: '',
     descripcion: '',
   });
 
-  // Contar productos por categoría desde LocalStorage
+  // Carga categorias y productos reales para contar items por familia
+  useEffect(() => {
+    let activo = true;
+    Promise.allSettled([listarCategorias(), listarProductos()]).then(([resCat, resProd]) => {
+      if (!activo) return;
+      if (resCat.status === 'fulfilled') {
+        setCategorias(resCat.value);
+        setErrorServidor('');
+      } else {
+        setCategorias([]);
+        setErrorServidor('No se pudieron cargar las categorias desde el servidor de inventario.');
+      }
+      setProductos(resProd.status === 'fulfilled' ? resProd.value : []);
+      setCargando(false);
+    });
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
+  // Contar productos reales por categoria
   const conteoPorCategoria = useMemo(() => {
-    const guardados = localStorage.getItem('sv_productos');
-    const productos = guardados ? JSON.parse(guardados) : [];
     const mapa = {};
     categorias.forEach((cat) => {
       mapa[cat.nombre] = productos.filter((p) => p.categoria === cat.nombre).length;
     });
     return mapa;
-  }, [categorias]);
-
-
-  function guardarCategoriasEnStorage(lista) {
-    setCategorias(lista);
-    localStorage.setItem('sv_categorias', JSON.stringify(lista));
-  }
+  }, [categorias, productos]);
 
   function limpiarFormulario() {
     setModoEdicion(false);
@@ -67,40 +70,54 @@ export function AdminCategorias() {
       descripcion: cat.descripcion || '',
     });
     setErrores({});
+    setErrorServidor('');
   }
 
-  function eliminarCategoria(id, nom) {
-    if (window.confirm(`¿Estás seguro de eliminar la categoría "${nom}"?`)) {
-      const actualizadas = categorias.filter((c) => c.id !== id);
-      guardarCategoriasEnStorage(actualizadas);
+  async function eliminarCategoria(id, nom) {
+    if (!window.confirm(`¿Estás seguro de eliminar la categoría "${nom}"?`)) return;
+    setProcesando(true);
+    setErrorServidor('');
+    try {
+      await eliminarCategoriaApi(id);
+      setCategorias((prev) => prev.filter((c) => c.id !== id));
       if (categoriaActualId === id) {
         limpiarFormulario();
       }
+    } catch (err) {
+      setErrorServidor(extraerMensajeError(err, 'No se pudo eliminar la categoria.'));
+    } finally {
+      setProcesando(false);
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!datos.nombre.trim()) {
       setErrores({ nombre: 'El nombre de la categoría es obligatorio.' });
       return;
     }
 
-    if (modoEdicion) {
-      const actualizadas = categorias.map((c) =>
-        c.id === categoriaActualId ? { ...c, nombre: datos.nombre.trim(), descripcion: datos.descripcion.trim() } : c
-      );
-      guardarCategoriasEnStorage(actualizadas);
-    } else {
-      const nueva = {
-        id: Date.now(),
-        nombre: datos.nombre.trim(),
-        descripcion: datos.descripcion.trim(),
-      };
-      guardarCategoriasEnStorage([...categorias, nueva]);
-    }
+    setProcesando(true);
+    setErrorServidor('');
+    const payload = {
+      nombre: datos.nombre.trim(),
+      descripcion: datos.descripcion.trim(),
+    };
 
-    limpiarFormulario();
+    try {
+      if (modoEdicion) {
+        const actualizada = await actualizarCategoria(categoriaActualId, payload);
+        setCategorias((prev) => prev.map((c) => (c.id === categoriaActualId ? actualizada : c)));
+      } else {
+        const creada = await crearCategoria(payload);
+        setCategorias((prev) => [...prev, creada]);
+      }
+      limpiarFormulario();
+    } catch (err) {
+      setErrorServidor(extraerMensajeError(err, 'No se pudo guardar la categoria.'));
+    } finally {
+      setProcesando(false);
+    }
   }
 
   return (
@@ -115,6 +132,12 @@ export function AdminCategorias() {
           </p>
         </div>
       </div>
+
+      {errorServidor && (
+        <div className="alert alert-danger py-2 small" role="alert">
+          {errorServidor}
+        </div>
+      )}
 
       <div className="row g-4">
         {/* Formulario Crear / Editar Categoría */}
@@ -158,14 +181,15 @@ export function AdminCategorias() {
               </CampoFormulario>
 
               <div className="d-flex gap-2 mt-4">
-                <button type="submit" className="btn btn-hero-gold flex-fill fw-bold">
-                  {modoEdicion ? 'Actualizar' : 'Guardar Categoría'}
+                <button type="submit" className="btn btn-hero-gold flex-fill fw-bold" disabled={procesando}>
+                  {procesando ? 'Guardando...' : modoEdicion ? 'Actualizar' : 'Guardar Categoría'}
                 </button>
                 {modoEdicion && (
                   <button
                     type="button"
                     className="btn btn-outline-secondary"
                     onClick={limpiarFormulario}
+                    disabled={procesando}
                   >
                     Cancelar
                   </button>
@@ -178,6 +202,9 @@ export function AdminCategorias() {
         {/* Tabla de Categorías Existentes */}
         <div className="col-12 col-lg-8">
           <div className="table-responsive bg-dark rounded shadow-sm p-3 border border-secondary border-opacity-25">
+            {cargando ? (
+              <p className="text-secondary small m-0">Cargando categorías desde inventario...</p>
+            ) : (
             <table className="table table-dark table-hover align-middle mb-0">
               <thead>
                 <tr className="text-secondary small">
@@ -206,6 +233,7 @@ export function AdminCategorias() {
                           className="btn btn-outline-warning"
                           onClick={() => iniciarEdicion(cat)}
                           title="Editar categoría"
+                          disabled={procesando}
                         >
                           ✏️
                         </button>
@@ -214,6 +242,7 @@ export function AdminCategorias() {
                           className="btn btn-outline-danger"
                           onClick={() => eliminarCategoria(cat.id, cat.nombre)}
                           title="Eliminar categoría"
+                          disabled={procesando}
                         >
                           🗑️
                         </button>
@@ -221,8 +250,16 @@ export function AdminCategorias() {
                     </td>
                   </tr>
                 ))}
+                {categorias.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="text-center text-secondary py-3">
+                      No hay categorías registradas.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
+            )}
           </div>
         </div>
       </div>

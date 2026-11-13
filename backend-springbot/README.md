@@ -34,10 +34,10 @@ El backend está diseñado bajo una arquitectura de **3 Microservicios de Domini
 ### A. Pasos para Integrar Seguridad en `ms-catalogo-inventario` (Puerto `8082`)
 
 1. **`application.properties` (`ms-catalogo-inventario/src/main/resources/application.properties`):**
-   - Configurar `server.port=8082` y agregar **exactamente la misma clave secreta `jwt.secret`** definida en [`ms-usuarios-auth/usuarios/src/main/resources/application.properties`](./ms-usuarios-auth/usuarios/src/main/resources/application.properties):
+   - Configurar `server.port=8082` e inyectar `jwt.secret=${JWT_SECRET}` desde variable de entorno o archivo `.env` local (copiar [`.env.example`](./.env.example) como `.env`, nunca subir secretos reales al repo):
      ```properties
      server.port=8082
-     jwt.secret=kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0
+     jwt.secret=${JWT_SECRET}
      ```
 2. **Dependencias en `ms-catalogo-inventario/pom.xml`:**
    - Agregar `spring-boot-starter-security` y la librería `jjwt` versión `0.11.5` (`jjwt-api`, `jjwt-impl` con `<scope>runtime</scope>`, `jjwt-jackson` con `<scope>runtime</scope>`), tal como en [`usuarios/pom.xml`](./ms-usuarios-auth/usuarios/pom.xml).
@@ -56,9 +56,9 @@ El backend está diseñado bajo una arquitectura de **3 Microservicios de Domini
 ### B. Pasos para Integrar Seguridad y OpenFeign en `ms-ventas-boletas` (Puerto `8083`)
 
 1. **`application.properties` (`ms-ventas-boletas/ventas/src/main/resources/application.properties`):**
-   - Agregar la **misma propiedad `jwt.secret`** que usa `ms-usuarios-auth` y `ms-catalogo-inventario`:
+   - Usar la **misma variable de entorno `${JWT_SECRET}`** que usan `ms-usuarios-auth` y `ms-catalogo-inventario`:
      ```properties
-     jwt.secret=kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0
+     jwt.secret=${JWT_SECRET}
      ```
 2. **Dependencias en `ms-ventas-boletas/ventas/pom.xml`:**
    - Ya cuenta con `spring-boot-starter-security` y `spring-cloud-starter-openfeign`; solo falta agregar los 3 artefactos de `jjwt` versión `0.11.5` (`jjwt-api`, `jjwt-impl`, `jjwt-jackson`).

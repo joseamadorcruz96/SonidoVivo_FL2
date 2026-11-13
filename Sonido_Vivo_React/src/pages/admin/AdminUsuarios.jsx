@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { getOrdenes } from '../../services/db';
 import { useAuth } from '../../Context/AuthContext';
 import { ROLES, extraerMensajeError } from '../../services/authService';
 import {
@@ -7,6 +6,7 @@ import {
     actualizarRolUsuario,
     eliminarUsuarioApi,
 } from '../../services/usuarioService';
+import { listarBoletasPorUsuario } from '../../services/boletaService';
 
 // Devuelve la clase Bootstrap segun el Enum Rol
 function obtenerClaseBadgeRol(rol) {
@@ -20,11 +20,30 @@ export function AdminUsuarios() {
     const [usuarios, setUsuarios] = useState([]);
     const [busqueda, setBusqueda] = useState('');
     const [usuarioHistorial, setUsuarioHistorial] = useState(null);
+    const [ordenesHistorial, setOrdenesHistorial] = useState([]);
+    const [cargandoHistorial, setCargandoHistorial] = useState(false);
     const [cargando, setCargando] = useState(true);
     const [recarga, setRecarga] = useState(0);
     const [procesandoId, setProcesandoId] = useState(null);
     const [errorGeneral, setErrorGeneral] = useState('');
     const [mensajeExito, setMensajeExito] = useState('');
+
+    // Abre el modal y carga boletas reales del usuario seleccionado
+    const abrirHistorial = (user) => {
+        setUsuarioHistorial(user);
+        setOrdenesHistorial([]);
+        setCargandoHistorial(true);
+        const idTarget = user.idUsuario || user.id;
+        listarBoletasPorUsuario(idTarget)
+            .then((lista) => setOrdenesHistorial(lista))
+            .catch(() => setOrdenesHistorial([]))
+            .finally(() => setCargandoHistorial(false));
+    };
+
+    const cerrarHistorial = () => {
+        setUsuarioHistorial(null);
+        setOrdenesHistorial([]);
+    };
 
     // Carga inicial y recargas desde GET /api/v1/usuarios con JWT Bearer
     useEffect(() => {
@@ -263,7 +282,7 @@ export function AdminUsuarios() {
                                                         type="button"
                                                         className="btn btn-outline-info"
                                                         title="Ver historial de compras"
-                                                        onClick={() => setUsuarioHistorial(user)}
+                                                        onClick={() => abrirHistorial(user)}
                                                     >
                                                         📜 Compras
                                                     </button>
@@ -291,13 +310,13 @@ export function AdminUsuarios() {
                 </>
             )}
 
-            {/* Modal de Historial de Compras (ordenes locales hasta integrar ms-ventas-boletas) */}
+            {/* Modal de Historial de Compras */}
             {usuarioHistorial && (
                 <div
                     className="modal d-block bg-black bg-opacity-75"
                     tabIndex="-1"
                     style={{ zIndex: 1050 }}
-                    onClick={() => setUsuarioHistorial(null)}
+                    onClick={cerrarHistorial}
                 >
                     <div
                         className="modal-dialog modal-lg modal-dialog-centered"
@@ -311,7 +330,7 @@ export function AdminUsuarios() {
                                 <button
                                     type="button"
                                     className="btn-close btn-close-white"
-                                    onClick={() => setUsuarioHistorial(null)}
+                                    onClick={cerrarHistorial}
                                     aria-label="Cerrar"
                                 />
                             </div>
@@ -320,56 +339,48 @@ export function AdminUsuarios() {
                                     Órdenes registradas para la cuenta <strong>{usuarioHistorial.correo}</strong>:
                                 </p>
 
-                                {(() => {
-                                    const ordenesUsuario = getOrdenes().filter(
-                                        (o) => (o.cliente?.email || o.cliente?.correo || '').toLowerCase() === usuarioHistorial.correo?.toLowerCase()
-                                    );
-
-                                    if (ordenesUsuario.length === 0) {
-                                        return (
-                                            <div className="p-4 text-center text-muted bg-black bg-opacity-50 rounded border border-secondary border-opacity-25">
-                                                Este usuario no tiene compras registradas en el sistema.
-                                            </div>
-                                        );
-                                    }
-
-                                    return (
-                                        <div className="table-responsive">
-                                            <table className="table table-dark table-sm align-middle mb-0">
-                                                <thead>
-                                                    <tr className="text-secondary smaller">
-                                                        <th>N° Orden</th>
-                                                        <th>Código</th>
-                                                        <th>Fecha</th>
-                                                        <th>Total</th>
-                                                        <th>Estado</th>
+                                {cargandoHistorial ? (
+                                    <div className="p-4 text-center text-secondary">Cargando historial...</div>
+                                ) : ordenesHistorial.length === 0 ? (
+                                    <div className="p-4 text-center text-muted bg-black bg-opacity-50 rounded border border-secondary border-opacity-25">
+                                        Este usuario no tiene compras registradas en el sistema.
+                                    </div>
+                                ) : (
+                                    <div className="table-responsive">
+                                        <table className="table table-dark table-sm align-middle mb-0">
+                                            <thead>
+                                                <tr className="text-secondary smaller">
+                                                    <th>N° Orden</th>
+                                                    <th>Código</th>
+                                                    <th>Fecha</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {ordenesHistorial.map((ord) => (
+                                                    <tr key={ord.id}>
+                                                        <td><strong className="text-light">{ord.numeroOrden}</strong></td>
+                                                        <td><span className="badge bg-secondary">{ord.codigoOrden}</span></td>
+                                                        <td className="small text-secondary">{new Date(ord.fecha).toLocaleDateString('es-CL')}</td>
+                                                        <td className="text-gold fw-bold">${Number(ord.total || 0).toLocaleString('es-CL')}</td>
+                                                        <td>
+                                                            <span className={`badge ${ord.estado === 'completada' ? 'bg-success' : 'bg-danger'}`}>
+                                                                {ord.estado}
+                                                            </span>
+                                                        </td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {ordenesUsuario.map((ord) => (
-                                                        <tr key={ord.id}>
-                                                            <td><strong className="text-light">{ord.numeroOrden}</strong></td>
-                                                            <td><span className="badge bg-secondary">{ord.codigoOrden}</span></td>
-                                                            <td className="small text-secondary">{new Date(ord.fecha).toLocaleDateString('es-CL')}</td>
-                                                            <td className="text-gold fw-bold">${Number(ord.total || 0).toLocaleString('es-CL')}</td>
-                                                            <td>
-                                                                <span className={`badge ${ord.estado === 'completada' ? 'bg-success' : 'bg-danger'}`}>
-                                                                    {ord.estado}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    );
-                                })()}
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
                             <div className="modal-footer border-secondary">
                                 <button
                                     type="button"
                                     className="btn btn-secondary"
-                                    onClick={() => setUsuarioHistorial(null)}
+                                    onClick={cerrarHistorial}
                                 >
                                     Cerrar
                                 </button>

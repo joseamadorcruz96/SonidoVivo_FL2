@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TarjetaBlog } from '../../components/TarjetaBlog';
 import { ModalDetalleBlog } from '../../components/ModalDetalleBlog';
-import { articulosBlog } from '../../data/articulosBlog';
+import { articulosBlog } from '../../constants/articulosBlog';
 
 const categorias = [
   { id: 'todos', nombre: 'Todos' },

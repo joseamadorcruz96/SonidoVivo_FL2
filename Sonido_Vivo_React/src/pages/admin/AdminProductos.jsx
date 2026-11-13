@@ -1,13 +1,19 @@
-import { useState } from 'react';
-import { productosIniciales } from '../../data/productosIniciales';
+import { useState, useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { BadgeStock } from '../../components/BadgeStock';
+import {
+    listarProductos,
+    crearProducto,
+    eliminarProductoApi,
+} from '../../services/productoService';
+import { listarCategorias } from '../../services/categoriaService';
+import { extraerMensajeError } from '../../services/authService';
 
 const valoresInicialesForm = {
     codigo: '',
     nombre: '',
-    categoria: '',
+    categoriaId: '',
     marca: '',
     modelo: '',
     precio: '',
@@ -18,24 +24,12 @@ const valoresInicialesForm = {
     destacado: false
 };
 
-const categoriasDisponibles = [
-    "Guitarras Acústicas", "Guitarras Eléctricas", "Bajos Eléctricos", 
-    "Baterías", "Teclados y Pianos", "Amplificadores", "Pedales de Efectos", "Accesorios"
-];
-
 export function AdminProductos() {
-    const [productos, setProductos] = useState(() => {
-        const guardados = localStorage.getItem('sv_productos');
-        if (guardados) {
-            try {
-                return JSON.parse(guardados);
-            } catch (e) {
-                console.warn('Error al leer productos', e);
-            }
-        }
-        localStorage.setItem('sv_productos', JSON.stringify(productosIniciales));
-        return productosIniciales;
-    });
+    const [productos, setProductos] = useState([]);
+    const [categorias, setCategorias] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [procesando, setProcesando] = useState(false);
+    const [errorServidor, setErrorServidor] = useState('');
 
     const [mostrarModal, setMostrarModal] = useState(false);
     const [soloCriticos, setSoloCriticos] = useState(false);
@@ -43,48 +37,79 @@ export function AdminProductos() {
     // Integramos el hook useForm
     const { datos, errores, setErrores, handleChange, resetForm } = useForm(valoresInicialesForm);
 
+    // Carga productos y categorias reales desde ms-catalogo-inventario
+    useEffect(() => {
+        let activo = true;
+        Promise.allSettled([listarProductos(), listarCategorias()]).then(([resProd, resCat]) => {
+            if (!activo) return;
+            if (resProd.status === 'fulfilled') {
+                setProductos(resProd.value);
+                setErrorServidor('');
+            } else {
+                setProductos([]);
+                setErrorServidor('No se pudo cargar el catalogo desde el servidor de inventario.');
+            }
+            setCategorias(resCat.status === 'fulfilled' ? resCat.value : []);
+            setCargando(false);
+        });
 
-    // 2. Eliminar producto
-    const eliminarProducto = (codigo) => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar este producto del catálogo?")) {
-            const nuevaLista = productos.filter(p => p.codigo !== codigo);
-            setProductos(nuevaLista);
-            localStorage.setItem('sv_productos', JSON.stringify(nuevaLista));
+        return () => {
+            activo = false;
+        };
+    }, []);
+
+    // Elimina producto via backend
+    const eliminarProducto = async (codigo) => {
+        if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del catálogo?')) return;
+        setProcesando(true);
+        setErrorServidor('');
+        try {
+            await eliminarProductoApi(codigo);
+            setProductos((prev) => prev.filter((p) => p.codigo !== codigo));
+        } catch (err) {
+            setErrorServidor(extraerMensajeError(err, 'No se pudo eliminar el producto.'));
+        } finally {
+            setProcesando(false);
         }
     };
 
-    // 3. Manejar el envío del formulario (Crear Producto)
-    const handleSubmit = (e) => {
+    // Envio del formulario para crear producto real en ms-catalogo-inventario
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Validación de producto según pauta
+
         const nuevosErrores = {};
         const cod = datos.codigo.trim();
         if (!cod) {
-            nuevosErrores.codigo = "El código es obligatorio";
+            nuevosErrores.codigo = 'El código es obligatorio';
         } else if (cod.length < 3) {
-            nuevosErrores.codigo = "El código debe tener al menos 3 caracteres";
-        } else if (productos.some(p => p.codigo.toUpperCase() === cod.toUpperCase())) {
-            nuevosErrores.codigo = "Ya existe un producto con este código";
+            nuevosErrores.codigo = 'El código debe tener al menos 3 caracteres';
+        } else if (productos.some((p) => p.codigo.toUpperCase() === cod.toUpperCase())) {
+            nuevosErrores.codigo = 'Ya existe un producto con este código';
         }
 
         const nom = datos.nombre.trim();
         if (!nom) {
-            nuevosErrores.nombre = "El nombre es obligatorio";
+            nuevosErrores.nombre = 'El nombre es obligatorio';
         } else if (nom.length > 100) {
-            nuevosErrores.nombre = "El nombre no puede superar los 100 caracteres";
+            nuevosErrores.nombre = 'El nombre no puede superar los 100 caracteres';
+        }
+
+        if (!datos.marca.trim()) {
+            nuevosErrores.marca = 'La marca es obligatoria';
+        } else if (datos.marca.trim().length > 60) {
+            nuevosErrores.marca = 'La marca no puede superar los 60 caracteres';
         }
 
         if (datos.descripcion && datos.descripcion.length > 500) {
-            nuevosErrores.descripcion = "La descripción no puede superar los 500 caracteres";
+            nuevosErrores.descripcion = 'La descripción no puede superar los 500 caracteres';
         }
 
-        if (!datos.categoria) nuevosErrores.categoria = "Selecciona una categoría";
-        if (datos.precio === '' || Number(datos.precio) < 0 || isNaN(Number(datos.precio))) {
-            nuevosErrores.precio = "El precio debe ser 0 o superior (0 = FREE)";
+        if (!datos.categoriaId) nuevosErrores.categoriaId = 'Selecciona una categoría';
+        if (datos.precio === '' || Number(datos.precio) < 0 || Number.isNaN(Number(datos.precio))) {
+            nuevosErrores.precio = 'El precio debe ser 0 o superior (0 = FREE)';
         }
-        if (datos.stock === '' || Number(datos.stock) < 0) {
-            nuevosErrores.stock = "El stock no puede ser negativo";
+        if (datos.stock === '' || Number(datos.stock) < 0 || Number.isNaN(Number(datos.stock))) {
+            nuevosErrores.stock = 'El stock no puede ser negativo';
         }
 
         if (Object.keys(nuevosErrores).length > 0) {
@@ -92,23 +117,29 @@ export function AdminProductos() {
             return;
         }
 
-        // Formatear datos
-        const nuevoProducto = {
-            ...datos,
-            codigo: cod.toUpperCase(),
-            precio: Number(datos.precio),
-            stock: Math.floor(Number(datos.stock)),
-            stockCritico: Number(datos.stockCritico) || 2,
-            imagen: datos.imagen.trim() || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80',
-        };
-
-        // Actualizar estado y LocalStorage
-        const nuevaLista = [...productos, nuevoProducto];
-        setProductos(nuevaLista);
-        localStorage.setItem('sv_productos', JSON.stringify(nuevaLista));
-        
-        // Cerrar modal y limpiar formulario
-        cerrarModal();
+        setProcesando(true);
+        setErrorServidor('');
+        try {
+            const creado = await crearProducto({
+                codigo: cod.toUpperCase(),
+                nombre: nom,
+                marca: datos.marca.trim(),
+                modelo: datos.modelo.trim(),
+                precio: Number(datos.precio),
+                stock: Math.floor(Number(datos.stock)),
+                stockCritico: datos.stockCritico !== '' ? Math.floor(Number(datos.stockCritico)) : 2,
+                descripcion: datos.descripcion.trim(),
+                imagen: datos.imagen.trim(),
+                destacado: Boolean(datos.destacado),
+                categoriaId: Number(datos.categoriaId),
+            });
+            setProductos((prev) => [...prev, creado]);
+            cerrarModal();
+        } catch (err) {
+            setErrorServidor(extraerMensajeError(err, 'No se pudo registrar el producto.'));
+        } finally {
+            setProcesando(false);
+        }
     };
 
     const abrirModal = () => setMostrarModal(true);
@@ -145,6 +176,16 @@ export function AdminProductos() {
                     </button>
                 </div>
             </div>
+
+            {errorServidor && (
+                <div className="alert alert-danger py-2 small" role="alert">
+                    {errorServidor}
+                </div>
+            )}
+
+            {cargando && (
+                <p className="text-secondary small">Cargando productos desde inventario...</p>
+            )}
 
             {/* Vista Móvil: Tarjetas individuales dentro de márgenes sin scroll horizontal */}
             <div className="d-block d-md-none">
@@ -288,15 +329,15 @@ export function AdminProductos() {
                                         </div>
 
                                         <div className="col-md-4">
-                                            <CampoFormulario label="Categoría" error={errores.categoria} obligatorio>
-                                                <select name="categoria" className="form-select" value={datos.categoria} onChange={handleChange}>
+                                            <CampoFormulario label="Categoría" error={errores.categoriaId} obligatorio>
+                                                <select name="categoriaId" className="form-select" value={datos.categoriaId} onChange={handleChange}>
                                                     <option value="">Selecciona...</option>
-                                                    {categoriasDisponibles.map(c => <option key={c} value={c}>{c}</option>)}
+                                                    {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
                                                 </select>
                                             </CampoFormulario>
                                         </div>
                                         <div className="col-md-4">
-                                            <CampoFormulario label="Marca">
+                                            <CampoFormulario label="Marca" error={errores.marca} obligatorio>
                                                 <input name="marca" className="form-control" value={datos.marca} onChange={handleChange} placeholder="Ej: Fender" />
                                             </CampoFormulario>
                                         </div>
@@ -347,11 +388,11 @@ export function AdminProductos() {
                             </div>
                             
                             <div className="modal-footer border-secondary">
-                                <button type="button" className="btn btn-outline-light" onClick={cerrarModal}>
+                                <button type="button" className="btn btn-outline-light" onClick={cerrarModal} disabled={procesando}>
                                     Cancelar
                                 </button>
-                                <button type="submit" form="form-producto" className="btn btn-warning fw-bold text-dark">
-                                    Guardar Producto
+                                <button type="submit" form="form-producto" className="btn btn-warning fw-bold text-dark" disabled={procesando}>
+                                    {procesando ? 'Guardando...' : 'Guardar Producto'}
                                 </button>
                             </div>
                         </div>

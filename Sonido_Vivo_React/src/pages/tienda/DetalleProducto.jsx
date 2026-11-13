@@ -2,28 +2,47 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCarrito } from '../../Context/CarritoContext';
 import { BadgeStock } from '../../components/BadgeStock';
-import { productosIniciales } from '../../data/productosIniciales';
+import { obtenerProductoPorCodigo } from '../../services/productoService';
 
 export function DetalleProducto() {
   const { codigo } = useParams();
   const { agregarAlCarrito } = useCarrito();
 
   const [producto, setProducto] = useState(null);
+  const [cargando, setCargando] = useState(true);
   const [cantidad, setCantidad] = useState(1);
   const [mensajeExito, setMensajeExito] = useState(false);
 
-  // 1. Cargar el producto desde LocalStorage (o datos iniciales de respaldo)
+  // Carga el detalle real del producto desde ms-catalogo-inventario
   useEffect(() => {
-    const guardados = localStorage.getItem('sv_productos');
-    const lista = guardados ? JSON.parse(guardados) : productosIniciales;
-    const encontrado = lista.find(
-      (p) => String(p.codigo).toUpperCase() === String(codigo).toUpperCase()
-    );
+    let activo = true;
+    obtenerProductoPorCodigo(codigo)
+      .then((data) => {
+        if (activo) {
+          setProducto(data || null);
+          setCantidad(1);
+          setMensajeExito(false);
+        }
+      })
+      .catch(() => {
+        if (activo) setProducto(null);
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
 
-    setProducto(encontrado || null);
-    setCantidad(1);
-    setMensajeExito(false);
+    return () => {
+      activo = false;
+    };
   }, [codigo]);
+
+  if (cargando) {
+    return (
+      <div className="container py-5 text-center">
+        <p className="text-secondary">Cargando instrumento...</p>
+      </div>
+    );
+  }
 
   // Si el código no existe en el catálogo
   if (!producto) {

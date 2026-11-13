@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CampoFormulario } from '../../components/CampoFormulario';
-import { regionesYComunas } from '../../data/regionesComunas';
+import { regionesYComunas } from '../../constants/regionesComunas';
 import { useAuth } from '../../Context/AuthContext';
 import { registerRequest, extraerMensajeError } from '../../services/authService';
 import { useForm } from '../../hooks/useForm';

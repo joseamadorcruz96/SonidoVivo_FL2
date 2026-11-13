@@ -13,36 +13,39 @@ import {
   Cell,
   Tooltip as TooltipPie,
 } from 'recharts';
-import { getOrdenes } from '../../services/db';
+import { listarBoletas } from '../../services/boletaService';
+import { listarProductos } from '../../services/productoService';
 import { listarUsuarios } from '../../services/usuarioService';
 
 const COLORES_TORTA = ['#FFC107', '#FF9800', '#FF5722', '#795548', '#00BCD4'];
 
 export function AdminDashboard() {
-  const ordenes = getOrdenes();
+  const [ordenes, setOrdenes] = useState([]);
+  const [productos, setProductos] = useState([]);
   const [totalUsuarios, setTotalUsuarios] = useState(0);
 
-  // Obtiene el conteo real de usuarios desde ms-usuarios-auth
+  // Obtiene datos reales de boletas, inventario y usuarios
   useEffect(() => {
     let activo = true;
-    listarUsuarios()
-      .then((lista) => {
-        if (activo) setTotalUsuarios(lista.length);
-      })
-      .catch(() => {
-        if (activo) setTotalUsuarios(0);
-      });
+    Promise.allSettled([listarBoletas(), listarProductos(), listarUsuarios()]).then(
+      ([resBoletas, resProductos, resUsuarios]) => {
+        if (!activo) return;
+        setOrdenes(resBoletas.status === 'fulfilled' ? resBoletas.value : []);
+        setProductos(resProductos.status === 'fulfilled' ? resProductos.value : []);
+        setTotalUsuarios(resUsuarios.status === 'fulfilled' ? resUsuarios.value.length : 0);
+      }
+    );
     return () => {
       activo = false;
     };
   }, []);
 
   const metricas = useMemo(() => {
-    const ordenesCompletadas = ordenes.filter((o) => o.estado === 'completada');
+    const ordenesCompletadas = ordenes.filter((o) => {
+      const estado = String(o.estado || '').toLowerCase();
+      return !estado || ['completada', 'pagada', 'emitida'].includes(estado);
+    });
     const totalVentas = ordenesCompletadas.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
-
-    const guardadosProductos = localStorage.getItem('sv_productos');
-    const productos = guardadosProductos ? JSON.parse(guardadosProductos) : [];
     const stockTotal = productos.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
 
     return {
@@ -52,24 +55,39 @@ export function AdminDashboard() {
       stockTotal,
       totalUsuarios,
     };
-  }, [ordenes, totalUsuarios]);
+  }, [ordenes, productos, totalUsuarios]);
 
-  // Datos simulados para los gráficos de ventas
-  const datosProductosMasVendidos = [
-    { nombre: 'Stratocaster', ventas: 45 },
-    { nombre: 'Bajo Jazz', ventas: 30 },
-    { nombre: 'Teclado Yamaha', ventas: 25 },
-    { nombre: 'Batería Pearl', ventas: 18 },
-    { nombre: 'Pedal Boss', ventas: 40 },
-  ];
+  // Top 5 productos mas vendidos calculado desde boletas reales
+  const datosProductosMasVendidos = useMemo(() => {
+    const conteo = {};
+    ordenes.forEach((orden) => {
+      (orden.items || []).forEach((item) => {
+        const nombre = item.nombre || item.codigo || 'Producto';
+        conteo[nombre] = (conteo[nombre] || 0) + (Number(item.cantidad) || 0);
+      });
+    });
+    return Object.entries(conteo)
+      .map(([nombre, ventas]) => ({
+        nombre: nombre.length > 16 ? `${nombre.slice(0, 16)}...` : nombre,
+        ventas,
+      }))
+      .sort((a, b) => b.ventas - a.ventas)
+      .slice(0, 5);
+  }, [ordenes]);
 
-  const datosVentasPorCategoria = [
-    { nombre: 'Guitarras', valor: 3500000 },
-    { nombre: 'Bajos', valor: 1200000 },
-    { nombre: 'Teclados', valor: 950000 },
-    { nombre: 'Baterías', valor: 850000 },
-    { nombre: 'Accesorios', valor: 450000 },
-  ];
+  // Ingresos estimados por categoria calculados desde boletas y catalogo real
+  const datosVentasPorCategoria = useMemo(() => {
+    const categoriaPorCodigo = new Map(productos.map((p) => [p.codigo, p.categoria || 'Sin categoria']));
+    const ingresos = {};
+    ordenes.forEach((orden) => {
+      (orden.items || []).forEach((item) => {
+        const cat = categoriaPorCodigo.get(item.codigo) || 'General';
+        const subtotal = Number(item.subtotal ?? (Number(item.precioUnitario || 0) * Number(item.cantidad || 0)));
+        ingresos[cat] = (ingresos[cat] || 0) + subtotal;
+      });
+    });
+    return Object.entries(ingresos).map(([nombre, valor]) => ({ nombre, valor }));
+  }, [ordenes, productos]);
 
   return (
     <div className="container-fluid text-light py-2" style={{ minWidth: 0 }}>
@@ -89,7 +107,7 @@ export function AdminDashboard() {
               <div className="min-w-0 flex-grow-1">
                 <span className="small text-white-50 text-uppercase fw-bold d-block text-truncate">Compras / Órdenes</span>
                 <h3 className="fw-bold my-1 text-truncate">
-                  {metricas.cantidadOrdenes > 0 ? metricas.cantidadOrdenes : '1,234'}
+                  {metricas.cantidadOrdenes}
                 </h3>
                 <small className="text-white-50 d-block text-truncate">
                   Total facturado: ${metricas.totalVentas.toLocaleString('es-CL')}

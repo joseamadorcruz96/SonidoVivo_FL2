@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Producto } from '../../components/Producto';
 import { useCarrito } from '../../Context/CarritoContext';
-import { cargarProductosDesdeLocalStorage } from './Catalogo';
+import { listarProductos } from '../../services/productoService';
 
 export function Inicio() {
-    const [productos] = useState(cargarProductosDesdeLocalStorage);
+    const [productos, setProductos] = useState([]);
     const { agregarAlCarrito } = useCarrito();
+
+    useEffect(() => {
+        let activo = true;
+        listarProductos()
+            .then((lista) => {
+                if (activo) setProductos(lista);
+            })
+            .catch(() => {
+                if (activo) setProductos([]);
+            });
+        return () => {
+            activo = false;
+        };
+    }, []);
+
     const destacados = productos.filter(producto => producto.destacado).slice(0, 4);
 
     return (

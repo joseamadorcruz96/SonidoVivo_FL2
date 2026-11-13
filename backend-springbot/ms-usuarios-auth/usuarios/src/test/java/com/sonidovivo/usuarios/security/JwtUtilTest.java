@@ -20,7 +20,7 @@ class JwtUtilTest {
         ReflectionTestUtils.setField(
                 jwtUtil,
                 "jwtSecret",
-                "kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0kR9xM2vP7zWbF4qY8nL1sC6tJ3hA5eD0"
+                "TestOnlyJwtSecretKeyNotUsedInProduction2026SonidoVivo123456"
         );
         ReflectionTestUtils.setField(jwtUtil, "jwtExpirationMs", 86400000L);
     }

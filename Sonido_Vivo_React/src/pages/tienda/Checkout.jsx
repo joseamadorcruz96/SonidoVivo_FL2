@@ -3,8 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useCarrito } from '../../Context/CarritoContext';
 import { useAuth } from '../../Context/AuthContext';
 import { CampoFormulario } from '../../components/CampoFormulario';
-import { regionesYComunas } from '../../data/regionesComunas';
-import { guardarOrden } from '../../services/db';
+import { regionesYComunas } from '../../constants/regionesComunas';
+import { crearBoleta } from '../../services/boletaService';
+import { extraerMensajeError } from '../../services/authService';
 import { useForm } from '../../hooks/useForm';
 
 export function Checkout() {
@@ -21,7 +22,7 @@ export function Checkout() {
     handleChange,
   } = useForm({
     nombre: usuario?.nombre || '',
-    apellidos: usuario?.apellidos || '',
+    apellidos: usuario?.apellido || usuario?.apellidos || '',
     email: usuario?.email || usuario?.correo || '',
     calle: usuario?.direccion || '',
     departamento: '',
@@ -31,6 +32,8 @@ export function Checkout() {
   });
 
   const [simularFallo, setSimularFallo] = useState(false);
+  const [procesando, setProcesando] = useState(false);
+  const [errorCheckout, setErrorCheckout] = useState('');
 
   // Obtener comunas correspondientes a la región seleccionada
   const comunasDisponibles = regionesYComunas.find(
@@ -65,12 +68,14 @@ export function Checkout() {
     return Object.keys(nuevosErrores).length === 0;
   }
 
-  function manejarSubmit(e) {
+  async function manejarSubmit(e) {
     e.preventDefault();
+    setErrorCheckout('');
 
     if (!validarFormulario()) return;
 
     const datosOrden = {
+      usuarioId: usuario?.idUsuario || usuario?.id || null,
       cliente: {
         nombre: formData.nombre.trim(),
         apellidos: formData.apellidos.trim(),
@@ -88,7 +93,6 @@ export function Checkout() {
     };
 
     if (simularFallo) {
-      // Simular transacción rechazada para evaluación
       const ordenFallida = {
         ...datosOrden,
         numeroOrden: `#${Math.floor(10000000 + Math.random() * 90000000)}`,
@@ -96,14 +100,18 @@ export function Checkout() {
         estado: 'fallida',
       };
       navigate('/pago-error', { state: { orden: ordenFallida } });
-    } else {
-      // Registrar orden exitosa en base de datos simulada y vaciar carrito
-      const ordenGuardada = guardarOrden({
-        ...datosOrden,
-        estado: 'completada',
-      });
+      return;
+    }
+
+    setProcesando(true);
+    try {
+      const ordenGuardada = await crearBoleta(datosOrden);
       vaciarCarrito();
       navigate('/compra-exitosa', { state: { orden: ordenGuardada } });
+    } catch (err) {
+      setErrorCheckout(extraerMensajeError(err, 'No se pudo procesar la compra en el servidor.'));
+    } finally {
+      setProcesando(false);
     }
   }
 
@@ -384,12 +392,19 @@ export function Checkout() {
                 </label>
               </div>
 
+              {errorCheckout && (
+                <div className="alert alert-danger py-2 small" role="alert">
+                  {errorCheckout}
+                </div>
+              )}
+
               {/* Botón Pagar ahora */}
               <button
                 type="submit"
                 className="btn btn-hero-gold w-100 py-3 fw-bold fs-5 shadow"
+                disabled={procesando}
               >
-                Pagar ahora {totalFormateado}
+                {procesando ? 'Procesando compra...' : `Pagar ahora ${totalFormateado}`}
               </button>
 
               <div className="text-center mt-3">

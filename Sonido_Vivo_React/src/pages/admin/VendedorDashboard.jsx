@@ -2,19 +2,38 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContext';
 import { BadgeStock } from '../../components/BadgeStock';
+import { listarProductos, ajustarStockProducto } from '../../services/productoService';
+import { extraerMensajeError } from '../../services/authService';
 
 export function VendedorDashboard() {
     const [productos, setProductos] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [errorServidor, setErrorServidor] = useState('');
     const [busqueda, setBusqueda] = useState('');
     const [vista, setVista] = useState('alertas'); // 'alertas' o 'todos'
     const { usuario, cerrarSesion: logout } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const guardados = localStorage.getItem('sv_productos');
-        if (guardados) {
-            setProductos(JSON.parse(guardados));
-        }
+        let activo = true;
+        listarProductos()
+            .then((lista) => {
+                if (!activo) return;
+                setProductos(lista);
+                setErrorServidor('');
+            })
+            .catch(() => {
+                if (!activo) return;
+                setProductos([]);
+                setErrorServidor('No se pudo cargar el inventario desde el servidor.');
+            })
+            .finally(() => {
+                if (activo) setCargando(false);
+            });
+
+        return () => {
+            activo = false;
+        };
     }, []);
 
     const cerrarSesion = () => {
@@ -22,17 +41,14 @@ export function VendedorDashboard() {
         navigate('/login');
     };
 
-    const ajustarStock = (codigo, cantidadCambio) => {
-        const nuevosProductos = productos.map(p => {
-            if (p.codigo === codigo) {
-                const nuevoStock = Math.max(0, Number(p.stock) + cantidadCambio);
-                return { ...p, stock: nuevoStock };
-            }
-            return p;
-        });
-        
-        setProductos(nuevosProductos);
-        localStorage.setItem('sv_productos', JSON.stringify(nuevosProductos));
+    const ajustarStock = async (codigo, cantidadCambio) => {
+        setErrorServidor('');
+        try {
+            const actualizado = await ajustarStockProducto(codigo, cantidadCambio);
+            setProductos((prev) => prev.map((p) => (p.codigo === codigo ? actualizado : p)));
+        } catch (err) {
+            setErrorServidor(extraerMensajeError(err, 'No se pudo ajustar el stock en el servidor.'));
+        }
     };
 
     // Estadísticas
@@ -78,6 +94,16 @@ export function VendedorDashboard() {
                     </button>
                 </div>
             </div>
+
+            {errorServidor && (
+                <div className="alert alert-danger py-2 small" role="alert">
+                    {errorServidor}
+                </div>
+            )}
+
+            {cargando && (
+                <p className="text-secondary small">Cargando inventario desde servidor...</p>
+            )}
 
             <div className="row g-4 mb-4">
                 <div className="col-md-4">
