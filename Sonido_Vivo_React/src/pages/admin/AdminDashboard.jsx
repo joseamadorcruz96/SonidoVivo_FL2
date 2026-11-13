@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -13,13 +13,29 @@ import {
   Cell,
   Tooltip as TooltipPie,
 } from 'recharts';
-import { getOrdenes, getUsuarios } from '../../services/db';
+import { getOrdenes } from '../../services/db';
+import { listarUsuarios } from '../../services/usuarioService';
 
 const COLORES_TORTA = ['#FFC107', '#FF9800', '#FF5722', '#795548', '#00BCD4'];
 
 export function AdminDashboard() {
   const ordenes = getOrdenes();
-  const usuarios = getUsuarios();
+  const [totalUsuarios, setTotalUsuarios] = useState(0);
+
+  // Obtiene el conteo real de usuarios desde ms-usuarios-auth
+  useEffect(() => {
+    let activo = true;
+    listarUsuarios()
+      .then((lista) => {
+        if (activo) setTotalUsuarios(lista.length);
+      })
+      .catch(() => {
+        if (activo) setTotalUsuarios(0);
+      });
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const metricas = useMemo(() => {
     const ordenesCompletadas = ordenes.filter((o) => o.estado === 'completada');
@@ -34,9 +50,9 @@ export function AdminDashboard() {
       cantidadOrdenes: ordenes.length,
       totalProductos: productos.length,
       stockTotal,
-      totalUsuarios: usuarios.length,
+      totalUsuarios,
     };
-  }, [ordenes, usuarios]);
+  }, [ordenes, totalUsuarios]);
 
   // Datos simulados para los gráficos de ventas
   const datosProductosMasVendidos = [

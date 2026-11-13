@@ -54,3 +54,4 @@ describe('AdminLayout — Menu lateral filtrado por rol (Anexo 1)', () => {
         expect(screen.getByText(/Mi Perfil/i)).toBeInTheDocument();
     });
 });
+

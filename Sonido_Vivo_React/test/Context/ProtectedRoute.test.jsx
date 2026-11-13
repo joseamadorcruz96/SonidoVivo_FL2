@@ -63,3 +63,4 @@ describe('ProtectedRoute — Control RBAC directo en el router', () => {
         expect(screen.getByText('Vista Usuarios')).toBeInTheDocument();
     });
 });
+
