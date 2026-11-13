@@ -12,6 +12,7 @@ import com.sonidovivo.ventas.model.DetalleBoleta;
 import com.sonidovivo.ventas.repository.BoletaRepository;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +34,9 @@ public class BoletaService {
     private final InventarioFeignClient inventarioFeignClient;
     private final UsuarioFeignClient usuarioFeignClient;
     private final BoletaMapper boletaMapper;
+
+    @Value("${ms.inventario.ventas-key:}")
+    private String ventasServiceKey;
 
     public BoletaService(
             BoletaRepository boletaRepository,
@@ -88,6 +92,7 @@ public class BoletaService {
         if (total > Integer.MAX_VALUE) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El total de la compra supera el máximo permitido");
         }
+        validarClaveServicioVentas();
 
         Boleta boleta = crearEntidad(request, usuarioId, itemsValidados, (int) total);
         List<ItemValidado> stockDescontado = new ArrayList<>();
@@ -95,7 +100,8 @@ public class BoletaService {
             for (ItemValidado item : itemsValidados) {
                 llamarServicio(() -> inventarioFeignClient.ajustarStock(
                         item.producto().codigo(),
-                        new AjusteStockRequest(-item.cantidad())
+                        new AjusteStockRequest(-item.cantidad()),
+                        ventasServiceKey
                 ));
                 stockDescontado.add(item);
             }
@@ -240,11 +246,21 @@ public class BoletaService {
             try {
                 inventarioFeignClient.ajustarStock(
                         item.producto().codigo(),
-                        new AjusteStockRequest(item.cantidad())
+                        new AjusteStockRequest(item.cantidad()),
+                        ventasServiceKey
                 );
             } catch (RuntimeException errorReversion) {
                 causa.addSuppressed(errorReversion);
             }
+        }
+    }
+
+    private void validarClaveServicioVentas() {
+        if (ventasServiceKey == null || ventasServiceKey.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Configura VENTAS_SERVICE_KEY para descontar stock"
+            );
         }
     }
 
