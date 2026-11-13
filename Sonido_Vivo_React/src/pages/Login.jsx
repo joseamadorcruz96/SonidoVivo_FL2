@@ -10,12 +10,6 @@ import { CampoFormulario } from '../components/CampoFormulario';
 import { useForm } from '../hooks/useForm';
 import logo from '../assets/logo.svg';
 
-const ACCESOS_RAPIDOS_SEMILLA = [
-    { rol: ROLES.ADMIN, etiqueta: 'Admin', correo: 'admin@gmail.com', password: '123' },
-    { rol: ROLES.VENDEDOR, etiqueta: 'Vendedor', correo: 'vendedor@gmail.com', password: '123' },
-    { rol: ROLES.CLIENTE, etiqueta: 'Cliente', correo: 'cliente@gmail.com', password: '123' },
-];
-
 export function Login() {
     const navigate = useNavigate();
     const { iniciarSesion } = useAuth();
@@ -31,20 +25,6 @@ export function Login() {
             navigate('/admin');
         } else {
             navigate('/');
-        }
-    };
-
-    const ejecutarLogin = async (correo, password) => {
-        setErrorGeneral('');
-        setCargando(true);
-        try {
-            const { token, usuario } = await loginRequest(correo, password);
-            iniciarSesion(usuario, token);
-            redirigirPorRol(usuario.rol);
-        } catch (error) {
-            setErrorGeneral(extraerMensajeError(error, 'Correo o contraseña incorrectos.'));
-        } finally {
-            setCargando(false);
         }
     };
 
@@ -67,7 +47,16 @@ export function Login() {
             return;
         }
 
-        await ejecutarLogin(correoLimpio, datos.password);
+        setCargando(true);
+        try {
+            const { token, usuario } = await loginRequest(correoLimpio, datos.password);
+            iniciarSesion(usuario, token);
+            redirigirPorRol(usuario.rol);
+        } catch (error) {
+            setErrorGeneral(extraerMensajeError(error, 'Correo o contraseña incorrectos.'));
+        } finally {
+            setCargando(false);
+        }
     };
 
     return (
@@ -125,24 +114,6 @@ export function Login() {
                         </Link>
                     </div>
                 </form>
-
-                {/* Accesos rápidos con login JWT real contra UsuarioSeeder */}
-                <div className="mt-4 pt-3 border-top border-secondary text-center">
-                    <p className="small text-secondary mb-2">⚡ Probar roles con JWT real:</p>
-                    <div className="d-flex gap-2 justify-content-center">
-                        {ACCESOS_RAPIDOS_SEMILLA.map(({ rol, etiqueta, correo, password }) => (
-                            <button
-                                key={rol}
-                                type="button"
-                                disabled={cargando}
-                                onClick={() => ejecutarLogin(correo, password)}
-                                className="btn btn-sm btn-outline-warning"
-                            >
-                                {etiqueta}
-                            </button>
-                        ))}
-                    </div>
-                </div>
             </div>
         </section>
     );
