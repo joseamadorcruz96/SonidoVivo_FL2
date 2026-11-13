@@ -1,33 +1,45 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUsuario, usuariosDb } from '../services/db';
 import { useAuth } from '../Context/AuthContext';
+import {
+    loginRequest,
+    extraerMensajeError,
+    ROLES
+} from '../services/authService';
 import { CampoFormulario } from '../components/CampoFormulario';
 import { useForm } from '../hooks/useForm';
-import { validarEmail, validarPassword } from '../utils/validaciones';
 import logo from '../assets/logo.svg';
 
 export function Login() {
     const navigate = useNavigate();
     const { iniciarSesion } = useAuth();
 
-    // Usamos el hook useForm
-    const { datos, errores, setErrores, handleChange } = useForm({ email: '', password: '' });
+    const { datos, errores, setErrores, handleChange } = useForm({ correo: '', password: '' });
     const [errorGeneral, setErrorGeneral] = useState('');
+    const [cargando, setCargando] = useState(false);
 
-    const autenticar = (usuario) => {
-        iniciarSesion(usuario);
-        const rol = (usuario.rol || '').toLowerCase();
-        navigate(rol === 'vendedor' ? '/vendedor' : rol === 'cliente' ? '/' : '/admin');
+    const redirigirPorRol = (rolUsuario) => {
+        if (rolUsuario === ROLES.VENDEDOR) {
+            navigate('/admin/productos');
+        } else if (rolUsuario === ROLES.ADMIN) {
+            navigate('/admin');
+        } else {
+            navigate('/');
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorGeneral('');
 
+        const correoLimpio = (datos.correo || '').trim();
         const nuevosErrores = {
-            email: validarEmail(datos.email),
-            password: validarPassword(datos.password)
+            correo: !correoLimpio
+                ? 'El correo electrónico es obligatorio.'
+                : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoLimpio)
+                    ? 'Ingresa un formato de correo válido.'
+                    : '',
+            password: !datos.password ? 'La contraseña es obligatoria.' : ''
         };
 
         if (Object.values(nuevosErrores).some(Boolean)) {
@@ -35,11 +47,15 @@ export function Login() {
             return;
         }
 
-        const usuario = loginUsuario(datos.email, datos.password);
-        if (usuario) {
-            autenticar(usuario);
-        } else {
-            setErrorGeneral('Correo o contraseña incorrectos.');
+        setCargando(true);
+        try {
+            const { token, usuario } = await loginRequest(correoLimpio, datos.password);
+            iniciarSesion(usuario, token);
+            redirigirPorRol(usuario.rol);
+        } catch (error) {
+            setErrorGeneral(extraerMensajeError(error, 'Correo o contraseña incorrectos.'));
+        } finally {
+            setCargando(false);
         }
     };
 
@@ -53,18 +69,21 @@ export function Login() {
                 <p className="text-center text-secondary small mb-4">Ingresa a tu cuenta de Sonido Vivo</p>
 
                 {errorGeneral && (
-                    <div className="alert alert-danger py-2 text-center small">{errorGeneral}</div>
+                    <div className="alert alert-danger py-2 text-center small" role="alert">
+                        {errorGeneral}
+                    </div>
                 )}
 
                 <form onSubmit={handleSubmit} noValidate>
-                    <CampoFormulario label="Correo Electrónico" error={errores.email} obligatorio>
+                    <CampoFormulario label="Correo Electrónico" error={errores.correo} obligatorio>
                         <input
-                            name="email"
+                            name="correo"
                             type="email"
                             className="form-control"
-                            value={datos.email}
+                            value={datos.correo}
                             onChange={handleChange}
-                            placeholder="ejemplo@gmail.com / @duoc.cl"
+                            placeholder="ejemplo@gmail.com / @sonidovivo.cl"
+                            disabled={cargando}
                         />
                     </CampoFormulario>
 
@@ -75,12 +94,17 @@ export function Login() {
                             className="form-control"
                             value={datos.password}
                             onChange={handleChange}
-                            placeholder="Entre 4 y 10 caracteres"
+                            placeholder="Ingresa tu contraseña"
+                            disabled={cargando}
                         />
                     </CampoFormulario>
 
-                    <button type="submit" className="btn btn-hero-gold w-100 fw-bold mt-2">
-                        Ingresar
+                    <button
+                        type="submit"
+                        className="btn btn-hero-gold w-100 fw-bold mt-2"
+                        disabled={cargando}
+                    >
+                        {cargando ? 'Ingresando...' : 'Ingresar'}
                     </button>
 
                     <div className="text-center mt-3">
@@ -90,26 +114,6 @@ export function Login() {
                         </Link>
                     </div>
                 </form>
-
-                {/* Accesos rápidos para evaluación */}
-                <div className="mt-4 pt-3 border-top border-secondary text-center">
-                    <p className="small text-secondary mb-2">⚡ Probar roles rápidos:</p>
-                    <div className="d-flex gap-2 justify-content-center">
-                        {['admin', 'vendedor', 'cliente'].map(rol => (
-                            <button
-                                key={rol}
-                                type="button"
-                                onClick={() => {
-                                    const u = usuariosDb.find(user => user.rol.toLowerCase() === rol);
-                                    if (u) autenticar(u);
-                                }}
-                                className="btn btn-sm btn-outline-warning text-capitalize"
-                            >
-                                {rol}
-                            </button>
-                        ))}
-                    </div>
-                </div>
             </div>
         </section>
     );

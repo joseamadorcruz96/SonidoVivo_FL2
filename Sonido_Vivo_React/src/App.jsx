@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// --- Context Providers ---
+// Context Providers
 import { AuthProvider } from './Context/AuthContext';
 import { CarritoProvider } from './Context/CarritoContext';
+import { ROLES } from './services/authService';
 
-// --- Layouts y Guardias ---
+// Layouts y Guardias
 import { MainLayout } from './layouts/MainLayout';
 import { AdminLayout } from './layouts/AdminLayout';
 import { ProtectedRoute } from './Context/ProtectedRoute';
@@ -61,29 +62,34 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
 
-            {/* 2. RUTAS PROTEGIDAS (FUERA de MainLayout) */}
+            {/* Rutas protegidas por rol (RBAC directo en el router) */}
             <Route
               path="/admin"
               element={
-                <ProtectedRoute rolPermitido="admin">
+                <ProtectedRoute rolesPermitidos={[ROLES.ADMIN, ROLES.VENDEDOR]}>
                   <AdminLayout />
                 </ProtectedRoute>
               }
             >
-              <Route index element={<AdminDashboard />} />
+              {/* Rutas compartidas entre ADMIN y VENDEDOR */}
               <Route path="ordenes" element={<AdminOrdenes />} />
               <Route path="productos" element={<AdminProductos />} />
-              <Route path="categorias" element={<AdminCategorias />} />
-              <Route path="usuarios" element={<AdminUsuarios />} />
-              <Route path="reportes" element={<AdminReportes />} />
-              <Route path="perfil" element={<AdminPerfil />} />
+
+              {/* Rutas exclusivas de ADMIN */}
+              <Route element={<ProtectedRoute rolesPermitidos={[ROLES.ADMIN]} />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="categorias" element={<AdminCategorias />} />
+                <Route path="usuarios" element={<AdminUsuarios />} />
+                <Route path="reportes" element={<AdminReportes />} />
+                <Route path="perfil" element={<AdminPerfil />} />
+              </Route>
             </Route>
 
-
+            {/* Acceso directo heredado al dashboard rapido de inventario */}
             <Route
               path="/vendedor"
               element={
-                <ProtectedRoute rolPermitido="vendedor">
+                <ProtectedRoute rolesPermitidos={[ROLES.VENDEDOR, ROLES.ADMIN]}>
                   <VendedorDashboard />
                 </ProtectedRoute>
               }

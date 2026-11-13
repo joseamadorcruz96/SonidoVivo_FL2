@@ -1,28 +1,44 @@
 import { useState, createContext, useContext } from "react";
+import {
+    guardarToken,
+    obtenerToken,
+    guardarUsuario,
+    obtenerUsuario,
+    limpiarSesionStorage
+} from "../services/api";
+import { normalizarUsuario } from "../services/authService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(() => {
-        const sesionGuardada = localStorage.getItem('sv_sesion_activa') || localStorage.getItem('usuarioSonidoVivo');
-        return sesionGuardada ? JSON.parse(sesionGuardada) : null;
+        const token = obtenerToken();
+        const user = obtenerUsuario();
+        if (!token || !user) {
+            limpiarSesionStorage();
+            return null;
+        }
+        return normalizarUsuario(user);
     });
 
-    function iniciarSesion(datosUsuario) {
-        setUsuario(datosUsuario);
-        localStorage.setItem('sv_sesion_activa', JSON.stringify(datosUsuario));
-        localStorage.setItem('usuarioSonidoVivo', JSON.stringify(datosUsuario));
+    function iniciarSesion(datosUsuario, token) {
+        const usuarioNormalizado = normalizarUsuario(datosUsuario);
+        setUsuario(usuarioNormalizado);
+        guardarUsuario(usuarioNormalizado);
+        if (token) {
+            guardarToken(token);
+        }
     }
 
     function cerrarSesion() {
         setUsuario(null);
-        localStorage.removeItem('sv_sesion_activa');
-        localStorage.removeItem('usuarioSonidoVivo');
+        limpiarSesionStorage();
     }
 
     return (
         <AuthContext.Provider value={{
             usuario,
+            estaAutenticado: Boolean(usuario),
             iniciarSesion,
             cerrarSesion
         }}>

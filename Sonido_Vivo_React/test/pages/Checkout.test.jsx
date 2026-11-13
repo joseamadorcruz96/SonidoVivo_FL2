@@ -82,13 +82,14 @@ describe('Pruebas en la vista de Checkout', () => {
 
 
         const usuarioMock = {
-            id: 1,
+            idUsuario: 1,
             nombre: 'Pedro',
-            apellidos: 'Hacker',
-            email: 'pedro@gmail.com',
-            rol: 'cliente',
+            apellido: 'Hacker',
+            correo: 'pedro@gmail.com',
+            rol: 'CLIENTE',
         };
-        localStorage.setItem('sv_sesion_activa', JSON.stringify(usuarioMock));
+        localStorage.setItem('sv_token', 'jwt-mock-test');
+        localStorage.setItem('sv_usuario', JSON.stringify(usuarioMock));
 
         render(
             <MemoryRouter>

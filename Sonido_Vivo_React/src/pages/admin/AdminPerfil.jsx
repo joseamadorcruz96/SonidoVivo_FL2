@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import { CampoFormulario } from '../../components/CampoFormulario';
-import { getUsuarios } from '../../services/db';
 import { useForm } from '../../hooks/useForm';
 
 export function AdminPerfil() {
@@ -9,7 +8,7 @@ export function AdminPerfil() {
 
   const { datos, handleChange, setDatos } = useForm({
     nombre: usuario?.nombre || '',
-    apellidos: usuario?.apellidos || '',
+    apellidos: usuario?.apellido || usuario?.apellidos || '',
     password: '',
   });
   const [mensajeExito, setMensajeExito] = useState(false);
@@ -19,22 +18,15 @@ export function AdminPerfil() {
 
     if (!usuario) return;
 
-    // Actualizar usuario en sesión
+    // Actualiza la sesion en Context manteniendo el JWT activo
     const usuarioActualizado = {
       ...usuario,
       nombre: datos.nombre.trim(),
+      apellido: datos.apellidos.trim(),
       apellidos: datos.apellidos.trim(),
-      ...(datos.password.trim() ? { password: datos.password.trim() } : {}),
     };
 
     iniciarSesion(usuarioActualizado);
-
-    // Actualizar también en sv_usuarios
-    const listaUsuarios = getUsuarios();
-    const nuevaLista = listaUsuarios.map((u) =>
-      u.email?.toLowerCase() === usuario.email?.toLowerCase() ? { ...u, ...usuarioActualizado } : u
-    );
-    localStorage.setItem('sv_usuarios', JSON.stringify(nuevaLista));
 
     setMensajeExito(true);
     setDatos((prev) => ({ ...prev, password: '' }));
