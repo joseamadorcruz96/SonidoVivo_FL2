@@ -1,6 +1,7 @@
 package com.sonidovivo.usuarios.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.sonidovivo.usuarios.model.Rol;
 
@@ -26,5 +27,6 @@ public class UsuarioResponseDto {
     private String comuna;
     private String direccion;
     private LocalDate fechaNacimiento;
+    private LocalDateTime fechaCreacion;
 
 }

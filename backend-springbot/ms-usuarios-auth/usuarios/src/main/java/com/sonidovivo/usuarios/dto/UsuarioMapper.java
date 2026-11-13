@@ -24,6 +24,7 @@ public class UsuarioMapper {
                 .comuna(usuario.getComuna())
                 .direccion(usuario.getDireccion())
                 .fechaNacimiento(usuario.getFechaNacimiento())
+                .fechaCreacion(usuario.getFechaCreacion())
                 .build();
     }
 
