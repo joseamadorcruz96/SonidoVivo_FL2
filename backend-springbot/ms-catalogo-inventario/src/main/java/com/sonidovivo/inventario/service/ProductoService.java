@@ -65,6 +65,19 @@ public class ProductoService {
         return productoMapper.toResponse(productoRepository.save(producto));
     }
 
+    public ProductoResponse ajustarStock(String codigo, Integer cantidadCambio){
+        Producto producto = obtenerProductoParaEscritura(codigo);
+        long nuevoStock = (long) producto.getStock() + cantidadCambio;
+        if (nuevoStock < 0){
+            throw new ResourceConflictException("Stock insuficiente para el producto " + codigo);
+        }
+        if (nuevoStock > Integer.MAX_VALUE){
+            throw new ResourceConflictException("El ajuste supera el stock máximo permitido");
+        }
+        producto.setStock((int) nuevoStock);
+        return productoMapper.toResponse(productoRepository.save(producto));
+    }
+
     public void eliminar(String codigo){
         Producto producto = obtenerProductoParaEscritura(codigo);
         if (producto.getStock() != 0){

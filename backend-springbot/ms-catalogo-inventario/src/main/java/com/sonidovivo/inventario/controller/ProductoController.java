@@ -1,5 +1,6 @@
 package com.sonidovivo.inventario.controller;
 
+import com.sonidovivo.inventario.dto.AjusteStockRequest;
 import com.sonidovivo.inventario.dto.ProductoActualizacionRequest;
 import com.sonidovivo.inventario.dto.ProductoRequest;
 import com.sonidovivo.inventario.dto.ProductoResponse;
@@ -45,6 +46,12 @@ public class ProductoController {
     public ResponseEntity<ProductoResponse> actualizar(@PathVariable String codigo,
                                                        @Valid @RequestBody ProductoActualizacionRequest request){
         return ResponseEntity.ok(productoService.actualizar(codigo, request));
+    }
+
+    @PutMapping("/{codigo}/stock")
+    public ResponseEntity<ProductoResponse> ajustarStock(@PathVariable String codigo,
+                                                         @Valid @RequestBody AjusteStockRequest request){
+        return ResponseEntity.ok(productoService.ajustarStock(codigo, request.getCantidadCambio()));
     }
 
     @DeleteMapping("/{codigo}")
