@@ -20,10 +20,10 @@ export function MenuUsuarioNav() {
     );
   }
 
-  // Caso 2: Usuario con sesión activa
+  // Caso 2: Usuario con sesion activa
   const rol = (usuario.rol || '').toUpperCase();
   const esPersonal = rol === ROLES.ADMIN || rol === ROLES.VENDEDOR;
-  const rutaPanel = rol === ROLES.VENDEDOR ? '/vendedor' : '/admin';
+  const rutaPanel = rol === ROLES.VENDEDOR ? '/admin/productos' : '/admin';
 
   return (
     <div id="menu-sesion" className="d-flex align-items-center gap-2">

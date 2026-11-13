@@ -93,3 +93,4 @@ describe("AuthContext — Centralización de localStorage y persistencia ante F5
         expect(localStorage.getItem("usuarioSonidoVivo")).toBeNull();
     });
 });
+

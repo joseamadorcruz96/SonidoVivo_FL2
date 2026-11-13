@@ -1,30 +1,34 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { getUsuarioLogueado } from '../services/db';
+import { ROLES, normalizarRol } from '../services/authService';
 
-export function ProtectedRoute({ children, rolPermitido }) {
-    const auth = useAuth();
-    const usuario = auth?.usuario || getUsuarioLogueado();
+// Ruta segura por defecto cuando un usuario autenticado intenta acceder sin permiso
+function obtenerRutaSeguraPorRol(rolUsuario) {
+    if (rolUsuario === ROLES.VENDEDOR) return '/admin/productos';
+    if (rolUsuario === ROLES.ADMIN) return '/admin';
+    return '/';
+}
 
-    // Si no hay usuario logueado, lo mandamos al login
-    if (!usuario) {
-        return <Navigate to="/Login" replace />;
+export function ProtectedRoute({ children, rolesPermitidos, rolPermitido }) {
+    const { usuario, estaAutenticado } = useAuth();
+
+    // Sin sesion JWT activa redirige al login
+    if (!estaAutenticado || !usuario) {
+        return <Navigate to="/login" replace />;
     }
 
-    // Si la ruta exige un rol específico, validamos permitiendo variaciones ("admin" vs "Administrador")
-    if (rolPermitido) {
-        const rolActual = (usuario.rol || '').toLowerCase();
-        const rolReq = rolPermitido.toLowerCase();
-        const tienePermiso =
-            rolActual === rolReq ||
-            (rolReq === 'admin' && rolActual === 'administrador') ||
-            (rolReq === 'administrador' && rolActual === 'admin');
+    // Normaliza la lista de roles requeridos (soporta array o string unico)
+    const filtroRoles = rolesPermitidos ?? rolPermitido;
+    if (filtroRoles) {
+        const permitidos = (Array.isArray(filtroRoles) ? filtroRoles : [filtroRoles])
+            .map(normalizarRol);
+        const rolActual = normalizarRol(usuario.rol);
 
-        if (!tienePermiso) {
-            return <Navigate to="/" replace />;
+        if (!permitidos.includes(rolActual)) {
+            return <Navigate to={obtenerRutaSeguraPorRol(rolActual)} replace />;
         }
     }
 
-    // Si todo está bien, mostramos la página solicitada
-    return children;
+    // Soporta wrapper directo o Layout Route anidado con Outlet
+    return children || <Outlet />;
 }

@@ -1,18 +1,13 @@
 import sVivoApi from "./api";
 
-/**
- * Enum de roles homologado 1:1 con com.sonidovivo.usuarios.model.Rol en Spring Boot.
- */
+//Enum de roles de springbot
 export const ROLES = Object.freeze({
     ADMIN: "ADMIN",
     VENDEDOR: "VENDEDOR",
     CLIENTE: "CLIENTE",
 });
 
-/**
- * Normaliza cualquier variante de rol ("admin", "Administrador", "VENDEDOR")
- * al valor exacto del Enum Rol de Spring Boot ("ADMIN", "VENDEDOR", "CLIENTE").
- */
+//Normaliza cualquier variante de rol ("admin", "Administrador", "VENDEDOR")
 export function normalizarRol(rol) {
     const valor = (rol || "").toString().trim().toUpperCase();
     if (valor === "ADMINISTRADOR" || valor === "ADMIN") return ROLES.ADMIN;
@@ -21,10 +16,7 @@ export function normalizarRol(rol) {
     return valor;
 }
 
-/**
- * Adapta UsuarioResponseDto de Spring Boot manteniendo sus campos oficiales
- * (idUsuario, apellido, correo, rol) junto con alias compatibles para vistas legadas.
- */
+//Adapta UsuarioResponseDto de Spring Boot manteniendo sus campos oficiales
 export function normalizarUsuario(usuario) {
     if (!usuario) return null;
 
@@ -45,10 +37,8 @@ export function normalizarUsuario(usuario) {
     };
 }
 
-/**
- * Extrae el mensaje legible desde ErrorResponse de GlobalExceptionHandler
- * o retorna un mensaje claro cuando el backend no responde.
- */
+//Extrae el mensaje legible desde ErrorResponse de GlobalExceptionHandler
+
 export function extraerMensajeError(error, mensajeFallback = "Ocurrió un error al comunicarse con el servidor.") {
     if (!error?.response) {
         return "No se pudo conectar con el servidor de autenticación (puerto 8081).";
@@ -65,10 +55,7 @@ export function extraerMensajeError(error, mensajeFallback = "Ocurrió un error 
     return data?.message || mensajeFallback;
 }
 
-/**
- * Inicia sesión contra POST /api/v1/auth/login.
- * Envía LoginRequest ({ correo, password }) y retorna { token, usuario }.
- */
+//Envía LoginRequest ({ correo, password }) y retorna { token, usuario }.
 export async function loginRequest(correo, password) {
     const payload = {
         correo: (correo || "").trim(),
@@ -82,10 +69,7 @@ export async function loginRequest(correo, password) {
     };
 }
 
-/**
- * Registra un nuevo cliente contra POST /api/v1/auth/register.
- * Mapea los campos al contrato exacto de UsuarioRequestDto.
- */
+//Registra un nuevo cliente contra POST /api/v1/auth/register.
 export async function registerRequest(datosFormulario) {
     const payload = {
         run: (datosFormulario.run || "").trim().toUpperCase(),
@@ -106,3 +90,4 @@ export async function registerRequest(datosFormulario) {
         usuario: normalizarUsuario(data.usuario),
     };
 }
+

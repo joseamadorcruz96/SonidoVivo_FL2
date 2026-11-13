@@ -20,7 +20,7 @@ export function Login() {
 
     const redirigirPorRol = (rolUsuario) => {
         if (rolUsuario === ROLES.VENDEDOR) {
-            navigate('/vendedor');
+            navigate('/admin/productos');
         } else if (rolUsuario === ROLES.ADMIN) {
             navigate('/admin');
         } else {

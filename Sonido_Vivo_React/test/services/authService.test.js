@@ -129,3 +129,4 @@ describe("authService — Contratos y Enum Rol entre React y Spring Boot", () =>
         expect(extraerMensajeError({})).toContain("8081");
     });
 });
+
