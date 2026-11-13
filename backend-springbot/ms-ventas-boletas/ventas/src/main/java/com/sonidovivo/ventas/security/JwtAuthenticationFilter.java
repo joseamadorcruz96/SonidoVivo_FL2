@@ -40,9 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.validarToken(authorization.substring(7));
             String correo = claims.getSubject();
             String rol = claims.get("rol", String.class);
+            Object idClaim = claims.get("id");
 
-            if (correo == null || correo.isBlank() || rol == null || rol.isBlank()) {
-                throw new JwtException("El token no contiene correo o rol");
+            if (correo == null || correo.isBlank() || rol == null || rol.isBlank()
+                    || !(idClaim instanceof Number)) {
+                throw new JwtException("El token no contiene id, correo o rol");
             }
 
             var autenticacion = new UsernamePasswordAuthenticationToken(
@@ -50,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     null,
                     List.of(new SimpleGrantedAuthority("ROLE_" + rol))
             );
+            autenticacion.setDetails(((Number) idClaim).longValue());
             var contexto = SecurityContextHolder.createEmptyContext();
             contexto.setAuthentication(autenticacion);
             SecurityContextHolder.setContext(contexto);
