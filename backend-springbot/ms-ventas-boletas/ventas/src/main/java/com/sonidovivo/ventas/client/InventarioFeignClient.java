@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "ms-catalogo-inventario", url = "${ms.inventario.url}")
 public interface InventarioFeignClient {
@@ -14,9 +15,10 @@ public interface InventarioFeignClient {
     @GetMapping("/api/v1/productos/codigo/{codigo}")
     ProductoInventarioResponse obtenerProductoPorCodigo(@PathVariable("codigo") String codigo);
 
-    @PutMapping("/api/v1/productos/{codigo}/stock")
+    @PutMapping("/api/v1/interno/productos/{codigo}/stock")
     ProductoInventarioResponse ajustarStock(
             @PathVariable("codigo") String codigo,
-            @RequestBody AjusteStockRequest request
+            @RequestBody AjusteStockRequest request,
+            @RequestHeader("X-Ventas-Key") String ventasKey
     );
 }
