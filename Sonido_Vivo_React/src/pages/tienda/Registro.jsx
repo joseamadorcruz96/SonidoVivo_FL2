@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CampoFormulario } from '../../components/CampoFormulario';
 import { regionesYComunas } from '../../data/regionesComunas';
-import { registrarUsuario } from '../../services/db';
+import { useAuth } from '../../Context/AuthContext';
+import { registerRequest, extraerMensajeError } from '../../services/authService';
 import { useForm } from '../../hooks/useForm';
 import { validarRun, validarEmail, validarPassword, validarTexto } from '../../utils/validaciones';
 
 const valoresIniciales = {
     run: '',
     nombre: '',
-    apellidos: '',
-    email: '',
+    apellido: '',
+    correo: '',
     fechaNacimiento: '',
     region: '',
     comuna: '',
@@ -21,14 +22,14 @@ const valoresIniciales = {
 
 export function Registro() {
     const navigate = useNavigate();
+    const { iniciarSesion } = useAuth();
     const { datos, setDatos, errores, setErrores, handleChange } = useForm(valoresIniciales);
     const [exito, setExito] = useState(false);
+    const [cargando, setCargando] = useState(false);
 
-    // Comunas dinámicas según la región elegida
     const regionActiva = regionesYComunas.find(r => r.region === datos.region);
     const comunas = regionActiva ? regionActiva.comunas : [];
 
-    // Si cambia la región, aprovechamos handleChange y limpiamos la comuna
     const manejarCambio = (e) => {
         handleChange(e);
         if (e.target.name === 'region') {
@@ -36,19 +37,27 @@ export function Registro() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const validarFechaNacimiento = (fecha) => {
+        if (!fecha) return 'La fecha de nacimiento es obligatoria.';
+        const hoy = new Date().toISOString().split('T')[0];
+        if (fecha >= hoy) return 'La fecha de nacimiento debe ser en el pasado.';
+        return '';
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const nuevosErrores = {
             run: validarRun(datos.run),
             nombre: validarTexto(datos.nombre, 'El nombre', 50),
-            apellidos: validarTexto(datos.apellidos, 'Los apellidos', 100),
-            email: validarEmail(datos.email),
-            region: !datos.region ? 'Selecciona una región' : '',
-            comuna: !datos.comuna ? 'Selecciona una comuna' : '',
+            apellido: validarTexto(datos.apellido, 'El apellido', 100),
+            correo: validarEmail(datos.correo),
+            fechaNacimiento: validarFechaNacimiento(datos.fechaNacimiento),
+            region: !datos.region ? 'Selecciona una región.' : '',
+            comuna: !datos.comuna ? 'Selecciona una comuna.' : '',
             direccion: validarTexto(datos.direccion, 'La dirección', 300),
             password: validarPassword(datos.password),
-            confirmar: datos.password !== datos.confirmar ? 'Las contraseñas no coinciden' : ''
+            confirmar: datos.password !== datos.confirmar ? 'Las contraseñas no coinciden.' : ''
         };
 
         if (Object.values(nuevosErrores).some(Boolean)) {
@@ -56,11 +65,19 @@ export function Registro() {
             return;
         }
 
+        setCargando(true);
         try {
-            registrarUsuario({ ...datos, rol: 'cliente' });
+            const { token, usuario } = await registerRequest(datos);
+            iniciarSesion(usuario, token);
             setExito(true);
         } catch (err) {
-            setErrores({ general: err.message });
+            const erroresCampos = err.response?.data?.errors;
+            setErrores({
+                ...(erroresCampos || {}),
+                general: extraerMensajeError(err, 'No se pudo completar el registro.')
+            });
+        } finally {
+            setCargando(false);
         }
     };
 
@@ -69,9 +86,11 @@ export function Registro() {
             <div className="container py-5 text-center" style={{ maxWidth: '500px' }}>
                 <div className="card bg-dark text-light p-4 shadow">
                     <h2 className="text-gold mb-3">¡Registro Exitoso!</h2>
-                    <p className="text-secondary">Tu cuenta con <strong>{datos.email}</strong> fue creada correctamente.</p>
-                    <button onClick={() => navigate('/login')} className="btn btn-hero-gold fw-bold mt-2">
-                        Ir a Iniciar Sesión
+                    <p className="text-secondary">
+                        Tu cuenta con <strong>{datos.correo}</strong> fue creada y tu sesión JWT ya está activa.
+                    </p>
+                    <button onClick={() => navigate('/')} className="btn btn-hero-gold fw-bold mt-2">
+                        Ir a la Tienda
                     </button>
                 </div>
             </div>
@@ -85,7 +104,7 @@ export function Registro() {
                 <p className="text-center text-secondary small mb-4">Completa tus datos para registrarte</p>
 
                 {errores.general && (
-                    <div className="alert alert-danger py-2 small">{errores.general}</div>
+                    <div className="alert alert-danger py-2 small" role="alert">{errores.general}</div>
                 )}
 
                 <form onSubmit={handleSubmit} noValidate>
@@ -97,10 +116,11 @@ export function Registro() {
                             value={datos.run}
                             onChange={manejarCambio}
                             placeholder="Ej: 19011022K"
+                            disabled={cargando}
                         />
                     </CampoFormulario>
 
-                    {/* Nombre y Apellidos */}
+                    {/* Nombre y Apellido */}
                     <div className="row">
                         <div className="col-md-6">
                             <CampoFormulario label="Nombre" error={errores.nombre} obligatorio>
@@ -110,17 +130,19 @@ export function Registro() {
                                     value={datos.nombre}
                                     onChange={manejarCambio}
                                     placeholder="Matías"
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
                         <div className="col-md-6">
-                            <CampoFormulario label="Apellidos" error={errores.apellidos} obligatorio>
+                            <CampoFormulario label="Apellido" error={errores.apellido} obligatorio>
                                 <input
-                                    name="apellidos"
+                                    name="apellido"
                                     className="form-control"
-                                    value={datos.apellidos}
+                                    value={datos.apellido}
                                     onChange={manejarCambio}
                                     placeholder="Silva Rojas"
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
@@ -129,35 +151,37 @@ export function Registro() {
                     {/* Correo y Fecha de Nacimiento */}
                     <div className="row">
                         <div className="col-md-7">
-                            <CampoFormulario label="Correo Electrónico" error={errores.email} obligatorio>
+                            <CampoFormulario label="Correo Electrónico" error={errores.correo} obligatorio>
                                 <input
-                                    name="email"
+                                    name="correo"
                                     type="email"
                                     className="form-control"
-                                    value={datos.email}
+                                    value={datos.correo}
                                     onChange={manejarCambio}
                                     placeholder="@duoc.cl o @gmail.com"
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
                         <div className="col-md-5">
-                            <CampoFormulario label="Fecha de Nacimiento">
+                            <CampoFormulario label="Fecha de Nacimiento" error={errores.fechaNacimiento} obligatorio>
                                 <input
                                     name="fechaNacimiento"
                                     type="date"
                                     className="form-control"
                                     value={datos.fechaNacimiento}
                                     onChange={manejarCambio}
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
                     </div>
 
-                    {/* Región y Comuna (Selector dependiente) */}
+                    {/* Región y Comuna */}
                     <div className="row">
                         <div className="col-md-6">
                             <CampoFormulario label="Región" error={errores.region} obligatorio>
-                                <select name="region" className="form-select" value={datos.region} onChange={manejarCambio}>
+                                <select name="region" className="form-select" value={datos.region} onChange={manejarCambio} disabled={cargando}>
                                     <option value="">Selecciona región...</option>
                                     {regionesYComunas.map(r => (
                                         <option key={r.region} value={r.region}>{r.region}</option>
@@ -172,7 +196,7 @@ export function Registro() {
                                     className="form-select"
                                     value={datos.comuna}
                                     onChange={manejarCambio}
-                                    disabled={!datos.region}
+                                    disabled={!datos.region || cargando}
                                 >
                                     <option value="">{datos.region ? 'Selecciona comuna...' : 'Elige región primero'}</option>
                                     {comunas.map(c => (
@@ -191,6 +215,7 @@ export function Registro() {
                             value={datos.direccion}
                             onChange={manejarCambio}
                             placeholder="Calle 123, Depto 4"
+                            disabled={cargando}
                         />
                     </CampoFormulario>
 
@@ -205,6 +230,7 @@ export function Registro() {
                                     value={datos.password}
                                     onChange={manejarCambio}
                                     placeholder="******"
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
@@ -217,13 +243,14 @@ export function Registro() {
                                     value={datos.confirmar}
                                     onChange={manejarCambio}
                                     placeholder="******"
+                                    disabled={cargando}
                                 />
                             </CampoFormulario>
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-hero-gold w-100 fw-bold mt-3">
-                        Completar Registro
+                    <button type="submit" className="btn btn-hero-gold w-100 fw-bold mt-3" disabled={cargando}>
+                        {cargando ? 'Registrando...' : 'Completar Registro'}
                     </button>
 
                     <div className="text-center mt-3">

@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
-import { logoutUsuario } from '../services/db';
+import { ROLES } from '../services/authService';
 
 export function MenuUsuarioNav() {
   const { usuario, cerrarSesion } = useAuth();
 
   const handleCerrarSesion = () => {
-    logoutUsuario();
     cerrarSesion();
   };
 
@@ -14,7 +13,7 @@ export function MenuUsuarioNav() {
   if (!usuario) {
     return (
       <div id="menu-sesion" className="d-flex align-items-center gap-2">
-        <Link to="/Login" className="btn-nav-login">
+        <Link to="/login" className="btn-nav-login">
           Ingresar
         </Link>
       </div>
@@ -22,9 +21,9 @@ export function MenuUsuarioNav() {
   }
 
   // Caso 2: Usuario con sesión activa
-  const rol = (usuario.rol || '').toLowerCase();
-  const esPersonal = rol === 'administrador' || rol === 'admin' || rol === 'vendedor';
-  const rutaPanel = rol === 'vendedor' ? '/vendedor' : '/admin';
+  const rol = (usuario.rol || '').toUpperCase();
+  const esPersonal = rol === ROLES.ADMIN || rol === ROLES.VENDEDOR;
+  const rutaPanel = rol === ROLES.VENDEDOR ? '/vendedor' : '/admin';
 
   return (
     <div id="menu-sesion" className="d-flex align-items-center gap-2">

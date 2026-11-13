@@ -5,9 +5,28 @@ const SONIDO_VIVO_USER_KEY = "sv_usuario";
 
 export const guardarToken = (token) => localStorage.setItem(SONIDO_VIVO_TOKEN_KEY, token);
 export const obtenerToken = () => localStorage.getItem(SONIDO_VIVO_TOKEN_KEY);
+
+export const guardarUsuario = (usuario) => {
+    localStorage.setItem(SONIDO_VIVO_USER_KEY, JSON.stringify(usuario));
+};
+
+export const obtenerUsuario = () => {
+    const raw = localStorage.getItem(SONIDO_VIVO_USER_KEY);
+    if (!raw) return null;
+    try {
+        return JSON.parse(raw);
+    } catch {
+        limpiarSesionStorage(); //limpia todo
+        return null;
+    }
+};
+
 export const limpiarSesionStorage = () => {
     localStorage.removeItem(SONIDO_VIVO_TOKEN_KEY);
     localStorage.removeItem(SONIDO_VIVO_USER_KEY);
+    // Limpieza de claves heredadas del mock local
+    localStorage.removeItem("sv_sesion_activa");
+    localStorage.removeItem("usuarioSonidoVivo");
 };
 
 const sVivoApi = axios.create({
