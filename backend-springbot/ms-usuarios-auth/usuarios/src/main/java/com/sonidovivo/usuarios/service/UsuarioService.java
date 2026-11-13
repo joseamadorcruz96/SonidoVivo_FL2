@@ -64,7 +64,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDto actualizarRol(Long id, Rol rol) {
         if (rol == null) {
-            throw new IllegalArgumentException("por implementar");
+            throw new IllegalArgumentException("El rol es obligatorio");
         }
         Usuario encontrado = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("usuario no encontrado"));
