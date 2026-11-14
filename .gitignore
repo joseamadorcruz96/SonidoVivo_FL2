@@ -10,6 +10,7 @@ informe_pruebas_unitarias.html
 documentacion/*
 !documentacion/Requerimientos_Funcionales_simplificado_1.xlsx
 !documentacion/Requerimientos_Funcionales_simplificado_1.md
+!documentacion/Manual_de_Usuario_Sonido_Vivo.docx
 Curso/
 .env
 .env.*
