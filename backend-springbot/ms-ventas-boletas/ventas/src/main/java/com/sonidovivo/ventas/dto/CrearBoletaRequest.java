@@ -1,5 +1,6 @@
 package com.sonidovivo.ventas.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,7 +37,9 @@ public record CrearBoletaRequest(
 
     /** El precio, nombre y total del navegador no son datos autoritativos. */
     public record ItemRequest(
+            @Schema(description = "Código del producto en Catálogo", example = "GA001")
             @NotBlank String codigo,
+            @Schema(example = "1")
             @NotNull @Min(1) Integer cantidad
     ) {
     }

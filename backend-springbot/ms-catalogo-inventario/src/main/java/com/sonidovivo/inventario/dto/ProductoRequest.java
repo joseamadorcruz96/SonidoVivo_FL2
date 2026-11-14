@@ -1,5 +1,6 @@
 package com.sonidovivo.inventario.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProductoRequest {
     @NotBlank(message = "El código es obligatorio")
     @Size(min = 3, max = 255, message = "El código debe tener entre 3 y 255 caracteres")
+    @Schema(description = "Código único del producto", example = "GA010")
     private String codigo;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -50,5 +52,6 @@ public class ProductoRequest {
 
     @NotNull(message = "La categoría es obligatoria")
     @Positive(message = "El ID de la categoría debe ser positivo")
+    @Schema(description = "ID de una categoría existente", example = "1")
     private Long categoriaId;
 }
