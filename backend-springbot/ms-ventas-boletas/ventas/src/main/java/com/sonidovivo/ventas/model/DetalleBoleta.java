@@ -47,7 +47,6 @@ public class DetalleBoleta {
     @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(length = 2048)
     private String imagen;
 
     public DetalleBoleta() {
